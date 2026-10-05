@@ -1,0 +1,83 @@
+{
+  "format": "gradientmine.public-delivery.v1",
+  "release_source_commit": "dfa77c7a9a793c1ffb91ac07fef39b32baa0c7be",
+  "evidence_source_commit": "a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c",
+  "classification": "Recorded local CPU proof of function; trusted evaluator; no blockchain payment; no public service deployment; not submitted",
+  "files": [
+    {
+      "file": "demo-captions.srt",
+      "bytes": 2956,
+      "sha256": "ddfc955510a8275c583a420806e50cde33904cb6dd5a61000653ad6d5c4abb15"
+    },
+    {
+      "file": "demo-provenance.json",
+      "bytes": 6680,
+      "sha256": "c7b65f24341449e81825b26318b491b5e79375bf59848a5c16501b09725372d9"
+    },
+    {
+      "file": "gradientmine-demo-165s.mp4",
+      "bytes": 32265686,
+      "sha256": "905c042931c648a1ae6ff241761d1ac1ef5f8e3270dfa6f79bee2244e2a709c8"
+    },
+    {
+      "file": "gradientmine-launch-landscape-22s.mp4",
+      "bytes": 2559514,
+      "sha256": "a25bd417cef28c125f773d86ea59e49c07507656305edc3e043c92f5d7b655a0"
+    },
+    {
+      "file": "gradientmine-launch-landscape-poster.jpg",
+      "bytes": 117172,
+      "sha256": "71afa696c1c0e201198dc50100408514311aac952579d5a25a2453ea12a2f75c"
+    },
+    {
+      "file": "gradientmine-launch-vertical-20s.mp4",
+      "bytes": 2565374,
+      "sha256": "feb47886a953f1441dfdceeb20f04483775b42a5f7bba1ee5b0b5b5337a88917"
+    },
+    {
+      "file": "gradientmine-launch-vertical-poster.jpg",
+      "bytes": 110218,
+      "sha256": "4e748192cd280ea2d4f2c99d32296db8a0d12a4b078fd5ecddeb073823d8f470"
+    },
+    {
+      "file": "gradientmine-presentation-150s.mp4",
+      "bytes": 6021820,
+      "sha256": "032adad9556714fa45cb57f3126b5b46c0cf63783c4266b02f1d8d23ee913cb9"
+    },
+    {
+      "file": "gradientmine-recorded-viewer.zip",
+      "bytes": 195606,
+      "sha256": "39b9b2dd285e4bc1f4fc7ebea35a86422324c5f4f6e9e4d860806268028017f8"
+    },
+    {
+      "file": "launch-evidence-manifest.json",
+      "bytes": 3290,
+      "sha256": "80d1996e3531e9b62ba83c626beca9f6191bd2ad187f1094b3c4a8fa3af2af3c"
+    },
+    {
+      "file": "launch-render-manifest.json",
+      "bytes": 2774,
+      "sha256": "55e0ef34fb0a3c8fd55e3aeb1265d877adbe391d496e363413a83d125d640c24"
+    },
+    {
+      "file": "presentation-captions.srt",
+      "bytes": 3397,
+      "sha256": "4320853cd3b53912ac152d31299845171634fc7993f09be68959f086cefbe2bb"
+    },
+    {
+      "file": "presentation-provenance.json",
+      "bytes": 8595,
+      "sha256": "a8c59decfc6e8934724161f5352209175b5ff7e3f90e37506b735e304c621cbb"
+    }
+  ],
+  "upload": {
+    "status": "blocked",
+    "http_status": 403,
+    "host": "uploads.github.com",
+    "uploaded_assets": 0,
+    "draft_release_id": 404167730,
+    "draft_release_url": "https://github.com/kapasainitishreddy/Gradientmine/releases/tag/untagged-18d0a9ece37c19820507",
+    "draft": true,
+    "public_playback_url": null
+  }
+}

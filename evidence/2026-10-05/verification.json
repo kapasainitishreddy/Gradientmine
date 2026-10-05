@@ -133,5 +133,12 @@
     "conclusion": "success",
     "url": "https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37387430095",
     "verified_via": "Authenticated GitHub run/job API; all four jobs and their steps successful; local commands supply reported test counts"
+  },
+  "final_source_ci": {
+    "run_id": 37388405319,
+    "source_commit": "dfa77c7a9a793c1ffb91ac07fef39b32baa0c7be",
+    "conclusion": "success",
+    "url": "https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37388405319",
+    "verified_via": "Authenticated GitHub run/job API; all four jobs and their steps successful; local commands supply reported test counts"
   }
 }

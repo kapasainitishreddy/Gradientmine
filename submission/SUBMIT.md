@@ -1,6 +1,6 @@
 # Crypto World's Fair submission checklist
 
-**Status: prepared documents; not submitted.** No owner registration, signed-in portal entry, video upload or portal confirmation has been performed in this pass.
+**Status: prepared documents; not submitted.** No owner registration, signed-in portal entry, successful video upload or portal confirmation has been performed in this pass. Actual captioned recordings exist; [MEDIA_DELIVERY.md](MEDIA_DELIVERY.md) documents the HTTP 403 upload attempt and retained draft.
 
 ## Official source status
 
