@@ -10,6 +10,8 @@ on:
       - 'web/**'
       - 'pyproject.toml'
       - 'package.json'
+      - 'Dockerfile'
+      - '.dockerignore'
       - '.github/workflows/verify.yml'
       - 'evidence/RELEASE_GATE.json'
   workflow_dispatch:
@@ -120,3 +122,25 @@ jobs:
             ci-evidence/*.txt
             ci-evidence/sbf/gradientmine_escrow.so
             program/Cargo.lock
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build non-root CPU image from restrictive-permission source
+        run: |
+          chmod -R go-rwx gradientmine web
+          docker build -t gradientmine:verified .
+      - name: Check HTTP health and durable validator/bounty across recreation
+        run: python -m scripts.container_qa --out ci-evidence/container.json
+      - name: Audit the exact installed container dependency inventory
+        run: |
+          python -m pip install pip==26.2.1 pip-audit==2.10.0
+          python -m pip_audit --no-deps --disable-pip --progress-spinner off -r ci-evidence/container.requirements.txt --format json --output ci-evidence/container-audit.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: container-verification
+          path: |
+            ci-evidence/container.json
+            ci-evidence/container.requirements.txt
+            ci-evidence/container-audit.json
