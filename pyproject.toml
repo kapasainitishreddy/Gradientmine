@@ -11,12 +11,12 @@ license = "MIT"
 dependencies = [
   "fastapi==0.142.2", "uvicorn==0.48.0", "httpx==0.28.1",
   "pydantic==2.13.5", "numpy==2.3.5", "scikit-learn==1.8.0",
-  "torch==2.10.0", "cryptography==50.0.2"
+  "torch==2.14.1", "cryptography==50.0.2"
 ]
 
 [project.optional-dependencies]
 chain = ["solders==0.29.0"]
-dev = ["pytest==9.0.3", "playwright==1.57.0", "ruff==0.14.10", "pip-audit==2.10.0", "setuptools==83.0.0"]
+dev = ["pytest==9.0.3", "playwright==1.57.0", "ruff==0.14.10", "pip-audit==2.10.0", "setuptools==83.0.0", "pip==26.2.1"]
 
 [project.scripts]
 gradientmine = "gradientmine.cli:main"

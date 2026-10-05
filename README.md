@@ -21,7 +21,8 @@ git clone https://github.com/kapasainitishreddy/Gradientmine.git
 cd Gradientmine
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install --upgrade pip==26.2.1
+python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e '.[chain,dev]'
 python -m gradientmine.cli demo --out .local/my-first-run
 python -m scripts.publish_demo --run .local/my-first-run/run.json
@@ -58,6 +59,7 @@ python -m pytest -q
 node --test tests/web/*.test.mjs
 npm run check
 python -m ruff check gradientmine scripts tests
+python -m scripts.audit_dependencies --out .local/dependency-audit.json
 python -m playwright install chromium
 python -m scripts.browser_qa --out evidence/browser
 ```

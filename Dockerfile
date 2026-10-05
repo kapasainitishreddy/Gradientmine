@@ -5,7 +5,7 @@ RUN useradd --uid 10001 --create-home gradientmine && mkdir -p /data && chown gr
 COPY pyproject.toml README.md LICENSE ./
 COPY gradientmine ./gradientmine
 COPY web ./web
-RUN python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu && python -m pip install '.[chain]'
+RUN python -m pip install --upgrade pip==26.2.1 && python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu && python -m pip install '.[chain]'
 USER 10001:10001
 VOLUME ["/data"]
 EXPOSE 8000
