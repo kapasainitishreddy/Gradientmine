@@ -18,7 +18,7 @@ concurrency:
 jobs:
   devnet:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -50,17 +50,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          airdrop() {
-            local amount="$1" address="$2"
-            for n in 1 2 3 4 5; do
-              if solana airdrop "$amount" "$address" --url https://api.devnet.solana.com; then return 0; fi
-              sleep $((n * 8))
-            done
-            return 1
-          }
-          airdrop 2 "$(solana-keygen pubkey "$RUNNER_TEMP/creator.json")"
-          airdrop 1 "$(solana-keygen pubkey "$RUNNER_TEMP/worker.json")"
-          airdrop 1 "$(solana-keygen pubkey "$RUNNER_TEMP/validator.json")"
+          # Shared requestAirdrop endpoints are frequently rate-limited in CI. The
+          # Solana Foundation faucet explicitly recommends the programmatic PoW
+          # faucet for AI agents. Mine only disposable Devnet SOL.
+          cargo install devnet-pow --version 0.1.4 --locked
+          devnet-pow mine --target-lamports 2000000000 -ud
+          creator="$(solana-keygen pubkey "$RUNNER_TEMP/creator.json")"
+          worker="$(solana-keygen pubkey "$RUNNER_TEMP/worker.json")"
+          validator="$(solana-keygen pubkey "$RUNNER_TEMP/validator.json")"
+          solana transfer "$worker" 0.05 --allow-unfunded-recipient --url https://api.devnet.solana.com --keypair "$RUNNER_TEMP/creator.json"
+          solana transfer "$validator" 0.05 --allow-unfunded-recipient --url https://api.devnet.solana.com --keypair "$RUNNER_TEMP/creator.json"
+          echo "creator_balance=$(solana balance "$creator" --lamports --url https://api.devnet.solana.com)"
+          echo "worker_balance=$(solana balance "$worker" --lamports --url https://api.devnet.solana.com)"
+          echo "validator_balance=$(solana balance "$validator" --lamports --url https://api.devnet.solana.com)"
       - name: Deploy program to Devnet
         shell: bash
         run: |
