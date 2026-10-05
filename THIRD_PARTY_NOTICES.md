@@ -30,3 +30,11 @@ Versions are pinned in pyproject.toml / program/Cargo.lock. Python license metad
 Wallet Standard discovery and signing interfaces were checked against the maintained official specifications, not copied as an implementation: https://github.com/wallet-standard/wallet-standard and https://github.com/anza-xyz/wallet-standard . The browser adapter is original, deliberately restricted to legacy single-instruction transactions. No wallet or sponsor logo is bundled. No external font files are bundled.
 
 For research credits and precisely limited claims, read docs/RESEARCH.md. The paper licenses are not used as licenses for any third-party implementation. New tasks/models must separately document model and dataset licenses before use.
+
+
+## Video-production references
+
+- **latent-spaces/brag** — https://github.com/latent-spaces/brag — MIT. Used as an optional development-time agent skill for planning/rendering a short launch video. It is not a GradientMine runtime dependency.
+- **feitangyuan/onetake** — https://github.com/feitangyuan/onetake — PolyForm Noncommercial 1.0.0. GradientMine documentation uses its publicly described continuity/carry ideas only as creative reference. Do not copy, vendor, modify, or execute OneTake code for a commercial/promotional deliverable unless the intended use is confirmed to comply with its license.
+
+No OneTake source code or assets are vendored into GradientMine.
