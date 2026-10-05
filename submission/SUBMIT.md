@@ -24,7 +24,7 @@ Solana is the proposed ecosystem track because escrow, registration and settleme
 | Logo / graphic | logo.svg | Upload original logo; PNG can be rendered from SVG |
 | Repository | https://github.com/kapasainitishreddy/Gradientmine | Use the public repo with current source and history |
 | Presentation video, 2–3 minutes | PITCH.md | Record/upload and verify judge access; script is not a video |
-| Product-demo video, no more than 3 minutes | DEMO.md | Record actual current behavior and inspect all claimed links |
+| Product-demo video, no more than 3 minutes | DEMO.md; PRODUCT_TOUR.md | Record actual current behavior and inspect all claimed links |
 | Go-to-market, validation and distribution | PRODUCT.md; VALIDATION.md | Do not replace planned interviews with invented traction |
 | Prior-development / AI-assistance disclosure | DISCLOSURE.md | Check dates and acknowledge assistance honestly |
 | Live demo and chain evidence | evidence/; docs/BUILD_LEDGER.md | Only enter URLs, addresses and signatures actually verified |
