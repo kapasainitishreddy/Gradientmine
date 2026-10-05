@@ -61,6 +61,10 @@ class IntentInput(StrictModel):
     submission_id: str | None = Field(default=None, max_length=36)
 
 
+class BroadcastInput(IntentInput):
+    transaction_base64: str = Field(min_length=4, max_length=2400)
+
+
 class ConfirmationInput(IntentInput):
     signature: str = Field(min_length=64, max_length=88)
 
@@ -238,11 +242,26 @@ def create_app(settings=None, clock=time.time, scheduler=False):
         auth(request)
         return market.settle(job_id)
 
+    @app.post("/api/jobs/{job_id}/recover-settlement")
+    def recover_settlement(job_id: str, request: Request):
+        address = auth(request)
+        market.rate(("recover", address), 6)
+        return market.recover_settlement(job_id)
+
     @app.post("/api/jobs/{job_id}/transaction")
     async def transaction(job_id: str, request: Request):
         address = auth(request)
         value = await body(request, IntentInput)
         return market.transaction_intent(job_id, address, value.action, value.submission_id)
+
+    @app.post("/api/jobs/{job_id}/broadcast")
+    async def broadcast(job_id: str, request: Request):
+        address = auth(request)
+        market.rate(("broadcast", address), 20)
+        value = await body(request, BroadcastInput)
+        return await asyncio.to_thread(
+            market.broadcast, job_id, address, value.action, value.transaction_base64, value.submission_id
+        )
 
     @app.post("/api/jobs/{job_id}/confirm")
     async def confirm(job_id: str, request: Request):

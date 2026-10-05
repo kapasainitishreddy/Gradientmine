@@ -106,6 +106,41 @@ class Chain:
             raise ValueError("Transaction differs from the locally reconstructed instruction intent")
         return tx
 
+    def validate_signed(self, raw, spec):
+        """Authenticate wallet-signed bytes and reject every non-intended instruction/account."""
+        try:
+            if not 100 <= len(raw) <= 1232:
+                raise ValueError("Invalid Solana transaction size")
+            tx = Transaction.from_bytes(raw)
+            expected = self.unsigned(spec, str(tx.message.recent_blockhash))
+            if bytes(tx.message) != bytes(expected.message) or len(tx.signatures) != 1:
+                raise ValueError("Signed transaction differs from the exact intended message")
+            tx.verify()
+            if bytes(tx) != raw:
+                raise ValueError("Noncanonical transaction encoding")
+            return {"signature": str(tx.signatures[0]), "transaction_base64": base64.b64encode(raw).decode()}
+        except Exception as exc:
+            raise ValueError("Invalid signed transaction or instruction intent") from exc
+
+    def broadcast_wallet(self, raw, spec):
+        self.deployment()
+        pending = self.validate_signed(raw, spec)
+        signature = self.rpc.call(
+            "sendTransaction",
+            [
+                pending["transaction_base64"],
+                {
+                    "encoding": "base64",
+                    "skipPreflight": False,
+                    "preflightCommitment": "finalized",
+                    "maxRetries": 3,
+                },
+            ],
+        )
+        if signature != pending["signature"]:
+            raise ValueError("RPC returned a different transaction signature")
+        return {"signature": signature, "finalized": False, "instruction_checked": True}
+
     def deployment(self):
         genesis = self.rpc.require_devnet()
         account = self.rpc.account(self.program_id)

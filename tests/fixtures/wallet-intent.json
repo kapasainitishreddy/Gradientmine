@@ -1,0 +1,49 @@
+{
+  "job": {
+    "id": "79977e61-c7e8-4347-99c8-ebcfe904581b",
+    "creator": "8YYuVcanQv8WTkBPJRYRwMUKHGwi6kw3N8kvYTWyDpeM",
+    "policy": {
+      "validator": "DBmxHmEYG2BJDHNfgGgewjnBun6cbwpuj8KXz7Tjyd4L",
+      "program_id": "4Jc9YViyVzF85JP7HWi7LG5FqREVy9n6agy8yVUxSSq8",
+      "deadline": 1791240000,
+      "refund_after": 1791243600,
+      "reward_lamports": 25000000
+    },
+    "policy_sha256": "429ebb043f422407ee89456228f32bcb99f86d296add2f972c33b88cf6080949",
+    "bounty_address": "6Z8is6WtWMmjToBEjbobVFBVdAyLUUPF4iN1Djv8SdZC"
+  },
+  "intent": {
+    "action": "fund",
+    "chain": "solana:devnet",
+    "program_id": "4Jc9YViyVzF85JP7HWi7LG5FqREVy9n6agy8yVUxSSq8",
+    "payer": "8YYuVcanQv8WTkBPJRYRwMUKHGwi6kw3N8kvYTWyDpeM",
+    "transaction_base64": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAIEcBbjg8QSD/L63zsac3gkFcAJt0+0VfdRMKiFqiQlWZJShcBnRScR+9DvPccIEVGCxx7uKygxyMIs6ya82ygGUwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMRWs+vyqSxo4i52SzGtJdtgAtmofJhP1XILoKlgAvaMBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEDAwABAnkAJK+73cq0AxN8ErpJs4ZAiTG1AN6QVOjqm9Ch+/4CAWJCnrsEP0IkB+6JRWIo8yvLmfhtKWrdL5csM7iM9ggJSbUO4Ujo35nN72GMPf6te7kKlyODUbZ8oHCnt/KRH+NxQCfEagAAAABQNcRqAAAAAEB4fQEAAAAA",
+    "accounts": [
+      {
+        "address": "8YYuVcanQv8WTkBPJRYRwMUKHGwi6kw3N8kvYTWyDpeM",
+        "signer": true,
+        "writable": true
+      },
+      {
+        "address": "6Z8is6WtWMmjToBEjbobVFBVdAyLUUPF4iN1Djv8SdZC",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address": "11111111111111111111111111111111",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction_base64": "ACSvu93KtAMTfBK6SbOGQIkxtQDekFTo6pvQofv+AgFiQp67BD9CJAfuiUViKPMry5n4bSlq3S+XLDO4jPYICUm1DuFI6N+Zze9hjD3+rXu5Cpcjg1G2fKBwp7fykR/jcUAnxGoAAAAAUDXEagAAAABAeH0BAAAAAA==",
+    "fee_lamports": 5000,
+    "rent_lamports": 2505600,
+    "reward_lamports": 25000000,
+    "last_valid_block_height": 123456
+  },
+  "signed": "AYOhyM4GHxOurbgES3YDqCmOU0vAkxVi9y8nLdDEQDJBIaWq6+8rYTTLw8uJtjaZ3yxaK3sd6sBSdZfQ0MNlzAwBAAIEcBbjg8QSD/L63zsac3gkFcAJt0+0VfdRMKiFqiQlWZJShcBnRScR+9DvPccIEVGCxx7uKygxyMIs6ya82ygGUwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMRWs+vyqSxo4i52SzGtJdtgAtmofJhP1XILoKlgAvaMBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEDAwABAnkAJK+73cq0AxN8ErpJs4ZAiTG1AN6QVOjqm9Ch+/4CAWJCnrsEP0IkB+6JRWIo8yvLmfhtKWrdL5csM7iM9ggJSbUO4Ujo35nN72GMPf6te7kKlyODUbZ8oHCnt/KRH+NxQCfEagAAAABQNcRqAAAAAEB4fQEAAAAA",
+  "config": {
+    "mode": "devnet",
+    "program_id": "4Jc9YViyVzF85JP7HWi7LG5FqREVy9n6agy8yVUxSSq8"
+  }
+}

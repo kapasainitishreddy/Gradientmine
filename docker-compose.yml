@@ -1,0 +1,21 @@
+services:
+  gradientmine:
+    build: .
+    ports: ["127.0.0.1:8000:8000"]
+    environment:
+      GM_ORIGIN: ${GM_ORIGIN:-http://127.0.0.1:8000}
+      GM_MODE: ${GM_MODE:-local}
+      GM_PROGRAM_ID: ${GM_PROGRAM_ID:-}
+      GM_RPC_URL: ${GM_RPC_URL:-https://api.devnet.solana.com}
+      GM_DATA_DIR: /data
+    volumes: ["gradientmine-data:/data"]
+    read_only: true
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    pids_limit: 128
+    mem_limit: 2g
+    cpus: 2
+    restart: unless-stopped
+volumes:
+  gradientmine-data:

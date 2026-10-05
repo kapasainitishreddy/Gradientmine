@@ -1,0 +1,1 @@
+{"name":"gradientmine-web","version":"0.2.0","private":true,"type":"module","scripts":{"test":"node --test tests/web/*.test.mjs","check":"node --check web/assets/main.mjs && node --check web/assets/core.mjs && node --check web/assets/wire.mjs && node --check web/assets/wallet.mjs"},"engines":{"node":">=22"}}

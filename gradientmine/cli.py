@@ -353,6 +353,18 @@ def main(argv=None):
     local.add_argument("--out", required=True)
     verify = commands.add_parser("verify", help="Independently verify a signed receipt or worker manifest")
     verify.add_argument("file")
+    refund = commands.add_parser(
+        "refund-address", help="Refund directly from public on-chain bounty data; coordinator not required"
+    )
+    refund.add_argument("--bounty", required=True)
+    refund.add_argument("--program", required=True)
+    refund.add_argument("--identity", required=True)
+    refund.add_argument("--rpc", default="https://api.devnet.solana.com")
+    refund.add_argument("--out", default="refund-public-receipt.json")
+    verify.add_argument(
+        "--expected-signer",
+        help="Require a known validator/worker public address, not merely any valid signature",
+    )
     args = parser.parse_args(argv)
     try:
         if args.command == "identity":
@@ -368,9 +380,19 @@ def main(argv=None):
             worker(args)
         elif args.command == "demo":
             demo(args)
+        elif args.command == "refund-address":
+            from .emergency import refund_address
+
+            print(
+                json.dumps(
+                    refund_address(args.bounty, args.program, args.identity, args.rpc, args.out), indent=2
+                )
+            )
         elif args.command == "verify":
             value = safe_json(Path(args.file).read_bytes())
-            if not verify_signed(value):
+            if not verify_signed(value) or (
+                args.expected_signer and value.get("signer") != args.expected_signer
+            ):
                 raise ValueError("Signature or canonical payload verification failed")
             print(
                 f"Verified signature by {value['signer']}. This authenticates the statement, not its scientific truth."
