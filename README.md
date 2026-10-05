@@ -81,5 +81,6 @@ Compiled-SBF tests additionally require `GM_SBF_PATH` pointing to the built `gra
 - [Product and honest go-to-market copy](submission/PRODUCT.md)
 - [Pitch script](submission/PITCH.md) and [demo recording instructions](submission/DEMO.md)
 - [Exact presentation/demo recording sheet](submission/RECORDING.md)
+- [Recorded 150-second presentation](submission/PRESENTATION_VIDEO.md), [165-second demo](submission/DEMO_VIDEO.md), and [rendered launch films](submission/tour/README.md)
 
-A complete submission still requires the owner's registration/identity confirmation and uploaded videos. Do not describe scripts as finished videos or planned interviews as traction. The submission checklist distinguishes implementation from verified live operation.
+A complete submission still requires the owner's registration/identity confirmation, review of the captioned videos, permitted judge-accessible playback URLs and portal confirmation. Do not describe scripts as finished videos or planned interviews as traction. The submission checklist distinguishes implementation from verified live operation.

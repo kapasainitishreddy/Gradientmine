@@ -1,0 +1,9 @@
+# Tour source and media notices
+
+- Original GradientMine composition, capture/build/delivery scripts, evidence-thread choreography and deterministic synthesis source are covered by the repository MIT license. Generated sound contains only locally synthesized sinusoidal tones and envelopes; no third-party sample or recording is used. It is not represented as a human performance or third-party licensed track.
+- The official [latent-spaces/brag](https://github.com/latent-spaces/brag) skill was read at `cb89b9f44309b0bf4e3cb89e685fadf80c7999ed` (MIT). Its bundled ende.app music was **not used**: the supplied README did not verify exact redistribution terms.
+- Hyperframes CLI `0.8.134` produced the local MP4s. Official [Hyperframes domain skills](https://github.com/heygen-com/hyperframes) were read at `f835f8316402dc75c51d4d4c355047457ca930b1`; its original `extract-audio-data.py` helper analyzes our generated sound. The helper is not vendored here.
+- GSAP `3.14.2` is pinned as a local composition development dependency. Its package/README specify the [standard no-charge license](https://gsap.com/standard-license) and explicitly permit commercial use. Dependency code is installed from npm and remains ignored.
+- Montserrat and IBM Plex Mono are font families resolved and embedded by Hyperframes. Their upstream projects distribute them under SIL Open Font License 1.1: [Montserrat](https://github.com/JulietaUla/Montserrat), [IBM Plex](https://github.com/IBM/plex). No font binaries are committed in this tour directory.
+- Product screenshots, public artifact hashes, validator/worker public keys and metrics come from the repository's actual recorded experiment; see evidence-manifest.json. No private identities or sessions were captured.
+- OneTake was used only as a reference for continuity principles described by PRODUCT_TOUR.md. No OneTake code or noncommercial-license runtime was copied or executed.

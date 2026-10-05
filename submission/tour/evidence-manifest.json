@@ -1,0 +1,60 @@
+{
+  "classification": "Recorded local experiment",
+  "source_commit": "a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c",
+  "brag_commit": "cb89b9f44309b0bf4e3cb89e685fadf80c7999ed",
+  "cli_version": "0.8.134",
+  "current_ci": {
+    "status": "success",
+    "source_sha": "a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c",
+    "run_id": 37386118051,
+    "url": "https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37386118051",
+    "verification": "Coordinator confirmed source/python/program steps successful via GitHub API"
+  },
+  "recorded_run_sha256": "23b5e0ff73688a20dcc5316cb88700f3d18943aa5e1eebe05d22a886fd33b66c",
+  "job_id": "d348dcd2-90f3-49a0-949d-4c7801699346",
+  "policy_sha256": "31af78ee0dd1f784c6d74e8e56f0a8e11c5475ff4ae18b0cb89494bb9484650f",
+  "validator": "CGBpNBhbVrYhT2GTcNjYgQ4ChuWrKb9frHNQwxsn8kW1",
+  "artifact_sha256": "5f0aa6e87db0ae34899e6e0fd581bd229f98ca1037bde949276288760be751b5",
+  "model_sha256": "410a8216d8fc69bc6b6ab94501326afd6bb53ef5bc4e4e8a0746dfc5364de33a",
+  "receipt_sha256": "4380a9884b99fc6236e6fb7d62b4439e7b27509d2c038c3d8dd819378e8c55ce",
+  "manifest_sha256": "0b9006d692e11d042c27678b925471c581bd9788eb19dd40f727cf1cdc4e0336",
+  "baseline_accuracy": 0.8472222222222222,
+  "candidate_accuracy": 0.9527777777777777,
+  "delta": 0.10555555555555556,
+  "heldout_examples": 360,
+  "worker_metrics": {
+    "device": "cpu",
+    "elapsed_seconds": 1.4971,
+    "first_loss": 0.7084410786628723,
+    "last_loss": 0.12060461938381195,
+    "negative_control": false,
+    "process_id": 12790,
+    "public_validation_accuracy": 0.9275766016713092
+  },
+  "winning_worker_epochs": 60,
+  "epoch_losses_sha256": "ee82f5b95b74a38c787f410492baa03036ee50444327e8889aac8dd50320f5c3",
+  "chain_signatures": {
+    "funding": null,
+    "settlement": null,
+    "registration": null
+  },
+  "checked_artifacts": [
+    "0b9006d692e11d042c27678b925471c581bd9788eb19dd40f727cf1cdc4e0336",
+    "31af78ee0dd1f784c6d74e8e56f0a8e11c5475ff4ae18b0cb89494bb9484650f",
+    "3a28a5aa53a46f504058701b5869f39b2e76c2bf6a467632343714227841d9ab",
+    "410a8216d8fc69bc6b6ab94501326afd6bb53ef5bc4e4e8a0746dfc5364de33a",
+    "4380a9884b99fc6236e6fb7d62b4439e7b27509d2c038c3d8dd819378e8c55ce",
+    "56f803b76ac7a6aeb39dc208a2a0d3c05c6e1df107e490935e2481a69109dbd7",
+    "5f0aa6e87db0ae34899e6e0fd581bd229f98ca1037bde949276288760be751b5",
+    "87a829167dc243014ff91fb2e9d07189c1bcc58b3c7f73d43b3e69028938214a",
+    "99360ff74d6db1cb489731a53072f6b9e60cfce73de83d348f633005c79c3a09",
+    "9fa7b5af6aa7c794d5a9339bc6ada2017eff6b6c43f72cf99f71601631d08829",
+    "ac3b9de7b3e2c9e68b09a72c0d4cd269efecfffa7f621a65d7299e2fdbe6546e",
+    "bd23050bf689a37ad64c4caf48fd67fdd4a7c1fd6d95fd7c69ee57fc53123d7c",
+    "eab53096d475c4d718bc607753147f4b5913d7400931dd58a86efaaeff4057ff",
+    "f235c6669f5bd03fbb9f1b3e69b074ccfba1f067e45d6c96ae5fdf9e220438e4"
+  ],
+  "disclosure": "Three independent OS processes on one host, real CPU head-LoRA training. Third worker is a disclosed shuffled-label negative control. Not three independent machines or a fraud detector.",
+  "verification": "checked_artifacts passed: exact hashes, worker/validator signatures, provenance, model merge and deterministic eligible winner",
+  "worker_log_sha256": "770a0bbd7692c0da73cd1cb8f618fa5afde43b578a7c8503d9dc875e585f5a8f"
+}

@@ -1,0 +1,95 @@
+{
+  "classification": "Local high-quality Hyperframes render; no chain evidence",
+  "evidence_source_commit": "a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c",
+  "cli": "hyperframes@0.8.134",
+  "quality": "high",
+  "workers": 2,
+  "frame_rate": 30,
+  "outputs": {
+    "landscape": {
+      "file": ".local/tour/landscape/brag.mp4",
+      "poster": ".local/tour/landscape/brag.jpg",
+      "sha256": "a25bd417cef28c125f773d86ea59e49c07507656305edc3e043c92f5d7b655a0",
+      "poster_time_seconds": 11.8,
+      "poster_frame_zero_ssim": 0.997767,
+      "audio_packets_preserved": true,
+      "full_decode": "passed",
+      "ffprobe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1920,
+            "height": 1080,
+            "r_frame_rate": "30/1",
+            "nb_frames": "660"
+          },
+          {
+            "codec_name": "aac",
+            "r_frame_rate": "0/0",
+            "nb_frames": "1033"
+          }
+        ],
+        "format": {
+          "duration": "22.000000",
+          "size": "2559514"
+        }
+      }
+    },
+    "vertical": {
+      "file": ".local/tour/vertical/brag.mp4",
+      "poster": ".local/tour/vertical/brag.jpg",
+      "sha256": "feb47886a953f1441dfdceeb20f04483775b42a5f7bba1ee5b0b5b5337a88917",
+      "poster_time_seconds": 11.4,
+      "poster_frame_zero_ssim": 0.997725,
+      "audio_packets_preserved": true,
+      "full_decode": "passed",
+      "ffprobe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1080,
+            "height": 1920,
+            "r_frame_rate": "30/1",
+            "nb_frames": "600"
+          },
+          {
+            "codec_name": "aac",
+            "r_frame_rate": "0/0",
+            "nb_frames": "939"
+          }
+        ],
+        "format": {
+          "duration": "20.000000",
+          "size": "2565374"
+        }
+      }
+    }
+  },
+  "checks": {
+    "landscape": {
+      "ok": true,
+      "lint_errors": 0,
+      "runtime_errors": 0,
+      "layout_errors": 0,
+      "contrast_errors": 0,
+      "contrast_passed": 40,
+      "lint_warnings": 8,
+      "motion_check_enabled": false
+    },
+    "vertical": {
+      "ok": true,
+      "lint_errors": 0,
+      "runtime_errors": 0,
+      "layout_errors": 0,
+      "contrast_errors": 0,
+      "contrast_passed": 40,
+      "lint_warnings": 8,
+      "motion_check_enabled": false
+    }
+  },
+  "review": "All seven beats and actual rendered one-second frame sequences reviewed end-to-end, including typography, metrics, actual receipt/lineage and settlement disclosure. Vertical headline overflow and line intersections were corrected before final render. Full decoding passed."
+}

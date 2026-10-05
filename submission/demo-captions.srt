@@ -1,0 +1,157 @@
+1
+00:00:00,000 --> 00:00:04,444
+GradientMine pays for measurable model
+improvement.
+
+2
+00:00:04,444 --> 00:00:09,444
+This is a recorded local CPU experiment.
+
+3
+00:00:09,444 --> 00:00:15,000
+No funds moved. This page is read-only
+evidence.
+
+4
+00:00:15,000 --> 00:00:23,667
+The owner commits a frozen parent,
+evaluation rules and deadline.
+
+5
+00:00:23,667 --> 00:00:26,333
+These terms are fixed before workers enter.
+
+6
+00:00:26,333 --> 00:00:31,000
+The hash binds these terms.
+
+7
+00:00:31,000 --> 00:00:36,333
+This classifier’s parent is deliberately
+budget-limited.
+
+8
+00:00:36,333 --> 00:00:45,000
+The evaluator is named. The public digits
+benchmark can be reconstructed.
+
+9
+00:00:45,000 --> 00:00:51,269
+Three independent worker processes
+on one host trained numeric updates.
+
+10
+00:00:51,269 --> 00:00:53,881
+Real low-rank training using PyTorch.
+
+11
+00:00:53,881 --> 00:01:01,716
+This is real CPU optimization, not an LLM
+or three independently owned GPUs.
+
+12
+00:01:01,716 --> 00:01:07,463
+One worker shuffled labels as a disclosed
+negative control.
+
+13
+00:01:07,463 --> 00:01:11,119
+The evaluator waits until cutoff.
+
+14
+00:01:11,119 --> 00:01:18,433
+The experiment is already complete.
+These are its recorded results.
+
+15
+00:01:18,433 --> 00:01:20,000
+Recorded results, not live training.
+
+16
+00:01:20,000 --> 00:01:27,836
+In this recorded run, accuracy rose from
+84.72 to 95.28 percent on 360
+
+17
+00:01:27,836 --> 00:01:29,925
+held-out examples.
+
+18
+00:01:29,925 --> 00:01:33,582
+That is 10.56 percentage points.
+
+19
+00:01:33,582 --> 00:01:40,373
+The browser checks the receipt hash and
+the expected evaluator’s signature.
+
+20
+00:01:40,373 --> 00:01:45,075
+Eligibility uses a declared approximate
+paired-bootstrap comparison.
+
+21
+00:01:45,075 --> 00:01:52,388
+A valid signature authenticates the
+report. It does not prove training or
+
+22
+00:01:52,388 --> 00:01:55,000
+remove evaluator trust.
+
+23
+00:01:55,000 --> 00:02:01,234
+An eligible winner is not a paid worker.
+This local run has no on-chain
+
+24
+00:02:01,234 --> 00:02:02,403
+payout.
+
+25
+00:02:02,403 --> 00:02:07,468
+The native Rust program’s local VM tests
+exercise escrow, registration, payout
+
+26
+00:02:07,468 --> 00:02:09,416
+and refund rules.
+
+27
+00:02:09,416 --> 00:02:15,260
+Local compiled-SBF VM: 31 tests. Source
+commit 19578cf. A local VM is not
+
+28
+00:02:15,260 --> 00:02:16,429
+Devnet.
+
+29
+00:02:16,429 --> 00:02:21,494
+A real payment claim needs the exact
+trained artifact, registered worker,
+
+30
+00:02:21,494 --> 00:02:25,000
+signed receipt and finalized payout
+evidence together.
+
+31
+00:02:25,000 --> 00:02:30,333
+The evidence links parent, adapter,
+evaluator receipt and resulting model.
+
+32
+00:02:30,333 --> 00:02:37,000
+Devnet escrow has a creator timeout
+refund. This local job has no escrow.
+
+33
+00:02:37,000 --> 00:02:40,111
+Next comes private-task customer
+validation.
+
+34
+00:02:40,111 --> 00:02:45,000
+Compute is not the outcome. An inspectable
+improvement is.

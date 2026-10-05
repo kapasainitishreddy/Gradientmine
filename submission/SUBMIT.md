@@ -39,9 +39,9 @@ Submit ahead of the deadline. The official PDF is the authority for entrant excl
 | Founder background, location and actual team | [TEAM.md](TEAM.md) | Confirm name/location, real members, funding and rights |
 | Original logo | [logo.svg](logo.svg) | File exists; upload SVG if accepted, otherwise export PNG as described in RECORDING.md |
 | Repository | https://github.com/kapasainitishreddy/Gradientmine | Verify judge access to final source commit |
-| Presentation video | [PITCH.md](PITCH.md) | Record, caption, export, upload and test signed out |
-| Product-demo video | [DEMO.md](DEMO.md), [RECORDING.md](RECORDING.md) | Record actual mode and evidence; scripts are not videos |
-| Optional short launch film | [PRODUCT_TOUR.md](PRODUCT_TOUR.md) | A separate marketing artifact; it replaces neither required video |
+| Presentation video | [150-second captioned recording](PRESENTATION_VIDEO.md), [PITCH.md](PITCH.md) | Review silent candidate; optionally add natural narration; verify permitted hosting and signed-out playback |
+| Product-demo video | [165-second captioned recording](DEMO_VIDEO.md), [RECORDING.md](RECORDING.md) | Review actual recorded-local evidence; verify judge-accessible hosting and signed-out playback |
+| Optional short launch film | [Rendered 22-second landscape / 20-second portrait films](tour/README.md) | A separate marketing artifact; it replaces neither required video |
 | Market, business model, validation and distribution | [PRODUCT.md](PRODUCT.md), [VALIDATION.md](VALIDATION.md) | Keep hypotheses separate from completed customer research |
 | Prior work and AI assistance | [DISCLOSURE.md](DISCLOSURE.md) | Add factual pre-event history and required portal declarations |
 | Live URL / chain evidence | [docs/BUILD_LEDGER.md](../docs/BUILD_LEDGER.md); public evidence files if produced | Only enter verified URLs, addresses and signatures. Recorded local viewer is read-only; chain-only smoke tests do not prove trained-artifact payout |
@@ -51,7 +51,7 @@ Submit ahead of the deadline. The official PDF is the authority for entrant excl
 1. From an authorized browser, check for official changes since October 5 and inspect the signed-in fields; update this checklist for any differences.
 2. Register actual entrant(s), join the event and verify the team's leader and eligibility facts. Complete TEAM.md and pre-event history in DISCLOSURE.md.
 3. Fill the real dashboard fields from PRODUCT.md. Upload the original logo and enter the public repository; include a live URL only if it really works.
-4. Record both videos following RECORDING.md, validate durations, upload to a judge-accessible host and test playback in a signed-out browser. No final video URL exists in this package.
+4. Review the actual 150-second presentation and 165-second demo, including their silent-caption format. Confirm current portal requirements, optionally add natural narration, and upload to a permitted judge-accessible playback host. Test signed-out playback; a downloadable release asset alone does not establish portal acceptance.
 5. Disclose named-validator trust, public benchmark leakage, budget-limited baseline, AI assistance, pre-event work, Devnet-only funds and any unavailable live feature. State separately whether extension-wallet QA and integrated Devnet payout were completed.
 6. Review declarations using your own identity and authority. Submit through the portal and retain its confirmation/submission URL. Without portal confirmation status remains **not submitted**.
 

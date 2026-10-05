@@ -1,0 +1,10 @@
+composition/assets/
+composition/.hyperframes/
+composition/renders/
+composition/node_modules/
+*.mp4
+*.wav
+*.png
+composition/AGENTS.md
+composition/CLAUDE.md
+composition/meta.json
