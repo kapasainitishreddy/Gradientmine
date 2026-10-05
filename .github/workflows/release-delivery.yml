@@ -1,0 +1,75 @@
+name: Verify release delivery
+on:
+  push:
+    paths: ['.delivery/release.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gradientmine-release-delivery
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply checksum-verified source
+        run: python scripts/receive_release.py
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[chain,dev]'
+      - name: Fetch the existing verified SBF program
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 37325921028 -n escrow-verification -D .local/compiled
+          mkdir -p .local/sbf
+          cp .local/compiled/ci-evidence/sbf/gradientmine_escrow.so .local/sbf/
+          find .local/compiled -name '*keypair*' -delete
+          echo '6a19d26db5f7e5f4a67a021aa55d7f1984064718762bd17276a143745e6e18fb  .local/sbf/gradientmine_escrow.so' | sha256sum -c -
+      - name: Tests and real training
+        run: |
+          set -euo pipefail
+          mkdir -p ci-evidence
+          python -m ruff check gradientmine tests scripts | tee ci-evidence/lint.txt
+          GM_SBF_PATH=.local/sbf/gradientmine_escrow.so python -m pytest -q --junitxml=ci-evidence/tests.xml | tee ci-evidence/tests.txt
+          node --test tests/web/*.test.mjs | tee ci-evidence/web-tests.txt
+          python -m compileall -q gradientmine scripts
+          python -m gradientmine.cli demo --out .local/ci-release | tee ci-evidence/training.txt
+          python -m scripts.publish_demo --run .local/ci-release/run.json | tee ci-evidence/export.txt
+      - name: Publish tested implementation
+        run: |
+          git config user.name 'GradientMine verification'
+          git config user.email '95132338+kapasainitishreddy@users.noreply.github.com'
+          git add gradientmine web tests scripts docs submission Dockerfile docker-compose.yml .dockerignore .env.example pyproject.toml package.json LICENSE THIRD_PARTY_NOTICES.md README.md .github/workflows/verify.yml .github/workflows/pages.yml .gitignore
+          git diff --cached --quiet && exit 0
+          git commit -m 'feat: verified wallet interface, evidence explorer, recovery and release tooling'
+          git push origin HEAD:main
+          git rev-parse HEAD > ci-evidence/PUBLISHED_COMMIT.txt
+      - name: Browser QA on the permitted CI runner
+        run: |
+          python -m playwright install --with-deps chromium
+          python -m scripts.browser_qa --out ci-evidence/browser
+      - name: Dependency vulnerability scan
+        if: always()
+        run: python -m pip_audit --progress-spinner off --format json --output ci-evidence/dependency-audit.json
+      - name: Retain only public evidence and source
+        if: always()
+        run: |
+          mkdir -p ci-evidence
+          git archive -o ci-evidence/GradientMine-source.zip HEAD
+          test ! -f .local/ci-release/run.json || cp .local/ci-release/run.json ci-evidence/run.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verified-release-cycle-2
+          path: ci-evidence/
+          retention-days: 7
