@@ -2,7 +2,7 @@ name: Verify and publish offline implementation
 on:
   push:
     branches: [main]
-    paths: ['.delivery/manifest.json', '.github/scripts/receive_source.py']
+    paths: ['.delivery/manifest.json', '.github/scripts/receive_source.py', '.github/workflows/receive-source.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      COMPILED_ARTIFACT: ${{ runner.temp }}/compiled
-      GM_SBF_PATH: ${{ runner.temp }}/compiled/ci-evidence/sbf/gradientmine_escrow.so
+      COMPILED_ARTIFACT: /tmp/gradientmine-compiled
+      GM_SBF_PATH: /tmp/gradientmine-compiled/ci-evidence/sbf/gradientmine_escrow.so
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,7 +29,7 @@ jobs:
           name: escrow-verification
           run-id: 37325921028
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ${{ runner.temp }}/compiled
+          path: /tmp/gradientmine-compiled
       - name: Check source integrity and apply exact audited patch
         run: |
           set -euo pipefail
