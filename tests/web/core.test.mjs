@@ -42,3 +42,15 @@ test('auth challenge uses the exact API expires_at schema, origin and wallet-bou
  assert.throws(()=>messageChallenge(c,'https://wrong.example',address));
  assert.throws(()=>messageChallenge({...c,expires_at:0},origin,address));
 });
+
+test('Explorer refuses a placeholder all-zero transaction signature',()=>{
+ assert.equal(explorer('devnet',b58encode(new Uint8Array(64))),null);
+});
+
+test('copied worker arguments cannot execute shell substitutions or break out of quotes',async()=>{
+ const {shellQuote}=await import('../../web/assets/core.mjs');
+ const {execFileSync}=await import('node:child_process');
+ for(const value of ["$(printf unsafe)","`printf unsafe`", "abc'; printf unsafe; #",'a\nb','https://example.test']) {
+   assert.equal(execFileSync('/bin/sh',['-c',`printf %s ${shellQuote(value)}`],{encoding:'utf8'}),value);
+ }
+});

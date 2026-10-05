@@ -25,7 +25,7 @@ export function solToLamports(value) {
   return Number(n);
 }
 export function explorer(mode, value, kind = 'tx') {
-  try { if (mode !== 'devnet' || !['tx','address'].includes(kind) || b58decode(value).length !== (kind === 'tx' ? 64 : 32)) return null; }
+  try { const raw=b58decode(value); if (mode !== 'devnet' || !['tx','address'].includes(kind) || raw.length !== (kind === 'tx' ? 64 : 32) || (kind==='tx' && raw.every(b=>b===0))) return null; }
   catch { return null; }
   return `https://explorer.solana.com/${kind}/${value}?cluster=devnet`;
 }
@@ -45,6 +45,8 @@ export async function verifyEnvelope(envelope, expectedSigner) {
   } catch { return false; }
 }
 export const short = (s, n = 7) => s ? `${s.slice(0,n)}…${s.slice(-5)}` : 'Not available';
+// POSIX shell quoting for copied CLI commands; JSON quotes allow command substitution.
+export const shellQuote = value => `'${String(value).replaceAll("'", "'\\''")}'`;
 export const percent = x => typeof x === 'number' && Number.isFinite(x) ? `${(100*x).toFixed(2)}%` : 'Not evaluated';
 export const delta = x => typeof x === 'number' && Number.isFinite(x) ? `${x >= 0 ? '+' : ''}${(100*x).toFixed(2)} pp` : 'Not evaluated';
 export const lamports = n => `${(n / 1e9).toFixed(9).replace(/\.?0+$/, '') || '0'} SOL`;

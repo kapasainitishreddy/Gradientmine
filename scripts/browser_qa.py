@@ -72,6 +72,7 @@ def main():
                     headless=True, **({"executable_path": executable} if executable else {})
                 )
                 ctx = browser.new_context(viewport={"width": 1440, "height": 1000}, reduced_motion="reduce")
+                ctx.grant_permissions(["clipboard-read", "clipboard-write"], origin=origin)
                 page = ctx.new_page()
                 errors = []
                 page.on("pageerror", lambda e: errors.append(str(e)))
@@ -91,10 +92,62 @@ def main():
                 checks.append(
                     "Authenticated bounty creation against persistent HTTP API, explicitly local with zero funds"
                 )
+                page.locator("#create-button").focus()
+                page.keyboard.press("Enter")
+                for _ in range(18):
+                    page.keyboard.press("Tab")
+                    assert page.evaluate("document.activeElement.closest('#create-dialog') !== null")
+                page.keyboard.press("Escape")
+                assert page.locator("#create-button").evaluate("el => el === document.activeElement")
+                checks.append("Keyboard focus stays in native modal dialogs; Escape restores the invoking control")
                 page.get_by_role("button", name="Inspect immutable policy").click()
                 page.get_by_text("SHA-256 matches the referenced exact bytes.", exact=True).wait_for()
                 page.locator("#evidence-dialog .close").click()
                 checks.append("Browser SHA-256 integrity check against actual policy bytes")
+                # Untrusted server text is deliberately hostile, never executable HTML or a shell argument.
+                attack = '<img src=x onerror="window.__gm_xss=1">'
+                malicious_id = "$(printf unsafe);'"
+
+                def hostile_detail(route):
+                    response = route.fetch()
+                    value = response.json()
+                    value["title"] = attack
+                    value["id"] = malicious_id
+                    value["events"].append({"created": 0, "kind": attack, "message": attack})
+                    route.fulfill(response=response, json=value)
+
+                page.route("**/api/jobs/*", hostile_detail)
+                page.reload()
+                page.get_by_role("heading", name=attack, exact=True).wait_for()
+                assert page.locator("#detail img").count() == 0
+                assert page.evaluate("window.__gm_xss === undefined")
+                assert "--job '$(printf unsafe);'\\''" in page.locator("#worker-command").inner_text()
+                page.unroute("**/api/jobs/*", hostile_detail)
+                page.reload()
+                page.get_by_role("heading", name="Browser-verified bounty", exact=True).wait_for()
+                checks.append("Hostile bounty/event strings render as text; copied worker arguments use shell-safe quoting")
+                held_refresh = []
+
+                def delayed_refresh(route):
+                    if not held_refresh:
+                        held_refresh.append(route)
+                    else:
+                        route.continue_()
+
+                page.route("**/api/jobs/*", delayed_refresh)
+                page.get_by_role("button", name="Refresh", exact=True).click()
+                page.wait_for_timeout(100)
+                assert held_refresh
+                page.get_by_role("button", name="Refresh", exact=True).click()
+                page.wait_for_timeout(100)
+                response = held_refresh[0].fetch()
+                stale = response.json()
+                stale["title"] = "Stale response must not replace the current bounty"
+                held_refresh[0].fulfill(response=response, json=stale)
+                page.wait_for_timeout(100)
+                assert page.get_by_role("heading", name="Browser-verified bounty", exact=True).count() == 1
+                page.unroute("**/api/jobs/*", delayed_refresh)
+                checks.append("An older delayed refresh cannot replace a more recent bounty selection or state")
                 page.screenshot(path=str(args.out / "live-desktop.png"), full_page=True)
                 for width, height in [(390, 844), (360, 800)]:
                     page.set_viewport_size({"width": width, "height": height})
@@ -118,6 +171,37 @@ def main():
                     "SHA-256 matches · Ed25519 signature verified against the expected signer.", exact=True
                 ).wait_for()
                 page.locator("#evidence-dialog .close").click()
+                run = json.loads((Path(__file__).resolve().parents[1] / "web/assets/recorded-run.json").read_text())
+                validator = run["job"]["policy"]["validator"]
+                full_validator = page.get_by_role("button", name=f"Show full validator address: {validator}", exact=True)
+                full_validator.click()
+                assert full_validator.inner_text() == validator
+                full_validator.click()
+                page.get_by_role("button", name="Copy full validator address", exact=True).click()
+                page.get_by_text("Copied to clipboard.", exact=True).wait_for()
+                assert page.evaluate("navigator.clipboard.readText()") == validator
+                checks.append("Named validator and model hashes offer keyboard-operable full-value access and copy controls")
+                # A slow, closed inspector must never overwrite a newer evidence selection.
+                parent_hash = run["job"]["policy"]["parent_sha256"]
+                model_hash = run["job"]["winner"]["model_sha256"]
+                held = []
+                pattern = f"**/artifacts/{parent_hash}.json"
+                page.route(pattern, lambda route: held.append(route))
+                page.get_by_role("button", name="Inspect parent", exact=True).click()
+                page.wait_for_timeout(100)
+                assert held
+                page.keyboard.press("Escape")
+                page.get_by_role("button", name="Inspect model", exact=True).click()
+                page.get_by_text("SHA-256 matches the referenced exact bytes.", exact=True).wait_for()
+                model_json = page.locator("#evidence-json").inner_text()
+                parent_bytes = (Path(__file__).resolve().parents[1] / f"web/assets/artifacts/{parent_hash}.json").read_bytes()
+                held[0].fulfill(status=200, content_type="application/json", body=parent_bytes)
+                page.wait_for_timeout(100)
+                assert page.locator("#evidence-hash").inner_text() == model_hash
+                assert page.locator("#evidence-json").inner_text() == model_json, "Closed evidence request overwrote the current model"
+                page.unroute(pattern)
+                page.keyboard.press("Escape")
+                checks.append("A delayed artifact response cannot replace the contents or download of a newer evidence dialog")
                 page.screenshot(path=str(args.out / "recorded-mobile.png"), full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1050})
                 page.screenshot(path=str(args.out / "recorded-desktop.png"), full_page=True)
