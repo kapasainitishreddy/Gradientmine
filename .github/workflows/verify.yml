@@ -1,0 +1,117 @@
+name: Verify GradientMine
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gradientmine-verify-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      commit: ${{ steps.publish.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish the exact reviewed source bundle when present
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f .delivery/source.json ]; then
+            python - <<'PY'
+          import base64, gzip, hashlib, json
+          from pathlib import Path, PurePosixPath
+          bundle = json.loads(Path('.delivery/source.json').read_text())
+          compressed = base64.b64decode(bundle['payload'], validate=True)
+          if len(compressed) > 4000000:
+              raise ValueError('Bundle too large')
+          raw = gzip.decompress(compressed)
+          if len(raw) > 20000000 or hashlib.sha256(raw).hexdigest() != bundle['sha256']:
+              raise ValueError('Source bundle integrity check failed')
+          files = json.loads(raw)
+          for name, content in files.items():
+              path = PurePosixPath(name)
+              forbidden = {'.git', '.local', '.delivery', 'node_modules', '__pycache__'}
+              if path.is_absolute() or '..' in path.parts or any(p in forbidden for p in path.parts):
+                  raise ValueError('Unsafe source path')
+              if name.startswith('.github/') or name.endswith('-keypair.json') or name == '.env':
+                  raise ValueError('Workflows and private runtime files cannot enter through a bundle')
+              target = Path(name)
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_text(content, encoding='utf-8')
+          Path('.delivery/source.json').unlink()
+          print(f'Published {len(files)} verified text files; source SHA-256 {bundle["sha256"]}')
+          PY
+            git config user.name 'GradientMine Build'
+            git config user.email 'gradientmine-build@users.noreply.github.com'
+            git add -A
+            git commit -m 'feat: publish tested GradientMine source and verification evidence'
+            git push origin HEAD:main
+          fi
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  python:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.source.outputs.commit }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install CPU training and chain dependencies
+        run: |
+          python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[chain,dev]'
+      - name: Test Python, transaction encoding and security boundaries
+        run: |
+          mkdir -p ci-evidence
+          python -m pytest -q --junitxml=ci-evidence/pytest.xml | tee ci-evidence/pytest.txt
+          python -m compileall -q gradientmine scripts
+          python -m ruff check gradientmine tests scripts | tee ci-evidence/ruff.txt
+      - name: Run actual three-process training exercise
+        run: |
+          python -m gradientmine.cli demo --out .local/ci-demo | tee ci-evidence/demo.txt
+          cp .local/ci-demo/run.json ci-evidence/run.json
+      - name: Audit dependency advisories
+        run: python -m pip_audit --progress-spinner off --format json --output ci-evidence/dependency-audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: python-verification
+          path: ci-evidence/
+  program:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.source.outputs.commit }}
+      - name: Compile and test the Rust escrow
+        run: |
+          mkdir -p ci-evidence
+          cargo test --manifest-path program/Cargo.toml 2>&1 | tee ci-evidence/rust-tests.txt
+      - name: Install checksum-verified Agave tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 -o "$RUNNER_TEMP/agave.tar.bz2" https://github.com/anza-xyz/agave/releases/download/v4.3.0/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+          echo 'c97289a8abb1d0efb497d8b5cb285baabd9b7f8ea6647f5d145c5dc8ff3611e8  '"$RUNNER_TEMP/agave.tar.bz2" | sha256sum -c -
+          tar -xjf "$RUNNER_TEMP/agave.tar.bz2" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/solana-release/bin" >> "$GITHUB_PATH"
+      - name: Build SBF program
+        run: cargo build-sbf --manifest-path program/Cargo.toml --sbf-out-dir ci-evidence/sbf 2>&1 | tee ci-evidence/sbf-build.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: escrow-verification
+          path: |
+            ci-evidence/
+            program/Cargo.lock
