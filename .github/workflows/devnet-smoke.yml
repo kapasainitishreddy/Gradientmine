@@ -1,0 +1,93 @@
+name: Real Devnet smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/devnet-smoke.yml'
+      - 'scripts/devnet_smoke.py'
+      - 'gradientmine/chain.py'
+      - 'gradientmine/rpc.py'
+      - 'gradientmine/wire.py'
+      - 'program/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gradientmine-devnet-smoke
+  cancel-in-progress: false
+jobs:
+  devnet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install minimal Python chain dependencies
+        run: |
+          python -m pip install solders==0.29.0 cryptography==50.0.2 httpx==0.28.1
+      - name: Install checksum-verified Agave tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 -o "$RUNNER_TEMP/agave.tar.bz2" https://github.com/anza-xyz/agave/releases/download/v4.3.0/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+          echo 'c97289a8abb1d0efb497d8b5cb285baabd9b7f8ea6647f5d145c5dc8ff3611e8  '"$RUNNER_TEMP/agave.tar.bz2" | sha256sum -c -
+          tar -xjf "$RUNNER_TEMP/agave.tar.bz2" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/solana-release/bin" >> "$GITHUB_PATH"
+      - name: Build exact SBF program
+        run: cargo build-sbf --manifest-path program/Cargo.toml --sbf-out-dir "$RUNNER_TEMP/sbf"
+      - name: Create disposable identities
+        run: |
+          set -euo pipefail
+          umask 077
+          solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/creator.json"
+          solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/worker.json"
+          solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/validator.json"
+          solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/program.json"
+          solana config set --url https://api.devnet.solana.com --keypair "$RUNNER_TEMP/creator.json"
+      - name: Fund disposable Devnet identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          airdrop() {
+            local amount="$1" address="$2"
+            for n in 1 2 3 4 5; do
+              if solana airdrop "$amount" "$address" --url https://api.devnet.solana.com; then return 0; fi
+              sleep $((n * 8))
+            done
+            return 1
+          }
+          airdrop 2 "$(solana-keygen pubkey "$RUNNER_TEMP/creator.json")"
+          airdrop 1 "$(solana-keygen pubkey "$RUNNER_TEMP/worker.json")"
+          airdrop 1 "$(solana-keygen pubkey "$RUNNER_TEMP/validator.json")"
+      - name: Deploy program to Devnet
+        shell: bash
+        run: |
+          set -euo pipefail
+          solana program deploy "$RUNNER_TEMP/sbf/gradientmine_escrow.so"             --url https://api.devnet.solana.com             --keypair "$RUNNER_TEMP/creator.json"             --program-id "$RUNNER_TEMP/program.json" | tee "$RUNNER_TEMP/deploy.txt"
+          solana-keygen pubkey "$RUNNER_TEMP/program.json" > "$RUNNER_TEMP/program-id.txt"
+      - name: Execute funding, registration and payout
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          python -m scripts.devnet_smoke             --program "$(cat "$RUNNER_TEMP/program-id.txt")"             --creator "$RUNNER_TEMP/creator.json"             --worker "$RUNNER_TEMP/worker.json"             --validator "$RUNNER_TEMP/validator.json"             --out evidence/devnet-smoke.json
+      - name: Assert no private material in evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("evidence/devnet-smoke.json")
+          d=json.loads(p.read_text())
+          assert d["private_keys_exported"] is False
+          assert "secret" not in p.read_text().lower()
+          assert d["settlement"]["state"] == 1
+          print(d["program_id"])
+          print(d["funding"]["explorer"])
+          print(d["registration"]["explorer"])
+          print(d["settlement"]["explorer"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: devnet-smoke-public-evidence
+          path: evidence/devnet-smoke.json
