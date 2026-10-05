@@ -1,14 +1,5 @@
 name: Real Devnet smoke
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/devnet-smoke.yml'
-      - 'scripts/devnet_smoke.py'
-      - 'gradientmine/chain.py'
-      - 'gradientmine/rpc.py'
-      - 'gradientmine/wire.py'
-      - 'program/**'
   workflow_dispatch:
 permissions:
   contents: read
