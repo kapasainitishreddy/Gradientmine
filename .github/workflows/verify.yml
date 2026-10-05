@@ -3,7 +3,13 @@ on:
   push:
     branches: [main]
     paths:
+      - 'gradientmine/**'
       - 'program/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'web/**'
+      - 'pyproject.toml'
+      - 'package.json'
       - '.github/workflows/verify.yml'
       - 'evidence/RELEASE_GATE.json'
   workflow_dispatch:
@@ -28,34 +34,38 @@ jobs:
     needs: source
     if: needs.source.outputs.python_ready == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Install CPU training and chain dependencies
         run: |
           python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -e '.[chain,dev]'
-      - name: Test security boundaries and transaction encoding
+      - name: Test Python, JS and static syntax
         run: |
           set -o pipefail
           mkdir -p ci-evidence
           python -m pytest -q --junitxml=ci-evidence/pytest.xml | tee ci-evidence/pytest.txt
           python -m compileall -q gradientmine scripts
           python -m ruff check gradientmine tests scripts | tee ci-evidence/ruff.txt
+          node --test tests/web/*.test.mjs | tee ci-evidence/web-tests.txt
+          npm run check | tee ci-evidence/npm-check.txt
       - name: Run actual three-process training exercise
         run: |
           set -o pipefail
           python -m gradientmine.cli demo --out .local/ci-demo | tee ci-evidence/demo.txt
-          python scripts/publish_demo.py .local/ci-demo
+          python -m scripts.publish_demo --run .local/ci-demo/run.json
           cp .local/ci-demo/run.json ci-evidence/run.json
-          node --test tests/frontend.test.mjs | tee ci-evidence/frontend-tests.txt
       - name: Install browser and exercise live HTTP UI
         run: |
           python -m playwright install --with-deps chromium
-          python scripts/browser_qa.py --out ci-evidence/browser
+          python -m scripts.browser_qa --out ci-evidence/browser
       - name: Audit dependency advisories
         if: always()
         run: python -m pip_audit --progress-spinner off --format json --output ci-evidence/dependency-audit.json
