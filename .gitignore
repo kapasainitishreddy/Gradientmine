@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+.local/
+data/
+*.key
+*-keypair.json
+node_modules/
+dist/
+program/target/
+*.egg-info/
+coverage.xml
+.coverage
