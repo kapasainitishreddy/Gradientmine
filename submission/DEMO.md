@@ -1,5 +1,7 @@
 # Product demo: at most 3 minutes
 
+For the short launch film and continuous visual product-tour grammar, also read [PRODUCT_TOUR.md](PRODUCT_TOUR.md). The official demo remains an evidence-first walkthrough; a stylized launch clip does not replace the required product demo.
+
 Target 2:45. **Script and recording instructions, not a recorded or uploaded video.** Use only the mode that is actually running. Do not splice simulated transactions into a Devnet claim.
 
 ## 0:00–0:15 | Establish what is real
