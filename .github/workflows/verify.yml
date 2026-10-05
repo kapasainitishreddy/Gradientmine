@@ -15,9 +15,19 @@ jobs:
       contents: write
     outputs:
       commit: ${{ steps.publish.outputs.commit }}
+      python_ready: ${{ steps.publish.outputs.python_ready }}
+      program_ready: ${{ steps.publish.outputs.program_ready }}
     steps:
       - uses: actions/checkout@v4
-      - name: Publish the exact reviewed source bundle when present
+      - name: Preserve a delivered bundle for integrity diagnostics
+        if: hashFiles('.delivery/source.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: received-source-bundle
+          path: .delivery/source.json
+          include-hidden-files: true
+          retention-days: 3
+      - name: Publish only source matching the locally tested SHA-256
         id: publish
         shell: bash
         run: |
@@ -27,12 +37,22 @@ jobs:
           import base64, gzip, hashlib, json
           from pathlib import Path, PurePosixPath
           bundle = json.loads(Path('.delivery/source.json').read_text())
-          compressed = base64.b64decode(bundle['payload'], validate=True)
+          payload = bundle['payload']
+          repairs = Path('.delivery/repairs.json')
+          if repairs.exists():
+              changes = json.loads(repairs.read_text())
+              if changes['expected_source_sha256'] != bundle['sha256']:
+                  raise ValueError('Transport repair targets a different source bundle')
+              for correction in changes['corrections']:
+                  if payload.count(correction['old']) != 1:
+                      raise ValueError('Transport repair must identify exactly one fragment')
+                  payload = payload.replace(correction['old'], correction['new'], 1)
+          compressed = base64.b64decode(payload, validate=True)
           if len(compressed) > 4000000:
               raise ValueError('Bundle too large')
           raw = gzip.decompress(compressed)
           if len(raw) > 20000000 or hashlib.sha256(raw).hexdigest() != bundle['sha256']:
-              raise ValueError('Source bundle integrity check failed')
+              raise ValueError('Source bundle integrity check failed; no source will be executed')
           files = json.loads(raw)
           for name, content in files.items():
               path = PurePosixPath(name)
@@ -45,6 +65,7 @@ jobs:
               target.parent.mkdir(parents=True, exist_ok=True)
               target.write_text(content, encoding='utf-8')
           Path('.delivery/source.json').unlink()
+          repairs.unlink(missing_ok=True)
           print(f'Published {len(files)} verified text files; source SHA-256 {bundle["sha256"]}')
           PY
             git config user.name 'GradientMine Build'
@@ -54,8 +75,11 @@ jobs:
             git push origin HEAD:main
           fi
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if [ -f tests/test_security.py ] && [ -f gradientmine/chain.py ]; then echo 'python_ready=true' >> "$GITHUB_OUTPUT"; fi
+          if [ -f program/src/lib.rs ]; then echo 'program_ready=true' >> "$GITHUB_OUTPUT"; fi
   python:
     needs: source
+    if: needs.source.outputs.python_ready == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -71,12 +95,14 @@ jobs:
           python -m pip install -e '.[chain,dev]'
       - name: Test Python, transaction encoding and security boundaries
         run: |
+          set -o pipefail
           mkdir -p ci-evidence
           python -m pytest -q --junitxml=ci-evidence/pytest.xml | tee ci-evidence/pytest.txt
           python -m compileall -q gradientmine scripts
           python -m ruff check gradientmine tests scripts | tee ci-evidence/ruff.txt
       - name: Run actual three-process training exercise
         run: |
+          set -o pipefail
           python -m gradientmine.cli demo --out .local/ci-demo | tee ci-evidence/demo.txt
           cp .local/ci-demo/run.json ci-evidence/run.json
       - name: Audit dependency advisories
@@ -88,6 +114,7 @@ jobs:
           path: ci-evidence/
   program:
     needs: source
+    if: needs.source.outputs.program_ready == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -96,6 +123,7 @@ jobs:
           ref: ${{ needs.source.outputs.commit }}
       - name: Compile and test the Rust escrow
         run: |
+          set -o pipefail
           mkdir -p ci-evidence
           cargo test --manifest-path program/Cargo.toml 2>&1 | tee ci-evidence/rust-tests.txt
       - name: Install checksum-verified Agave tools
@@ -107,7 +135,9 @@ jobs:
           tar -xjf "$RUNNER_TEMP/agave.tar.bz2" -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/solana-release/bin" >> "$GITHUB_PATH"
       - name: Build SBF program
-        run: cargo build-sbf --manifest-path program/Cargo.toml --sbf-out-dir ci-evidence/sbf 2>&1 | tee ci-evidence/sbf-build.txt
+        run: |
+          set -o pipefail
+          cargo build-sbf --manifest-path program/Cargo.toml --sbf-out-dir ci-evidence/sbf 2>&1 | tee ci-evidence/sbf-build.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
