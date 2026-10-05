@@ -78,7 +78,7 @@ class Boundary:
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
             return await self.app(scope, receive, send)
-        headers = {k.decode().lower(): v.decode() for k, v in scope["headers"]}
+        headers = {k.decode("latin-1").lower(): v.decode("latin-1") for k, v in scope["headers"]}
         origin = headers.get("origin")
         if scope["method"] not in {"GET", "HEAD", "OPTIONS"} and origin and origin != self.origin:
             return await JSONResponse(

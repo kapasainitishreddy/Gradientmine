@@ -20,6 +20,14 @@ def atomic_write(path: Path, value: bytes, mode: int = 0o600):
             file.flush()
             os.fsync(file.fileno())
         os.replace(temporary, path)
+        if os.name == "posix":
+            # SQLite may commit a reference immediately after this returns. Sync the
+            # rename as well as the file so power loss cannot discard its directory entry.
+            directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(directory)
+            finally:
+                os.close(directory)
     finally:
         temporary.unlink(missing_ok=True)
 

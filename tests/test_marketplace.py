@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from gradientmine.api import create_app
 from gradientmine.cli import make_submission
 from gradientmine.crypto import digest, verify_signed
+from gradientmine.service import Problem
 from conftest import login
 
 
@@ -105,6 +106,35 @@ def test_artifact_corruption_blocks_evaluation(client, app, identities, clock):
     response = client.post(f"/api/jobs/{job['id']}/evaluate", headers=auth)
     assert response.status_code == 503
     assert client.get(f"/api/jobs/{job['id']}").json()["state"] == "OPEN"
+
+
+def test_partial_evaluation_failure_rolls_back_all_scores(client, app, identities, clock, monkeypatch):
+    auth = login(client, identities[0])
+    job = new_job(client, auth)
+    for identity in identities[1:3]:
+        response, _, _, _ = submit(client, identity, job, seed=identities.index(identity))
+        assert response.status_code == 200
+    market = app.state.market
+    original_put = market.put_artifact
+    receipts = 0
+
+    def fail_second_receipt(value):
+        nonlocal receipts
+        if value.get("payload", {}).get("format") == "gradientmine.evaluation.v1":
+            receipts += 1
+            if receipts == 2:
+                raise Problem(503, "simulated artifact storage failure")
+        return original_put(value)
+
+    clock.advance(11)
+    with monkeypatch.context() as patch:
+        patch.setattr(market, "put_artifact", fail_second_receipt)
+        assert client.post(f"/api/jobs/{job['id']}/evaluate", headers=auth).status_code == 503
+    detail = client.get(f"/api/jobs/{job['id']}").json()
+    assert detail["state"] == "OPEN" and detail["winner"] is None
+    assert all(sub["state"] == "REGISTERED" and "score" not in sub for sub in detail["submissions"])
+    retry = client.post(f"/api/jobs/{job['id']}/evaluate", headers=auth)
+    assert retry.status_code == 200 and retry.json()["state"] == "EVALUATED"
 
 
 def test_no_chain_operations_in_local_mode(client, identities):

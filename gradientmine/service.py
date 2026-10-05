@@ -146,6 +146,11 @@ class Marketplace:
             row = db.execute("SELECT * FROM nonces WHERE nonce=?", (nonce,)).fetchone()
             if not row or row["used"] or self.clock() >= row["expires"]:
                 raise Problem(401, "Authentication challenge expired or already used")
+            expected_message = authentication_message(
+                self.settings.origin, row["address"], nonce, int(row["expires"])
+            )
+            if row["message"] != expected_message:
+                raise Problem(401, "Authentication challenge does not match this deployment")
             if not verify_bytes(row["address"], row["message"].encode(), signature):
                 raise Problem(401, "Invalid wallet signature")
             db.execute("UPDATE nonces SET used=1 WHERE nonce=?", (nonce,))

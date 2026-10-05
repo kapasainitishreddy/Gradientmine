@@ -13,13 +13,19 @@ FORMAT = "gradientmine.adapter.v1"
 
 
 def _array(value, shape):
-    try:
-        array = np.asarray(value, dtype=np.float32)
-    except (ValueError, TypeError) as exc:
-        raise ValueError("Artifact must contain numeric tensors") from exc
-    if array.shape != shape or not np.isfinite(array).all() or np.abs(array).max(initial=0) > 100:
-        raise ValueError(f"Invalid tensor; expected finite bounded shape {shape}")
-    return array
+    def check(item, dimensions):
+        if dimensions:
+            if not isinstance(item, list) or len(item) != dimensions[0]:
+                raise ValueError(f"Invalid tensor; expected finite bounded shape {shape}")
+            for child in item:
+                check(child, dimensions[1:])
+        elif type(item) not in (int, float) or not -100 <= item <= 100:
+            # Check actual JSON number types and bounds before float32 conversion: coercion
+            # accepts strings/bools and enormous integers can raise an uncaught OverflowError.
+            raise ValueError("Tensor entries must be finite JSON numbers between -100 and 100")
+
+    check(value, shape)
+    return np.asarray(value, dtype=np.float32)
 
 
 def validate_model(model: dict) -> None:

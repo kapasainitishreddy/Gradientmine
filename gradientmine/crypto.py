@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import math
 import os
 import re
 import time
@@ -61,10 +62,27 @@ def safe_json(raw: bytes, limit: int = 262144) -> Any:
     def reject_constant(value):
         raise ValueError(f"Invalid JSON number: {value}")
 
+    def finite_float(value):
+        number = float(value)
+        if not math.isfinite(number):
+            raise ValueError("JSON numbers must be finite")
+        return number
+
     try:
-        return json.loads(raw, object_pairs_hook=pairs, parse_constant=reject_constant)
+        value = json.loads(
+            raw, object_pairs_hook=pairs, parse_constant=reject_constant, parse_float=finite_float
+        )
     except (RecursionError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError("Invalid JSON") from exc
+    pending = [(value, 0)]
+    while pending:
+        item, depth = pending.pop()
+        if isinstance(item, (dict, list)):
+            if depth >= 32:
+                raise ValueError("JSON exceeds the 32-level nesting limit")
+            children = item.values() if isinstance(item, dict) else item
+            pending.extend((child, depth + 1) for child in children)
+    return value
 
 
 def validate_address(address: str) -> str:

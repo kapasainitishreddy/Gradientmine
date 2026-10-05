@@ -1,4 +1,8 @@
+import asyncio
+from dataclasses import replace
 import pytest
+from gradientmine.api import Boundary, create_app
+from fastapi.testclient import TestClient
 from gradientmine.crypto import canonical, safe_json, verify_signed
 from conftest import login
 
@@ -12,6 +16,40 @@ def test_ambiguous_json_is_rejected(body):
 def test_canonical_numbers_cannot_be_nan():
     with pytest.raises(ValueError):
         canonical({"number": float("nan")})
+
+
+@pytest.mark.parametrize("body", [b'{"a":1e400}', b'{"a":-1e400}', b"[" * 64 + b"0" + b"]" * 64])
+def test_overflow_and_excessive_json_nesting_are_rejected(body):
+    with pytest.raises(ValueError):
+        safe_json(body)
+
+
+def test_deep_json_is_rejected_at_http_boundary(client):
+    response = client.post("/api/auth/challenge", content=b"[" * 64 + b"0" + b"]" * 64)
+    assert response.status_code == 400
+
+
+def test_non_utf8_http_header_does_not_crash():
+    async def application(scope, receive, send):
+        await send({"type": "http.response.start", "status": 200, "headers": []})
+
+    async def exercise():
+        responses = []
+
+        async def receive():
+            return {"type": "http.request", "body": b"", "more_body": False}
+
+        async def send(message):
+            responses.append(message)
+
+        await Boundary(application, "http://127.0.0.1:8000")(
+            {"type": "http", "method": "GET", "path": "/api/config", "headers": [(b"x-note", b"\xff")]},
+            receive,
+            send,
+        )
+        assert responses[0]["status"] == 200
+
+    asyncio.run(exercise())
 
 
 def test_signed_receipt_tampering(identities):
@@ -38,6 +76,17 @@ def test_wrong_signer_and_expiry(client, identities, clock):
     clock.advance(301)
     body = {"nonce": challenge["nonce"], "signature": identities[0].sign_bytes(challenge["message"].encode())}
     assert client.post("/api/auth/verify", json=body).status_code == 401
+
+
+def test_persisted_challenge_cannot_authenticate_a_changed_origin(client, app, identities, clock):
+    person = identities[0]
+    challenge = client.post("/api/auth/challenge", json={"address": person.address}).json()
+    replacement = create_app(replace(app.state.market.settings, origin="https://other.example"), clock=clock)
+    with TestClient(replacement) as other:
+        assert other.post(
+            "/api/auth/verify",
+            json={"nonce": challenge["nonce"], "signature": person.sign_bytes(challenge["message"].encode())},
+        ).status_code == 401
 
 
 def test_auth_required_and_logout(client, identities):

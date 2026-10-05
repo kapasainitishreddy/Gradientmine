@@ -49,6 +49,14 @@ def test_numeric_artifact_validation(task, bad):
         validate_adapter(artifact, digest(task["model"]))
 
 
+@pytest.mark.parametrize("value", [True, "0.5", 10**1000], ids=["boolean", "string", "oversized-integer"])
+def test_tensor_values_are_actual_bounded_json_numbers(task, value):
+    artifact, _ = train_adapter(task["model"], task["train"], epochs=1)
+    artifact["a"][0][0] = value
+    with pytest.raises(ValueError):
+        validate_adapter(artifact, digest(task["model"]))
+
+
 def test_no_improvement_not_eligible_and_repeatable():
     y = np.array([0, 1] * 50)
     assert not assess(y, y, y)["eligible"]
