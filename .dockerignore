@@ -1,0 +1,15 @@
+.git
+.github
+.delivery
+.local
+.venv
+.env
+.env.*
+**/*keypair*.json
+**/__pycache__
+.pytest_cache
+.ruff_cache
+program/target
+node_modules
+evidence
+submission/videos

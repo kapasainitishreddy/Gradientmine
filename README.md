@@ -1,60 +1,78 @@
 # GradientMine
 
-A working local model-improvement marketplace with real low-rank neural-network training, signed evidence, and a Solana Devnet escrow implementation. **Do not infer a deployment or payment from source code.** Current verification is recorded in `evidence/`.
+**Model-improvement bounties, with inspectable evidence and an explicitly trusted validator.**
 
-## Run it
+GradientMine runs actual PyTorch low-rank-adapter experiments, compares submitted models with a fixed baseline, signs evaluation receipts, and integrates a native Solana escrow program. It does not mine a blockchain, mint an investment token, or claim trustless verification.
 
-Use Python 3.11 or newer (3.12 recommended), Node 22, and an isolated environment.
+## What is verified, and what is not
 
-```sh
+The local training/API loop and compiled Solana program have been exercised. The browser interface, wallet intent checks, receipt inspector, and recovery tools are implemented. Read [the build ledger](docs/BUILD_LEDGER.md) for commands and actual results. A simulated Solana VM is **not Devnet**. An interface implementation is **not a completed Phantom browser test**.
+
+The included recorded run is real local CPU training by three independent processes on one machine. It is not a live decentralized network. Recorded runs never show a reward or Explorer link when no blockchain transaction occurred. The public Digits evaluation split can be reconstructed; it is not a secret anti-cheating benchmark.
+
+**Never deposit mainnet assets. This release accepts local mode or Solana Devnet only.**
+
+## Run locally
+
+Python 3.11+ and Node 22 are supported; Python 3.12 is the CI target. No GPU or paid API is required.
+
+```bash
+git clone https://github.com/kapasainitishreddy/Gradientmine.git
+cd Gradientmine
 python -m venv .venv
-# Linux/macOS:
-. .venv/bin/activate
-# Windows PowerShell: .venv\Scripts\Activate.ps1
+source .venv/bin/activate
+python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e '.[chain,dev]'
-gradientmine demo --out .local/demo
-gradientmine serve
+python -m gradientmine.cli demo --out .local/my-first-run
+python -m scripts.publish_demo --run .local/my-first-run/run.json
+GM_MODE=local GM_ORIGIN=http://127.0.0.1:8000 python -m gradientmine.cli serve
 ```
 
-Open http://127.0.0.1:8000. The UI works with Wallet Standard Solana wallets. Local mode creates training bounties with zero reward and never simulates a blockchain payment. `gradientmine demo` starts its own API and three separate worker processes, including a deliberately shuffled-label negative control. The processes are on one machine, not three independently owned network nodes.
+Windows PowerShell: activate with `.venv\Scripts\Activate.ps1`, set `$env:GM_MODE='local'` and `$env:GM_ORIGIN='http://127.0.0.1:8000'`, then run `python -m gradientmine.cli serve`. Open `http://127.0.0.1:8000`. Local bounties use **zero monetary reward**.
 
-The task is an actual 64-48-10 neural classifier using UCI handwritten digit images. A frozen baseline is adapted with a trainable low-rank output update. This is not an LLM, not a claim of decentralized verification, and not a proof that training occurred just because an artifact is signed.
+The live API begins with no bounties: connect a Wallet Standard Solana wallet, authenticate by signing the exact origin-bound message, and create a local challenge. A static server over `web/` instead shows the exported recorded run read-only. It cannot create bounties or pay workers.
 
-## Verify
+```bash
+python -m gradientmine.cli identity --out .local/worker.json
+python -m gradientmine.cli worker --api http://127.0.0.1:8000 \
+  --identity .local/worker.json --job YOUR_LIVE_JOB_ID --out .local/my-worker
+```
 
-```sh
+Wallet files stay on your machine. They are not needed by reviewers. Do not paste or upload private keys, seed phrases, `.local/`, or the validator's private database.
+
+## Verified work boundary
+
+1. A creator approves an immutable policy: model/data hashes, metric, cutoff, validator, reward and refund time.
+2. In Devnet mode the browser constructs a funding intent, independently inspects it, requests a wallet signature and submits exact bytes. The API independently validates the same intent before broadcasting.
+3. Workers run real head-LoRA training and publish a signed manifest plus strictly bounded numeric JSON weights. Devnet workers register commitments on-chain.
+4. After the cutoff, a single named validator recomputes the baseline/candidate scores on held-out examples. Eligibility requires the declared minimum improvement and a positive approximate corrected paired-bootstrap lower bound.
+5. The highest-scoring eligible candidate wins, with a deterministic artifact-hash tie break. The validator signs a receipt; the program enforces its authority and one-time escrow payout. This is **trusted evaluation**, not proof of training or decentralized consensus.
+6. The UI shows exact artifacts, their hashes, receipt signature checks, lineage, and Explorer links **only for real Devnet transactions**.
+
+Training: a small 64→48→10 Digits classifier; real rank-limited updates to its output head. No LLM fine-tuning, royalties, zkML or autonomous research agents are claimed.
+
+## Test
+
+```bash
 python -m pytest -q
-python -m ruff check gradientmine tests scripts
-python -m compileall -q gradientmine scripts
-npm test
+node --test tests/web/*.test.mjs
 npm run check
-python scripts/browser_qa.py
-cargo test --manifest-path program/Cargo.toml
-cargo build-sbf --manifest-path program/Cargo.toml
+python -m ruff check gradientmine scripts tests
+python -m playwright install chromium
+python -m scripts.browser_qa --out evidence/browser
 ```
 
-Browser QA uses an explicitly test-only Wallet Standard signer against a real local API. A real wallet extension and Devnet settlement require their own evidence. No private key is ever requested by the UI or API. Local `.local/` identities must not be published.
+Compiled-SBF tests additionally require `GM_SBF_PATH` pointing to the built `gradientmine_escrow.so`. Without it, VM tests are skipped, not counted as a passing deployment. CI compiles the Rust program, exercises the VM, runs real workers and browser checks, and retains public evidence.
 
-## Scope and safety
+## Deployment and submission
 
-The named evaluator controls withheld data and signs results. The public-source dataset is recoverable, so this benchmark is not safe for real-money competition. Confidence intervals use an approximate paired bootstrap with a predeclared eight-candidate correction; they are not a universal guarantee of improvement. Artifacts are bounded numeric JSON, never executable code or pickle. Model weights and evaluation data stay off-chain.
+- [Deployment and emergency refunds](docs/DEPLOYMENT.md)
+- [Architecture, assumptions and statistical limits](docs/ARCHITECTURE.md)
+- [Threat model](docs/THREAT_MODEL.md)
+- [Research and differentiation](docs/RESEARCH.md)
+- [Licenses and acknowledgments](THIRD_PARTY_NOTICES.md)
+- [Official submission checklist](submission/SUBMIT.md)
+- [Product and honest go-to-market copy](submission/PRODUCT.md)
+- [Pitch script](submission/PITCH.md) and [demo recording instructions](submission/DEMO.md)
 
-The escrow program restricts settlement to the named validator and a registered candidate, prevents duplicate settlement, and permits an owner refund after the committed window plus one hour. Application clients refuse networks whose genesis is not Devnet. That client-side network restriction is not an intrinsic property of the Rust bytecode.
-
-A direct emergency refund, independent of the API, is available:
-
-```sh
-gradientmine refund-address --bounty PUBLIC_BOUNTY_ADDRESS --program PUBLIC_PROGRAM_ID --identity .local/creator.json
-```
-
-This signs locally and requires test SOL for the transaction fee. Keep the published program address and your public bounty address. Never send a secret key to support, a website, or an AI chat.
-
-## Evidence and submission status
-
-A recorded real local run is included under `web/assets/recorded-run.json`, with downloadable numeric model artifacts. The browser verifies the exact original signed bytes and hashes downloaded artifacts. Those signatures authenticate the signer, not the truth of the evaluator's methods.
-
-**No Devnet program address, transaction signature, payout, public full-stack deployment, customer validation, or final video is asserted unless an evidence file explicitly records a verified result.** Full architecture, threat model, deployment runbook, research credits and submission materials are maintained in `docs/` and `submission/` as implementation progresses.
-
-## License
-
-Original source: MIT. UCI Optical Recognition of Handwritten Digits: Alpaydin and Kaynak (1998), DOI 10.24432/C50P49, CC BY 4.0. The shipped numeric artifacts were trained on that public dataset. See third-party notices for dependencies and research citations.
+A complete submission still requires the owner's registration/identity confirmation and uploaded videos. Do not describe scripts as finished videos or planned interviews as traction. The submission checklist distinguishes implementation from verified live operation.

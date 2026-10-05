@@ -501,6 +501,21 @@ class Marketplace:
             raise Problem(422, "Unsupported wallet transaction")
         return self.chain.intent(action, job, sub)
 
+    def broadcast(self, job_id, address, action, transaction_base64, submission_id=None):
+        if not self.chain:
+            raise Problem(409, "Local mode has no blockchain transactions")
+        # Reuse the authorization and state checks; no server-side signing for wallet actions.
+        self.transaction_intent(job_id, address, action, submission_id)
+        job = self.detail(job_id)
+        sub = next((s for s in job["submissions"] if s["id"] == submission_id), None)
+        import base64
+
+        try:
+            raw = base64.b64decode(transaction_base64, validate=True)
+        except ValueError as exc:
+            raise Problem(422, "Invalid signed transaction encoding") from exc
+        return self.chain.broadcast_wallet(raw, self.chain.spec(action, job, sub))
+
     def confirm(self, job_id, address, action, signature, submission_id=None):
         if not self.chain:
             raise Problem(409, "Local mode never records on-chain signatures")
@@ -563,6 +578,54 @@ class Marketplace:
                 self.store.save_job(db, saved)
                 self.store.event(db, job_id, self.clock(), "PAYOUT_FINALIZED", pending["signature"])
             return self.detail(job_id)
+
+    def recover_settlement(self, job_id):
+        """Only re-sign after an expired attempt is absent/failed and the bounty is still open."""
+        if not self.chain:
+            raise Problem(409, "Local mode has no settlement to recover")
+        from .recovery import recovery_decision
+
+        with self.lock:
+            job = self.detail(job_id)
+            pending = job.get("pending_settlement")
+            if job["state"] == "SETTLED":
+                return job
+            if job["state"] != "SETTLING" or not pending:
+                raise Problem(409, "No persisted settlement attempt needs recovery")
+            self.chain.deployment()
+            bounty, _ = self.chain.read_bounty(job)
+            status = self.chain.rpc.call(
+                "getSignatureStatuses", [[pending["signature"]], {"searchTransactionHistory": True}]
+            )["value"][0]
+            height = self.chain.rpc.call("getBlockHeight", [{"commitment": "finalized"}])
+            decision = recovery_decision(status, height, pending["last_valid_block_height"], bounty["state"])
+            if decision == "confirm":
+                return self.settle(job_id)
+            if decision == "refunded":
+                raise Problem(
+                    409,
+                    "On-chain reward was refunded; no payout will be reissued. Confirm the creator's refund transaction.",
+                )
+            if decision == "wait":
+                raise Problem(
+                    409,
+                    "The original transaction may still land. Retain its signature and retry confirmation later.",
+                )
+            with self.store.transaction() as db:
+                saved = self._job(db, job_id)
+                saved.setdefault("settlement_attempts", []).append(pending)
+                saved.pop("pending_settlement", None)
+                saved.pop("settlement_warning", None)
+                saved["state"] = "EVALUATED"
+                self.store.save_job(db, saved)
+                self.store.event(
+                    db,
+                    job_id,
+                    self.clock(),
+                    "SETTLEMENT_RETRY",
+                    "Expired unconfirmed attempt retained in history; on-chain bounty still open",
+                )
+            return self.settle(job_id)
 
     def tick(self):
         """Best-effort single-process scheduler. Errors remain visible; retry never invents success."""

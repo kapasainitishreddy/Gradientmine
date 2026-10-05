@@ -50,3 +50,28 @@ Untrusted uploads; replayed/expired authentication; cutoff and timestamp races; 
 - The combined test/demo shell invocation hit the tool time limit after the run file was written.
   Its whole-command exit is therefore not recorded as successful. A fresh standalone run is required
   for final release evidence.
+
+## Continuation: wallet/evidence release, 2026-10-05
+
+Recovered source from the upstream CI artifact at `8f85345ab3b644f012e19f54154e17274fe16f98`. Direct clone/network access was unavailable in the authoring runtime; no unrelated repository was used.
+
+Implemented: responsive wallet interface; exact client/server transaction intent verification; receipt/hash inspector; real recorded-run exporter; settlement recovery; API-independent creator refund command; Docker and submission documentation. These are implementation claims, not proof of a production deployment.
+
+Fresh local verification:
+
+- `GM_SBF_PATH=program/target/deploy/gradientmine_escrow.so python -m pytest -q`: **52 passed**.
+- `node --test tests/web/*.test.mjs`: **9 passed**.
+- `python -m ruff check gradientmine scripts tests`: **All checks passed**.
+- `npm run check` and `python -m compileall -q gradientmine scripts`: passed.
+- `python -m gradientmine.cli demo --out .local/release-run`: three separate real training processes; 360 held-out examples; baseline 84.7222%, winning candidate 95.2778%, delta 10.5556 percentage points. This run has **no on-chain payments**.
+- Compiled SBF artifact SHA-256: `6a19d26db5f7e5f4a67a021aa55d7f1984064718762bd17276a143745e6e18fb`; 84,720 bytes. Exercised in LiteSVM, not an internet cluster.
+
+Remaining evidence gaps at this checkpoint:
+
+- Local Chromium cannot navigate due to `ERR_BLOCKED_BY_ADMINISTRATOR`. A CI browser test has been added; its result must be inspected separately, never inferred from unit tests.
+- Railway refused a new project: **Free plan resource provision limit exceeded**. No upgrade or paid resource was authorized or created.
+- No Devnet program address, funding transaction or payout signature has been verified at this checkpoint.
+- No actual Phantom-extension test, final uploaded pitch/demo video, customer interview or organizer submission receipt exists.
+- Worker registration currently persists its transaction when an output directory is supplied; robust CLI resume after a lost response still needs verification. The public API will not silently accept replacement submissions.
+
+The release-delivery workflow verifies transport checksums and baseline file hashes, runs tests, commits actual source, then runs browser QA on a permitted runner. Publishing source and passing browser QA are separate gates.
