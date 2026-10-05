@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import socket
@@ -103,18 +104,79 @@ def make_submission(identity, job, package, *, epochs=60, rank=8, lr=0.03, seed=
 
 
 def worker(args):
+    from .worker_recovery import load_state
+
     identity = Identity.load(Path(args.identity))
     client, origin = client_for(args.api)
-    with client:
-        config = request(client, "GET", "/api/config")
-        if config["origin"] != origin:
-            raise ValueError("API origin configuration differs from the requested address")
-        if config["mode"] == "devnet" and (not args.program_id or args.program_id != config["program_id"]):
+    out = Path(args.out) if args.out else None
+    resume = getattr(args, "resume", False)
+    if resume and out is None:
+        raise ValueError("--resume requires --out with the original worker checkpoint")
+    with contextlib.ExitStack() as stack:
+        stack.enter_context(client)
+        if out is not None:
+            out.mkdir(parents=True, exist_ok=True)
+            # Prevent two local processes from concurrently replaying one checkpoint.
+            if os.name == "posix":
+                import fcntl
+
+                lock = stack.enter_context((out / ".worker.lock").open("a"))
+                try:
+                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError as exc:
+                    raise ValueError("This worker output directory is already in use") from exc
+            if not resume and (out / "worker-state.json").exists():
+                raise ValueError("Output contains a worker checkpoint; use --resume to retain its evidence")
+        state = load_state(out, identity) if resume else None
+        if state is not None and (
+            state["origin"] != origin
+            or state["job"]["id"] != args.job
+            or state["program_id"] != args.program_id
+            or state["rpc"] != args.rpc
+        ):
+            raise ValueError("Checkpoint API, job, deployment or RPC binding differs from this invocation")
+        return _worker_session(args, identity, client, origin, out, state)
+
+
+def _worker_session(args, identity, client, origin, out, state):
+    from .worker_recovery import recover_registration, save_state, validate_submission
+
+    def persist():
+        if out is not None:
+            save_state(out, state, identity)
+
+    def evidence():
+        if out is not None:
+            for name, key in [("artifact", "artifact"), ("manifest", "manifest"), ("losses", "losses")]:
+                atomic_write(out / f"{name}.json", canonical(state[key]))
+            if state["submission"] is not None:
+                atomic_write(out / "submission.json", canonical(state["submission"]))
+            if state["pending"] is not None:
+                atomic_write(out / "pending-registration.json", canonical(state["pending"]))
+
+    config = request(client, "GET", "/api/config")
+    if config["origin"] != origin:
+        raise ValueError("API origin configuration differs from the requested address")
+    if config["mode"] not in {"local", "devnet"}:
+        raise ValueError("Unrecognized API mode")
+    if config["mode"] == "devnet":
+        if not args.program_id or args.program_id != config["program_id"]:
             raise ValueError(
                 "Devnet worker requires --program-id with the independently checked deployment address"
             )
-        login(client, identity, origin)
-        job = request(client, "GET", f"/api/jobs/{args.job}")
+        if out is None:
+            raise ValueError("Devnet worker requires --out to persist registration recovery before broadcast")
+    if state is not None and state["mode"] != config["mode"]:
+        raise ValueError("Checkpoint mode differs from the API; no submission or signing attempted")
+    login(client, identity, origin)
+    job = request(client, "GET", f"/api/jobs/{args.job}")
+    if state is not None:
+        if any(job[k] != state["job"][k] for k in ("id", "creator", "policy", "policy_sha256")):
+            raise ValueError("Checkpoint bounty policy differs from the live API")
+        print(f"Resuming saved artifact {digest(state['artifact'])}; no retraining", flush=True)
+    else:
+        if any(sub["worker"] == identity.address for sub in job["submissions"]):
+            raise ValueError("This wallet already submitted; resume its original --out checkpoint")
         package = request(client, "GET", f"/api/jobs/{args.job}/training")
         print(
             f"Worker {identity.address}\nProcess {os.getpid()} · actual PyTorch training on CPU", flush=True
@@ -129,52 +191,108 @@ def worker(args):
             seed=args.seed,
             negative_control=args.negative_control,
         )
+        state = {
+            "format": "gradientmine.worker-state.v1",
+            "origin": origin,
+            "mode": config["mode"],
+            "program_id": args.program_id,
+            "rpc": args.rpc,
+            "worker": identity.address,
+            "job": {k: job[k] for k in ("id", "creator", "policy", "policy_sha256")},
+            "artifact": adapter,
+            "manifest": manifest,
+            "losses": losses,
+            "submission": None,
+            "pending": None,
+            "attempts": [],
+            "stage": "trained",
+        }
+        # The original signed artifact survives a lost submission response or process crash.
+        persist()
+        evidence()
         print(
             f"Loss {losses[0]:.6f} → {losses[-1]:.6f}; public validation {manifest['payload']['worker_metrics']['public_validation_accuracy']:.4f}",
             flush=True,
         )
-        sub = request(
-            client,
-            "POST",
-            f"/api/jobs/{args.job}/submissions",
-            json={"artifact": adapter, "manifest": manifest},
+    existing = [sub for sub in job["submissions"] if sub["worker"] == identity.address]
+    if len(existing) > 1:
+        raise ValueError("API returned duplicate wallet submissions; refusing recovery")
+    if existing:
+        state["submission"] = validate_submission(existing[0], state)
+    elif state["submission"] is not None:
+        raise ValueError("Saved submission is missing from the API; refusing a duplicate upload")
+    else:
+        state["submission"] = validate_submission(
+            request(
+                client,
+                "POST",
+                f"/api/jobs/{args.job}/submissions",
+                json={"artifact": state["artifact"], "manifest": state["manifest"]},
+            ),
+            state,
         )
-        if config["mode"] == "devnet":
-            from .chain import Chain
+    if state["stage"] == "trained":
+        state["stage"] = "submitted"
+    persist()
+    evidence()
+    sub = state["submission"]
+    if config["mode"] == "devnet":
+        from .chain import Chain
 
-            chain = Chain(args.program_id, args.rpc)
-            intent = request(
+        chain = Chain(args.program_id, args.rpc)
+
+        def intent():
+            return request(
                 client,
                 "POST",
                 f"/api/jobs/{args.job}/transaction",
                 json={"action": "register", "submission_id": sub["id"]},
             )
-            pending = chain.sign_intent(intent, "register", job, sub, identity)
-            if args.out:
-                atomic_write(Path(args.out) / "pending-registration.json", canonical(pending))
-            chain.send_signed(pending)
+
+        def confirm(signature):
+            if sub.get("registration_signature") == signature and sub.get("state") != "AWAITING_REGISTRATION":
+                return
             request(
                 client,
                 "POST",
                 f"/api/jobs/{args.job}/confirm",
-                json={
-                    "action": "register",
-                    "submission_id": sub["id"],
-                    "signature": pending["signature"],
-                },
+                json={"action": "register", "submission_id": sub["id"], "signature": signature},
             )
-            print(f"Registration finalized: {pending['signature']}", flush=True)
-        if args.out:
-            out = Path(args.out)
-            atomic_write(out / "artifact.json", canonical(adapter))
-            atomic_write(out / "manifest.json", canonical(manifest))
-            atomic_write(out / "submission.json", canonical(sub))
-            atomic_write(out / "losses.json", canonical(losses))
-        print(
-            f"Submitted {sub['artifact_sha256']}; hidden evaluation waits for the cutoff. No payout is inferred.",
-            flush=True,
-        )
-        return sub
+
+        stage = recover_registration(chain, state, identity, intent, confirm, persist)
+        evidence()
+        if stage != "finalized":
+            pending = state["pending"]
+            if stage == "failed":
+                raise ValueError(
+                    f"Registration failed on-chain: {pending['signature']}. Evidence retained; "
+                    "resume after finalized blockhash expiry for a safe replacement."
+                )
+            if (
+                stage == "unknown"
+                and chain.rpc.call("getBlockHeight", [{"commitment": "finalized"}])
+                > pending["last_valid_block_height"]
+            ):
+                raise ValueError(
+                    "Registration status remains unknown; blockhash still valid. Retain --out and resume."
+                )
+            # A timeout preserves the checkpoint and never implies confirmation.
+            chain.rpc.wait(pending["signature"])
+            stage = recover_registration(chain, state, identity, intent, confirm, persist)
+        if stage != "finalized":
+            raise ValueError("Registration remains unresolved; retain --out and retry with --resume")
+        if sub["state"] == "AWAITING_REGISTRATION":
+            sub["state"] = "REGISTERED"
+        sub["registration_signature"] = sub.get("registration_signature") or state["pending"]["signature"]
+        print(f"Registration finalized: {sub['registration_signature']}", flush=True)
+    state["stage"] = "complete"
+    persist()
+    evidence()
+    print(
+        f"Submitted {sub['artifact_sha256']}; held-out evaluation follows the bounty policy. No payout is inferred.",
+        flush=True,
+    )
+    return sub
 
 
 def demo(args):
@@ -345,6 +463,11 @@ def main(argv=None):
         help="Disclosed shuffled-label experiment, never called a detected cheater",
     )
     work.add_argument("--out")
+    work.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume the signed public checkpoint in --out without retraining",
+    )
     work.add_argument("--program-id")
     work.add_argument("--rpc", default="https://api.devnet.solana.com")
     local = commands.add_parser(
