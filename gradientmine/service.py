@@ -532,6 +532,14 @@ class Marketplace:
                 raise Problem(403, "This transaction belongs to a different wallet")
             if action not in {"fund", "register", "refund"} or (action == "register" and not sub):
                 raise Problem(422, "Invalid confirmation action or submission")
+            # A finalized response can disappear and the bounty can progress before
+            # its owner retries. Return the already-verified exact signature without
+            # reopening the bounty, resetting eligibility, or needing new RPC access.
+            recorded = sub.get("registration_signature") if action == "register" else job.get(
+                "funding_signature" if action == "fund" else "refund_signature"
+            )
+            if recorded is not None and recorded == signature:
+                return job
             # Verification is repeatable after an RPC timeout. No mutation happens before finalized evidence.
             self.chain.confirm(action, job, sub, signature)
             with self.store.transaction() as db:
