@@ -1,4 +1,4 @@
-name: Real Devnet smoke
+name: Real ML and Devnet payout proof
 on:
   workflow_dispatch:
 permissions:
@@ -9,16 +9,20 @@ concurrency:
 jobs:
   devnet:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
+    env:
+      SOLANA_RPC: https://api.devnet.solana.com
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install minimal Python chain dependencies
+      - name: Install full CPU training, API and chain dependencies
         run: |
-          python -m pip install solders==0.29.0 cryptography==50.0.2 httpx==0.28.1
-      - name: Install checksum-verified Agave tools
+          python -m pip install --upgrade pip==26.2.1
+          python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[chain,dev]'
+      - name: Install checksum-verified pinned Agave tools
         shell: bash
         run: |
           set -euo pipefail
@@ -26,9 +30,18 @@ jobs:
           echo 'c97289a8abb1d0efb497d8b5cb285baabd9b7f8ea6647f5d145c5dc8ff3611e8  '"$RUNNER_TEMP/agave.tar.bz2" | sha256sum -c -
           tar -xjf "$RUNNER_TEMP/agave.tar.bz2" -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/solana-release/bin" >> "$GITHUB_PATH"
-      - name: Build exact SBF program
-        run: cargo build-sbf --manifest-path program/Cargo.toml --sbf-out-dir "$RUNNER_TEMP/sbf"
-      - name: Create disposable identities
+      - name: Fresh locked SBF build and source/binary attestation
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo build-sbf --manifest-path program/Cargo.toml --tools-version v1.57 --jobs 2 --sbf-out-dir "$RUNNER_TEMP/sbf" -- --locked
+          python -m scripts.devnet_smoke --record-build --sbf "$RUNNER_TEMP/sbf/gradientmine_escrow.so" --source-commit "$GITHUB_SHA" --build-manifest "$RUNNER_TEMP/program-build.json"
+          sha256sum "$RUNNER_TEMP/sbf/gradientmine_escrow.so"
+      - name: Exercise actual CPU training and compiled payout in local VM first
+        run: |
+          GM_SBF_PATH="$RUNNER_TEMP/sbf/gradientmine_escrow.so" python -m pytest -q tests/test_chain.py tests/test_deployment.py tests/test_devnet_product.py
+      - name: Create fresh disposable identities in private runner storage
+        shell: bash
         run: |
           set -euo pipefail
           umask 077
@@ -36,51 +49,74 @@ jobs:
           solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/worker.json"
           solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/validator.json"
           solana-keygen new --no-bip39-passphrase --silent -o "$RUNNER_TEMP/program.json"
-          solana config set --url https://api.devnet.solana.com --keypair "$RUNNER_TEMP/creator.json"
-      - name: Fund disposable Devnet identities
+          solana-keygen pubkey "$RUNNER_TEMP/program.json" > "$RUNNER_TEMP/program-id.txt"
+      - name: Pin genesis and request free Devnet funding once
         shell: bash
         run: |
           set -euo pipefail
-          # Shared requestAirdrop endpoints are frequently rate-limited in CI. The
-          # Solana Foundation faucet explicitly recommends the programmatic PoW
-          # faucet for AI agents. Mine only disposable Devnet SOL.
-          cargo install devnet-pow --version 0.1.4
-          devnet-pow mine -d 3 --reward 0.02 --no-infer --target-lamports 1000000000 -ud
+          python - <<'PY'
+          import os
+          from gradientmine.rpc import Rpc
+          print('Verified Devnet genesis:', Rpc(os.environ['SOLANA_RPC']).require_devnet())
+          PY
           creator="$(solana-keygen pubkey "$RUNNER_TEMP/creator.json")"
           worker="$(solana-keygen pubkey "$RUNNER_TEMP/worker.json")"
           validator="$(solana-keygen pubkey "$RUNNER_TEMP/validator.json")"
-          solana transfer "$worker" 0.05 --allow-unfunded-recipient --url https://api.devnet.solana.com --keypair "$RUNNER_TEMP/creator.json"
-          solana transfer "$validator" 0.05 --allow-unfunded-recipient --url https://api.devnet.solana.com --keypair "$RUNNER_TEMP/creator.json"
-          echo "creator_balance=$(solana balance "$creator" --lamports --url https://api.devnet.solana.com)"
-          echo "worker_balance=$(solana balance "$worker" --lamports --url https://api.devnet.solana.com)"
-          echo "validator_balance=$(solana balance "$validator" --lamports --url https://api.devnet.solana.com)"
-      - name: Deploy program to Devnet
+          # One bounded legitimate free request. Historical PoW routes required starter
+          # funding and were blocked; do not reinstall/retry those loops or buy SOL.
+          if ! timeout 60 solana airdrop 2 "$creator" --url "$SOLANA_RPC"; then
+            echo "Free Devnet funding blocked. Disposable creator public address: $creator"
+            echo 'No deployment or payout proof claimed; no private identity artifacts are uploaded.'
+            exit 1
+          fi
+          solana transfer "$worker" 0.05 --allow-unfunded-recipient --url "$SOLANA_RPC" --keypair "$RUNNER_TEMP/creator.json"
+          solana transfer "$validator" 0.05 --allow-unfunded-recipient --url "$SOLANA_RPC" --keypair "$RUNNER_TEMP/creator.json"
+          solana balance "$creator" --lamports --url "$SOLANA_RPC"
+      - name: Deploy and independently match exact finalized binary
         shell: bash
         run: |
           set -euo pipefail
-          solana program deploy "$RUNNER_TEMP/sbf/gradientmine_escrow.so"             --url https://api.devnet.solana.com             --keypair "$RUNNER_TEMP/creator.json"             --program-id "$RUNNER_TEMP/program.json" | tee "$RUNNER_TEMP/deploy.txt"
-          solana-keygen pubkey "$RUNNER_TEMP/program.json" > "$RUNNER_TEMP/program-id.txt"
-      - name: Execute funding, registration and payout
+          python - <<'PY'
+          import os
+          from gradientmine.rpc import Rpc
+          Rpc(os.environ['SOLANA_RPC']).require_devnet()
+          PY
+          solana program deploy "$RUNNER_TEMP/sbf/gradientmine_escrow.so" --url "$SOLANA_RPC" --keypair "$RUNNER_TEMP/creator.json" --program-id "$RUNNER_TEMP/program.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from gradientmine.chain import Chain
+          root=Path(os.environ['RUNNER_TEMP'])
+          chain=Chain((root/'program-id.txt').read_text().strip(), os.environ['SOLANA_RPC'])
+          print(json.dumps(chain.verify_program((root/'sbf/gradientmine_escrow.so').read_bytes()), indent=2))
+          PY
+      - name: Execute actual API bounty, independent CPU worker and finalized payout
+        shell: bash
         run: |
           set -euo pipefail
-          mkdir -p evidence
-          python -m scripts.devnet_smoke             --program "$(cat "$RUNNER_TEMP/program-id.txt")"             --creator "$RUNNER_TEMP/creator.json"             --worker "$RUNNER_TEMP/worker.json"             --validator "$RUNNER_TEMP/validator.json"             --out evidence/devnet-smoke.json
-      - name: Assert no private material in evidence
+          python -m scripts.devnet_smoke --program "$(cat "$RUNNER_TEMP/program-id.txt")" --creator "$RUNNER_TEMP/creator.json" --worker "$RUNNER_TEMP/worker.json" --validator "$RUNNER_TEMP/validator.json" --sbf "$RUNNER_TEMP/sbf/gradientmine_escrow.so" --source-commit "$GITHUB_SHA" --build-manifest "$RUNNER_TEMP/program-build.json" --private-dir "$RUNNER_TEMP/private-product" --out "$RUNNER_TEMP/public-evidence" --rpc "$SOLANA_RPC" --cutoff-seconds 240
+      - name: Check public proof and referenced artifact-only export
         run: |
           python - <<'PY'
-          import json
+          import os
           from pathlib import Path
-          p=Path("evidence/devnet-smoke.json")
-          d=json.loads(p.read_text())
-          assert d["private_keys_exported"] is False
-          assert "secret" not in p.read_text().lower()
-          assert d["settlement"]["state"] == 1
-          print(d["program_id"])
-          print(d["funding"]["explorer"])
-          print(d["registration"]["explorer"])
-          print(d["settlement"]["explorer"])
+          from gradientmine.crypto import safe_json
+          from scripts.public_evidence import checked_artifacts
+          root=Path(os.environ['RUNNER_TEMP'])/'public-evidence'
+          record=safe_json((root/'devnet-smoke.json').read_bytes(), limit=2_000_000)
+          assert record['private_keys_exported'] is False
+          assert record['mode']=='devnet' and record['network']=='solana:devnet'
+          assert record['job']['state']=='SETTLED' and record['settlement']['state']==1
+          assert record['source_commit']==os.environ['GITHUB_SHA']
+          assert record['worker_execution']['kind']=='independent-cli-os-process'
+          checked=checked_artifacts(record['job'], lambda sha: (root/'artifacts'/f'{sha}.json').read_bytes())
+          assert {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()} == {
+            'run.json','devnet-smoke.json',*(f'artifacts/{sha}.json' for sha in checked)}
+          for action in ('funding','registration','settlement'):
+            print(record[action]['explorer'])
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: devnet-smoke-public-evidence
-          path: evidence/devnet-smoke.json
+          name: devnet-product-public-evidence
+          path: ${{ runner.temp }}/public-evidence/
+          if-no-files-found: error
