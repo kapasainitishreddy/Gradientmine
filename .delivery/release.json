@@ -1,8 +1,0 @@
-{
-  "format": "gradientmine.source-delivery.v1",
-  "cycle": "cycle-3-security",
-  "chunks": [
-    "security-000.b64"
-  ],
-  "sha256": "0443406483321d8d25f1abed0071069d1f8ec1f93848a0cf868ae5942fee548d"
-}
