@@ -6,7 +6,9 @@ Python 3.11+ (3.12 recommended), Node 22 for frontend tests. Start in an isolate
 
 ```sh
 python -m venv .venv
-python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+. .venv/bin/activate
+python -m pip install --upgrade pip==26.2.1
+python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e '.[chain,dev]'
 python -m gradientmine.cli demo --out .local/demo
 python -m scripts.publish_demo --run .local/demo/run.json
@@ -14,6 +16,8 @@ python -m gradientmine.cli serve
 ```
 
 Open http://127.0.0.1:8000 . The demo is an isolated recorded run. The separately started live server has its own database and initially no bounties. A static host displays the recorded run only when it cannot connect to an API; the read-only banner and disabled actions make the distinction explicit.
+
+The managed cloud checkout already has an isolated environment. Use `. /workspace/.gradientmine-setup/activate.sh` there instead of replacing it; the helper activates the installed Python, Cargo and Solana tools. That absolute path is cloud-local setup, not a portable prerequisite. Do not publish `.local/demo/private/` or serve it as a static directory. Only `scripts.publish_demo`'s public export belongs in the viewer. The loopback URL is for operator-local checks, not a submission deployment URL.
 
 ## Container, existing server
 
@@ -30,9 +34,14 @@ Build and test the program using the checked-in Cargo lock:
 ```sh
 cargo test --manifest-path program/Cargo.toml
 cargo build-sbf --manifest-path program/Cargo.toml
+sha256sum program/target/deploy/gradientmine_escrow.so
 ```
 
 Follow https://solana.com/docs/programs/deploying to deploy the freshly built SBF with a dedicated locally controlled identity and free Devnet SOL. Check genesis `EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG`, actual deployed program bytes, executable status and upgrade authority. Do not set `GM_PROGRAM_ID` to a placeholder or the System Program. Do not finalize or transfer authority over an existing deployment casually.
+
+Fresh access to that official deployment page was blocked on October 5, 2026 by proxy CONNECT 403; consult it from an authorized browser for current CLI details. `cargo build-sbf --sbf-out-dir` changes the binary location; hash the actual output you deploy. Native CLI compilation and LiteSVM execution do not establish a deployment or upgrade-authority configuration.
+
+For a real product proof, one evidence bundle must join the current source commit, exact SBF SHA-256, deployed-byte check, program ID and upgrade-authority assumption with the bounty account, creator/worker/validator public addresses, funding/registration/settlement signatures, policy hash, trained winning artifact hash and signed receipt hash. Verify each finalized transaction, matching on-chain state, recipient balance delta and Explorer URL. A chain-only smoke test using synthetic commitments is a separate mechanics test; it is not proof of payment for an actual trained artifact. Record only public evidence. No successful integrated Devnet run is inferred from this runbook.
 
 Set `GM_MODE=devnet`, the verified public `GM_PROGRAM_ID`, and the exact HTTPS `GM_ORIGIN`. The server creates/persists its own validator identity on the private volume and returns **only its public address** through `/health`. Fund that address with a small amount of test SOL for settlement fees. The creator funds its bounty and rent through its own wallet; each worker needs test SOL for registration rent and fees. Program deployment rent is separate and depends on binary size, not a hardcoded guessed cost.
 
@@ -42,10 +51,12 @@ On a live bounty: connect wallet -> create draft -> inspect transaction terms ->
 
 ```sh
 gradientmine identity --out .local/worker.json
-gradientmine worker --api YOUR_CONFIRMED_HTTPS_ORIGIN --job YOUR_BOUNTY_UUID --identity .local/worker.json --program-id YOUR_CONFIRMED_PROGRAM_ID
+gradientmine worker --api YOUR_CONFIRMED_HTTPS_ORIGIN --job YOUR_BOUNTY_UUID --identity .local/worker.json --program-id YOUR_CONFIRMED_PROGRAM_ID --out .local/worker-run
 ```
 
 The placeholders above must come from your running deployment, not this document. For a local job, use http://127.0.0.1:8000 and omit `--program-id`. Workers check public training-package hashes before training and independently reconstruct transaction intents before signing. `--negative-control` deliberately shuffles labels for testing; it is never described as fraud detection.
+
+Keep a persistent worker output/checkpoint path for retries using the current CLI's supported `--out` option. Use `--resume --out YOUR_EXISTING_WORKER_OUTPUT` with the same job and identity after an ambiguous response; check finalized registration and public account state rather than generating a different artifact or concluding that a lost response means failure. Read the current `gradientmine worker --help` and release verification evidence for recovery behavior; do not delete an unresolved signed pending transaction to force a fresh registration.
 
 ## Timeout and recovery
 
@@ -65,4 +76,4 @@ The identity remains on the creator's machine. The CLI persists the public pendi
 
 Encrypted consistent backups must include SQLite, artifacts, the private task and validator identity. Never expose that volume as a static directory. Test restoring a copy before accepting bounties. A host restart must retain the volume.
 
-On October 5, 2026, the connected Railway account refused a new project with **“Free plan resource provision limit exceeded. Please upgrade to provision more resources!”** No upgrade, paid deployment or payment was authorized or performed. Use an existing server or free capacity explicitly made available by the owner; do not mislabel a static recorded viewer as a live full-stack deployment.
+Earlier October 5, 2026 deployment notes report that the connected Railway account refused a new project with **“Free plan resource provision limit exceeded. Please upgrade to provision more resources!”** This is historical evidence, not a new provider check in this pass. The user's supplied blocker history also reports Vercel project-creation 403 and unavailable GitHub Pages creation. No paid upgrade is authorized. Use an existing server or free capacity explicitly made available by the owner; do not mislabel a static recorded viewer as a live full-stack deployment. Inspect the latest build ledger for the current provider/network boundary before retrying.

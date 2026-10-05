@@ -1,6 +1,6 @@
 # Presentation script
 
-Target: about 2 minutes 30 seconds with natural pauses. Official allowed length: 2–3 minutes. **This file is a script, not a completed video.** Read the latest ledger first; do not add payment, customer or hosting claims without evidence.
+Target: about 2 minutes 30 seconds with natural pauses. Prior repository guidance reports a 2–3 minute allowed length; current official recheck is blocked, as recorded in SUBMIT.md. **This file is a script, not a completed video.** Use the timed action/caption plan in [RECORDING.md](RECORDING.md). Read the latest ledger first; do not add payment, customer or hosting claims without evidence.
 
 ## 0:00–0:25 | Problem and proposition
 

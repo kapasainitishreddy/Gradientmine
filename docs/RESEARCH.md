@@ -1,6 +1,12 @@
 # Research and differentiating scope
 
-Sources checked October 5, 2026. These are primary research or project sources. No code from competing protocols has been copied. No claim of being the first outcome-paid AI marketplace is made.
+These are primary research or project references, with verification status made explicit below. No competing protocol implementation is vendored. No claim of being the first outcome-paid AI marketplace is made.
+
+## Verification status, October 5, 2026
+
+Verified-TLS, bounded read-only requests to arxiv.org (both papers), gensyn.ai (Verde), solana.com (deployment), and archive.ics.uci.edu (dataset) failed at the environment proxy with `CONNECT tunnel failed, response 403` (curl exit 56, no source HTTP response). Their descriptions and URLs below are preserved from the repository's earlier research notes; they were **not freshly verified in this pass**. The earlier notes labelled their check October 5, but no captured source response is stored here. Check those original sources from an authorized browser before using their statements as current external evidence.
+
+Native HTTPS Git reads did succeed for the two official Wallet Standard repositories. Read-only source checkouts were inspected at `wallet-standard/wallet-standard` commit `c49b56d60fbac2e68e0f3536707fa33030652f9e` and `anza-xyz/wallet-standard` commit `c4d06f9f2668ebec3f2747c9fcf5e2382a2fc36f`. Both carry Apache-2.0 licenses. These are reference-source revisions, not bundled npm dependencies.
 
 ## Low-rank adaptation
 
@@ -16,7 +22,15 @@ Gensyn, **Verde: A Verification System for Machine Learning over Untrusted Nodes
 
 ## Wallet and chain composition
 
-Solana's official deployment documentation, https://solana.com/docs/programs/deploying , and maintained Wallet Standard interfaces, https://github.com/anza-xyz/wallet-standard , inform the integration. Independent numerical experiments avoid claiming tightly synchronized distributed pretraining. The program remains small: immutable bounty terms, candidate commitments, authorized winner settlement, timeout refund.
+Solana's official deployment documentation, https://solana.com/docs/programs/deploying , is the deployment reference, with fresh access blocked as noted above. Wallet Standard sources are https://github.com/wallet-standard/wallet-standard and https://github.com/anza-xyz/wallet-standard . The inspected interfaces define app-ready/register-wallet discovery, `standard:connect`, account-change events, `solana:signMessage`, and `solana:signTransaction`. The signing APIs can return changed message/transaction bytes; GradientMine's narrower security contract rejects changes to its exact authentication message and transaction intent. This may reject otherwise legitimate wallet features and is not proof of compatibility with every extension.
+
+Independent numerical experiments avoid claiming tightly synchronized distributed pretraining. The program remains small: immutable bounty terms, candidate commitments, authorized winner settlement, timeout refund. Compiled-SBF local VM execution is distinct from deployment and real Devnet evidence.
+
+## Dataset and scientific limits
+
+E. Alpaydin and C. Kaynak, **Optical Recognition of Handwritten Digits** (1998), UCI record https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits , DOI https://doi.org/10.24432/C50P49 . GradientMine uses the scikit-learn packaged digits subset; attribution and the inherited CC BY 4.0 record are in [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md). Current UCI page access was blocked, so that license statement still needs a source check.
+
+The 64-input / 48-hidden / 10-output classifier parent is intentionally trained on just 240 examples for 18 epochs. Its low-rank head update is a proof-of-function workload, not a strong baseline comparison or evidence of LLM performance. The evaluation API withholds scores until cutoff, but public source data and the split seed make the 360-example evaluation set reconstructible. Approximate paired-bootstrap eligibility and candidate-count correction do not repair leakage or establish generalization. A named evaluator remains trusted to report correct measurements.
 
 ## Competitive position, not invented market evidence
 

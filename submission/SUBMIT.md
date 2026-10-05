@@ -1,45 +1,58 @@
 # Crypto World's Fair submission checklist
 
-Verified against Colosseum's official event page, FAQ and rules on October 5, 2026. No registration or submission has been made on the owner's behalf.
+**Status: prepared documents; not submitted.** No owner registration, signed-in portal entry, video upload or portal confirmation has been performed in this pass.
+
+## Official source status
 
 Official entry: https://colosseum.com/worldsfair
+
 Portal and FAQ: https://colosseum.com/hackathon
+
 Rules: https://colosseum.com/legal/Crypto%20World%27s%20Fair%20Hackathon%20Rules.pdf
 
-**Deadline:** October 12, 2026, 11:59 PM Pacific, which is October 13 at 2:59 AM in Philadelphia. Do not wait until that last minute. The team leader must complete the submission through the signed-in dashboard; a GitHub push or ZIP alone is not a submission.
+On October 5, 2026, bounded read-only requests with TLS verification to all three official URLs failed at the environment proxy: `CONNECT tunnel failed, response 403`, curl exit 56, source HTTP code `000`. This is a network-policy blocker, not evidence that Colosseum rejected the project. No source page or signed-in portal was retrieved. The guidance below preserves the prior repository's reported rules; **it is not fresh official verification**. Earlier text labelled its rules check October 5, but captured organizer responses are not stored in this repository. The owner must compare the current pages, PDF and dashboard before submitting and record any change.
 
-## Eligibility and owner review
+## Rules to confirm before entry
 
-Each member must register, belong to one team and submit one product only. The event is for new startups without significant outside funding. Earlier development must be disclosed; judging focuses on work during September 14–October 12. Age, restricted-jurisdiction, sanctions and intellectual-property terms in the official rules must be checked by the entrant. English materials are required. No student-only claim is made for this project.
+| Topic | Inherited guidance / product boundary | Required current check |
+|---|---|---|
+| Deadline | October 12, 2026, 11:59 PM Pacific | Confirm event deadline and timezone. If unchanged: October 13, 06:59 UTC / 2:59 AM America/New_York (Philadelphia) |
+| Event window and prior work | September 14–October 12; earlier development must be disclosed | Read current prior-work terms; disclose idea, ZIP/source, and code developed before the window. Commit timestamps alone do not settle eligibility |
+| Eligibility | New startups without significant outside funding; English materials | Confirm funding thresholds, age, restricted jurisdictions, sanctions, rights/IP and any accelerator conditions using the entrant's own facts |
+| Team | Each person registers, belongs to one team, submits one product | Confirm current team-size and membership rules in dashboard; no maximum size is invented here |
+| Repository | Provide the public GitHub source and history | Confirm visibility, access, open-source/license and submission-time requirements; do not assume a push is an entry |
+| Presentation | 2–3 minutes | Verify current allowed length; prepared script targets 2:30 |
+| Product demo | No more than 3 minutes | Verify current allowed length; prepared walkthrough targets 2:45 |
+| Fields | Product, chain/tools, team/location/background, graphic, repository, videos, market/validation/distribution | Signed-in field names, required attachments and character limits were unavailable; copy prepared text into the actual fields without inventing a portal schema |
+| Judging | FAQ previously listed founder-market fit, insight, execution, market size, communication, viability, traction; rules also discussed functionality, impact, novelty, UX, open-source composability and business planning | Compare current published criteria; no scoring weights or guaranteed prize eligibility are asserted |
+| Solana | Proposed ecosystem track: native Rust Solana program and Devnet escrow | Confirm current track/prize terms. Prior rules did not establish requirements for Anchor, LoRA, LLMs, mainnet, a new token or three GPUs |
+| AI assistance | This project used AI for code, research, tests, design and submission drafts | Check current organizer disclosure/eligibility requirements. Our truthful disclosure is prepared regardless; no organizer-specific AI policy is invented |
+| Procedure | Team leader submits via signed-in Colosseum dashboard | Confirm leader authority, all declarations, video-link access and final confirmation |
 
-Solana is the proposed ecosystem track because escrow, registration and settlement are implemented as a Solana program. The public rules do not establish an obligation to use Anchor, LoRA, an LLM, mainnet, a new token or three physical GPUs. Those were earlier product suggestions, not official eligibility rules. Final prize eligibility remains the organizer's decision.
+Plan to submit ahead of the reported deadline. Identity and terms must be confirmed by the actual entrant; this package does not establish their eligibility.
 
 ## Materials to enter
 
-| Portal item | Prepared source | Owner action / gate |
+| Material | Prepared source | Remaining action |
 |---|---|---|
-| Product name and concise description | PRODUCT.md | Review wording against latest evidence |
-| Blockchain and integrated tools | PRODUCT.md; docs/ARCHITECTURE.md | Enter Solana; do not call the native Rust program Anchor |
-| Team, background and location | TEAM.md | Confirm factual details, add only actual teammates |
-| Logo / graphic | logo.svg | Upload original logo; PNG can be rendered from SVG |
-| Repository | https://github.com/kapasainitishreddy/Gradientmine | Use the public repo with current source and history |
-| Presentation video, 2–3 minutes | PITCH.md | Record/upload and verify judge access; script is not a video |
-| Product-demo video, no more than 3 minutes | DEMO.md; PRODUCT_TOUR.md | Record actual current behavior and inspect all claimed links |
-| Go-to-market, validation and distribution | PRODUCT.md; VALIDATION.md | Do not replace planned interviews with invented traction |
-| Prior-development / AI-assistance disclosure | DISCLOSURE.md | Check dates and acknowledge assistance honestly |
-| Live demo and chain evidence | evidence/; docs/BUILD_LEDGER.md | Only enter URLs, addresses and signatures actually verified |
-
-The FAQ evaluates founder-market fit, insight, execution, potential market size, communication, viability and traction. The rules also discuss functionality, impact, novelty, UX, open-source composability and business planning. The intended response is a credible startup with inspectable implementation, not a claim that a cryptographic signature proves scientific truth.
+| Product name, one line, description, chain/tools, why blockchain | [PRODUCT.md](PRODUCT.md) | Fit actual field lengths; review latest implementation/evidence |
+| Founder background, location and actual team | [TEAM.md](TEAM.md) | Confirm name/location, real members, funding and rights |
+| Original logo | [logo.svg](logo.svg) | File exists; upload SVG if accepted, otherwise export PNG as described in RECORDING.md |
+| Repository | https://github.com/kapasainitishreddy/Gradientmine | Verify judge access to final source commit |
+| Presentation video | [PITCH.md](PITCH.md) | Record, caption, export, upload and test signed out |
+| Product-demo video | [DEMO.md](DEMO.md), [RECORDING.md](RECORDING.md) | Record actual mode and evidence; scripts are not videos |
+| Optional short launch film | [PRODUCT_TOUR.md](PRODUCT_TOUR.md) | A separate marketing artifact; it replaces neither required video |
+| Market, business model, validation and distribution | [PRODUCT.md](PRODUCT.md), [VALIDATION.md](VALIDATION.md) | Keep hypotheses separate from completed customer research |
+| Prior work and AI assistance | [DISCLOSURE.md](DISCLOSURE.md) | Add factual pre-event history and required portal declarations |
+| Live URL / chain evidence | [docs/BUILD_LEDGER.md](../docs/BUILD_LEDGER.md); public evidence files if produced | Only enter verified URLs, addresses and signatures. Recorded local viewer is read-only; chain-only smoke tests do not prove trained-artifact payout |
 
 ## Final submission steps
 
-1. Sign in to Colosseum, join Crypto World's Fair and add actual team members.
-2. Fill the fields from PRODUCT.md and verify each first-person/team claim.
-3. Upload the logo; enter the public GitHub repo and any verified deployment links.
-4. Upload both videos to a judge-accessible host, then test each in a signed-out browser. Keep presentation within 2–3 minutes and demo at or below 3 minutes.
-5. Disclose pre-event work, AI assistance, named-validator trust, public digits benchmark, Devnet-only funds and any unavailable live service.
-6. Review official terms with your own identity and authority. Submit. Save the portal confirmation and submission URL as evidence; without that confirmation, status is **not submitted**.
+1. From an authorized browser, inspect the current official event page, FAQ, rules and signed-in fields; update this checklist for any differences.
+2. Register actual entrant(s), join the event and verify the team's leader and eligibility facts. Complete TEAM.md and pre-event history in DISCLOSURE.md.
+3. Fill the real dashboard fields from PRODUCT.md. Upload the original logo and enter the public repository; include a live URL only if it really works.
+4. Record both videos following RECORDING.md, validate durations, upload to a judge-accessible host and test playback in a signed-out browser. No final video URL exists in this package.
+5. Disclose named-validator trust, public benchmark leakage, budget-limited baseline, AI assistance, pre-event work, Devnet-only funds and any unavailable live feature. State separately whether extension-wallet QA and integrated Devnet payout were completed.
+6. Review declarations using your own identity and authority. Submit through the portal and retain its confirmation/submission URL. Without portal confirmation status remains **not submitted**.
 
-## Do not claim
-
-Mainnet revenue, customers, independently owned network nodes, GPU ownership, hidden-data security, royalty payments, successful payouts without transaction evidence, a real Phantom test based only on the browser harness, or a completed video based only on a script.
+Do not claim mainnet revenue, customers, independently owned nodes, GPU ownership, hidden-data security, royalties, payment without finalized evidence, a Phantom test based only on a harness, or a video based only on its script.
