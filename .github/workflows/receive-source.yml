@@ -1,0 +1,62 @@
+name: Verify and publish offline implementation
+on:
+  push:
+    branches: [main]
+    paths: ['.delivery/manifest.json', '.github/scripts/receive_source.py']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gradientmine-source-delivery
+  cancel-in-progress: false
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      COMPILED_ARTIFACT: ${{ runner.temp }}/compiled
+      GM_SBF_PATH: ${{ runner.temp }}/compiled/ci-evidence/sbf/gradientmine_escrow.so
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          name: escrow-verification
+          run-id: 37325921028
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/compiled
+      - name: Check source integrity and apply exact audited patch
+        run: |
+          set -euo pipefail
+          mkdir -p delivery-evidence
+          python .github/scripts/receive_source.py | tee delivery-evidence/source-integrity.json
+          find "$COMPILED_ARTIFACT" -name '*keypair*' -delete
+      - name: Install pinned CPU dependencies
+        run: |
+          python -m pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[chain]' pytest==9.0.2 ruff==0.14.10
+      - name: Exercise Python and compiled Solana VM tests
+        run: |
+          set -euo pipefail
+          python -m pytest -q --junitxml=delivery-evidence/tests.xml | tee delivery-evidence/tests.txt
+          python -m ruff check gradientmine tests | tee delivery-evidence/lint.txt
+          python -m compileall -q gradientmine tests
+      - name: Publish only verified sources
+        run: |
+          set -euo pipefail
+          git rm -r .delivery
+          git -c user.name='GradientMine engineering' -c user.email='95132338+kapasainitishreddy@users.noreply.github.com' commit -m 'feat: publish verified wallet-authenticated training marketplace and Solana boundary'
+          git push origin HEAD:main
+          git rev-parse HEAD > delivery-evidence/PUBLISHED_COMMIT.txt
+          git archive --format=zip HEAD > delivery-evidence/GradientMine-source.zip
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verified-source-cycle-1
+          retention-days: 7
+          path: delivery-evidence/
