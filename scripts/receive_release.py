@@ -36,6 +36,13 @@ def receive(root=Path(".")):
         old = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
         if old != item["old_sha256"]:
             raise ValueError(f"Concurrent modification or unexpected source baseline: {name}")
+        if "edits" in item:
+            lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+            for start, stop, replacement in reversed(item["edits"]):
+                if not 0 <= start <= stop <= len(lines):
+                    raise ValueError("Invalid source edit bounds")
+                lines[start:stop] = replacement
+            item["content"] = "".join(lines)
         raw = item["content"].encode("utf-8")
         if len(raw) > 400_000 or hashlib.sha256(raw).hexdigest() != item["sha256"]:
             raise ValueError(f"New source integrity failure: {name}")
