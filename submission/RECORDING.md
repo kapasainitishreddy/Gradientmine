@@ -1,6 +1,6 @@
 # Recording sheet: presentation and product demo
 
-**Prepared recording instructions, not finished videos.** No MP4, final video URL or upload confirmation is claimed. Current official rule access was blocked; [SUBMIT.md](SUBMIT.md) explains the inherited 2–3 minute presentation / ≤3 minute demo guidance. Verify those limits before upload.
+**Recording instructions for the official presentation and demo.** [SUBMIT.md](SUBMIT.md) records freshly verified official rules: presentation 2–3 minutes; product demo ≤3 minutes. Captioned capture candidates, when produced, have their own provenance sheets; no upload or portal confirmation follows from a local MP4. Check for later rule changes before upload.
 
 ## Capture preparation
 
@@ -67,7 +67,7 @@ ffprobe -v error -show_entries format=duration -show_entries stream=codec_name,w
 ffprobe -v error -show_entries format=duration -show_entries stream=codec_name,width,height,r_frame_rate -of json demo.mp4
 ```
 
-Check the entire exported file, including black frames and end card: presentation 120–180 seconds under inherited guidance; demo ≤180 seconds, preferably 165. These are instructions, not commands claimed executed in this environment. Watch both exports with sound and captions. Confirm that addresses/hashes remain legible and no secret appears in a frame.
+Check the entire exported file, including black frames and end card: presentation 120–180 seconds under verified official guidance; demo ≤180 seconds, preferably 165. These are instructions, not commands claimed executed in this environment. Watch both exports with sound and captions. Confirm that addresses/hashes remain legible and no secret appears in a frame.
 
 ## Upload and portal handoff
 

@@ -1,0 +1,182 @@
+{
+  "status": "passed",
+  "mode": "local",
+  "public_hosted": false,
+  "image_id": "sha256:e947f27ff86027621597d12705b8fee8450fea334a03305ba5bb462bbb3f1dd6",
+  "checks": [
+    "non-root UID 10001 can import and serve restrictive-permission source",
+    "read-only rootfs; durable private volume",
+    "HTTP health, homepage and assets",
+    "authenticated bounty creation",
+    "bounty policy survives container recreation",
+    "same named validator after recreation",
+    "private data path returns 404",
+    "build CA absent from runtime"
+  ],
+  "job_id": "c0582ed8-9d84-4895-951a-5d7bd9aa1eec",
+  "policy_sha256": "b4d8384d54119098b028f33fa5ee3765ec101be55d4ec98e2677f38349912e16",
+  "validator": "APdyTVXQfPzNq36i4iwEHdcxQdBS8rLWzCoWfreYwM6i",
+  "private_keys_exported": false,
+  "packages": [
+    {
+      "name": "gradientmine",
+      "version": "0.2.0"
+    },
+    {
+      "name": "filelock",
+      "version": "3.32.3"
+    },
+    {
+      "name": "solders",
+      "version": "0.29.0"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1"
+    },
+    {
+      "name": "pydantic",
+      "version": "2.13.5"
+    },
+    {
+      "name": "opentelemetry-api",
+      "version": "1.45.0"
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.1"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    },
+    {
+      "name": "scikit-learn",
+      "version": "1.8.0"
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.46.5"
+    },
+    {
+      "name": "cloudpickle",
+      "version": "3.1.2"
+    },
+    {
+      "name": "networkx",
+      "version": "3.6.1"
+    },
+    {
+      "name": "fastapi",
+      "version": "0.142.2"
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.48.0"
+    },
+    {
+      "name": "annotated-doc",
+      "version": "0.0.5"
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6"
+    },
+    {
+      "name": "gradientmine",
+      "version": "0.2.0"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3"
+    },
+    {
+      "name": "click",
+      "version": "8.5.0"
+    },
+    {
+      "name": "mpmath",
+      "version": "1.3.0"
+    },
+    {
+      "name": "scipy",
+      "version": "1.18.1"
+    },
+    {
+      "name": "certifi",
+      "version": "2026.7.22"
+    },
+    {
+      "name": "idna",
+      "version": "3.20"
+    },
+    {
+      "name": "starlette",
+      "version": "1.7.0"
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1"
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.7.0"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.0"
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0"
+    },
+    {
+      "name": "numpy",
+      "version": "2.3.5"
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2"
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0"
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4"
+    },
+    {
+      "name": "pip",
+      "version": "26.2.1"
+    },
+    {
+      "name": "setuptools",
+      "version": "83.0.0"
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9"
+    },
+    {
+      "name": "torch",
+      "version": "2.14.1+cpu"
+    },
+    {
+      "name": "sympy",
+      "version": "1.14.0"
+    },
+    {
+      "name": "jsonalias",
+      "version": "0.1.1"
+    },
+    {
+      "name": "joblib",
+      "version": "1.6.0"
+    },
+    {
+      "name": "threadpoolctl",
+      "version": "3.7.0"
+    }
+  ]
+}

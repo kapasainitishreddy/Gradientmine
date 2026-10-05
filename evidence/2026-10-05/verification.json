@@ -1,0 +1,130 @@
+{
+  "format": "gradientmine.verification.v1",
+  "application_source_commit": "a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c",
+  "checks": {
+    "python": {
+      "passed": 119,
+      "skipped": 0,
+      "command": "GM_SBF_PATH=.local/final-sbf/gradientmine_escrow.so python -m pytest -q"
+    },
+    "javascript": {
+      "passed": 19,
+      "failed": 0,
+      "command": "node --test tests/web/*.test.mjs"
+    },
+    "rust": {
+      "passed": 6,
+      "failed": 0,
+      "command": "cargo test --locked --manifest-path program/Cargo.toml"
+    },
+    "fresh_compiled_integration": {
+      "passed": 31,
+      "command": "GM_SBF_PATH=.local/final-clean-sbf/gradientmine_escrow.so python -m pytest -q tests/test_chain.py tests/test_deployment.py tests/test_devnet_product.py"
+    },
+    "browser": {
+      "status": "passed",
+      "checks": [
+        "Real Wallet Standard auth with test-only Ed25519 signer and live nonce API",
+        "Authenticated bounty creation against persistent HTTP API, explicitly local with zero funds",
+        "Keyboard focus stays in native modal dialogs; Escape restores the invoking control",
+        "Browser SHA-256 integrity check against actual policy bytes",
+        "Hostile bounty/event strings render as text; copied worker arguments use shell-safe quoting",
+        "An older delayed refresh cannot replace a more recent bounty selection or state",
+        "360px and 390px mobile layouts without horizontal page overflow",
+        "Named validator and model hashes offer keyboard-operable full-value access and copy controls",
+        "A delayed artifact response cannot replace the contents or download of a newer evidence dialog",
+        "Recorded evidence clearly read-only; exact artifact hash and expected-validator Ed25519 signature verified",
+        "Bounty filter and accessible native dialogs function",
+        "No browser JavaScript exceptions"
+      ],
+      "wallet_disclosure": "Test-only ephemeral signer; no claim of a real Phantom extension test or Devnet payment.",
+      "browser": "Playwright Chromium: no attached local interactive-browser tool available.",
+      "screenshots": [
+        "live-desktop.png",
+        "live-mobile.png",
+        "recorded-desktop.png",
+        "recorded-mobile.png"
+      ]
+    },
+    "syntax": [
+      "npm run check",
+      "python -m compileall -q gradientmine scripts",
+      "python -m ruff check gradientmine scripts tests"
+    ],
+    "dependency_inventory": {
+      "third_party_releases": 69,
+      "known_advisories": 0,
+      "skipped": 0,
+      "cpu_torch_upstream_release": "2.14.1"
+    },
+    "container_inventory": {
+      "third_party_releases": 38,
+      "known_advisories": 0,
+      "skipped": 0
+    }
+  },
+  "ci": {
+    "run_id": 37386118051,
+    "source_commit": "a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c",
+    "conclusion": "success",
+    "url": "https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37386118051",
+    "verified_via": "GitHub run and job API; all job steps successful",
+    "log_download": "proxy403; no log-derived test counts claimed"
+  },
+  "sbf": {
+    "sha256": "6a19d26db5f7e5f4a67a021aa55d7f1984064718762bd17276a143745e6e18fb",
+    "bytes": 84720,
+    "fresh_target_directory": true,
+    "classification": "local:litesvm; no internet-cluster deployment"
+  },
+  "recorded_run": {
+    "job_id": "d348dcd2-90f3-49a0-949d-4c7801699346",
+    "run_sha256": "23b5e0ff73688a20dcc5316cb88700f3d18943aa5e1eebe05d22a886fd33b66c",
+    "baseline_accuracy": 0.8472222222222222,
+    "winner": {
+      "artifact_sha256": "5f0aa6e87db0ae34899e6e0fd581bd229f98ca1037bde949276288760be751b5",
+      "baseline_accuracy": 0.8472222222222222,
+      "baseline_predictions_sha256": "fdc2b7e5572cafa21f7d40a9c0d2d43fb1484a8afbdfc62fa44408df5346ca16",
+      "bootstrap_lower_bound": 0.06111111111111111,
+      "bootstrap_resamples": 20000,
+      "bootstrap_seed": 7301,
+      "candidate_accuracy": 0.9527777777777777,
+      "candidate_predictions_sha256": "abb83f73c7fe994afe2f76c0a11594667b3eb88431608045ae4350b290c3b4de",
+      "delta": 0.10555555555555556,
+      "eligible": true,
+      "maximum_candidates": 8,
+      "minimum_delta": 0.01,
+      "model_sha256": "410a8216d8fc69bc6b6ab94501326afd6bb53ef5bc4e4e8a0746dfc5364de33a",
+      "n": 360,
+      "per_candidate_alpha": 0.00625,
+      "reason": "Threshold and positive adjusted lower bound met",
+      "receipt_sha256": "4380a9884b99fc6236e6fb7d62b4439e7b27509d2c038c3d8dd819378e8c55ce",
+      "statistical_limit": "Approximate one-sided paired bootstrap under IID assumptions; no anti-leakage or work proof.",
+      "submission_id": "ef1b94b4-8ff4-427d-885b-9a8276bb0039",
+      "worker": "2K1M7JAZPNdWygM2wpZHmDg5oPptt9w1XN5bLKjVdMZ9"
+    },
+    "worker_processes": [
+      {
+        "exit_code": 0,
+        "pid": 12790
+      },
+      {
+        "exit_code": 0,
+        "pid": 12791
+      },
+      {
+        "exit_code": 0,
+        "pid": 12792
+      }
+    ],
+    "on_chain": false,
+    "strict_public_artifacts_verified": 14
+  },
+  "external_limits": {
+    "devnet": "single free requestAirdrop failed; creator finalized balance0; no deployment",
+    "pages": "POST returned403 Resource not accessible by integration; no site",
+    "phantom": "owner interactive browser required",
+    "submission": "not submitted",
+    "hosting_url": null
+  }
+}

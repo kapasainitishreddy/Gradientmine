@@ -1,0 +1,15 @@
+{
+  "captured_at_utc": "2026-10-05T23:05:11.739546+00:00",
+  "transport": "curl with TLS verification enabled; bounded requests",
+  "files": {
+    "uci.body": "1988164701f66af87c1f999f1da95ac52dcfa4010e3a5bc906595b478c526b30",
+    "event.body": "4755e675865c180fb4eabc3c99fe67d1f6d80b74356017423186221312da6524",
+    "pol.body": "5fc0170849c30199907f246a27a438c84e2e6ba6dc727d24f850d99be061b283",
+    "verde.body": "37be5007c64dfe0aefd03fb576557b92a8b8326af42163942d08a73f698d9d47",
+    "solana.body": "c8a5b3fb05c6b850dced3180fccfcf768f9ac8bfd4ecc632ecfcc2d6b9185534",
+    "lora.body": "70bb70b4fd6d41b8a0f53fc5148017bf6ef5b73acba822027397f861aee135c6",
+    "faq.body": "07acade9439a4808620cfad09b58001daba3c402e66d3575af3bf54da401565b",
+    "rules.body": "1e4afb605ada862fd064859f88db226fb12f6e3bf2f1c91e29194e573d7c667a",
+    "cc-by-4.0.body": "8dda1ccec4be91fc80821d4e4fd5c568072b9a3a74b2fdc07c249a27e920ef01"
+  }
+}

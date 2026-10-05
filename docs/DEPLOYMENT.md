@@ -23,6 +23,10 @@ The managed cloud checkout already has an isolated environment. Use `. /workspac
 
 `docker compose up --build -d` binds the app to loopback port 8000 with a named durable volume. Before putting it behind an HTTPS reverse proxy, configure `GM_ORIGIN` to the exact public origin without path, credentials or query. Permit only that origin. Do not expose port 8000 to the world directly. The image uses non-root UID 10001; the persistent volume must be writable by that UID. Docker configuration must be executed and health-checked in your target environment; its presence in the repo is not deployment evidence.
 
+The container regression check runs a disposable image with UID 10001, a read-only root filesystem and a private writable volume; it authenticates a local bounty and verifies that the policy and validator identity survive container recreation. Run `python -m scripts.container_qa --out .local/container-report.json` after `docker build -t gradientmine:verified .`. CI deliberately builds from owner-only source permissions to catch non-root copy failures. Only the checked public report/inventory is uploaded; the disposable test volume is removed.
+
+For an authorized build network with a private CA, BuildKit optionally accepts `--secret id=build_ca,src=YOUR_CA_BUNDLE`. That bundle supplies pip's trust only during installation, remains absent from the runtime image, and does not disable TLS verification. Configure your network proxy/DNS separately if required.
+
 Keep one worker process for the API. Its evaluation scheduler shares SQLite and in-process locking. Do not scale multiple independent validator instances over diverging filesystems. Workers doing experiments are separate CLI processes, not API replicas.
 
 ## Solana Devnet
@@ -39,7 +43,7 @@ sha256sum program/target/deploy/gradientmine_escrow.so
 
 Follow https://solana.com/docs/programs/deploying to deploy the freshly built SBF with a dedicated locally controlled identity and free Devnet SOL. Check genesis `EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG`, actual deployed program bytes, executable status and upgrade authority. Do not set `GM_PROGRAM_ID` to a placeholder or the System Program. Do not finalize or transfer authority over an existing deployment casually.
 
-Fresh access to that official deployment page was blocked on October 5, 2026 by proxy CONNECT 403; consult it from an authorized browser for current CLI details. `cargo build-sbf --sbf-out-dir` changes the binary location; hash the actual output you deploy. Native CLI compilation and LiteSVM execution do not establish a deployment or upgrade-authority configuration.
+The official deployment page was retrieved with HTTP 200 and TLS verification on October 5, 2026 after the earlier proxy block. It confirms build/deploy commands, target/deploy output, cluster selection, binary-size-dependent rent and default upgrade authority; check the live page for later changes. `cargo build-sbf --sbf-out-dir` changes the binary location; hash the actual output you deploy. Native CLI compilation and LiteSVM execution do not establish a deployment or upgrade-authority configuration.
 
 For a real product proof, one evidence bundle must join the current source commit, exact SBF SHA-256, deployed-byte check, program ID and upgrade-authority assumption with the bounty account, creator/worker/validator public addresses, funding/registration/settlement signatures, policy hash, trained winning artifact hash and signed receipt hash. Verify each finalized transaction, matching on-chain state, recipient balance delta and Explorer URL. A chain-only smoke test using synthetic commitments is a separate mechanics test; it is not proof of payment for an actual trained artifact. Record only public evidence. No successful integrated Devnet run is inferred from this runbook.
 

@@ -10,26 +10,26 @@ Portal and FAQ: https://colosseum.com/hackathon
 
 Rules: https://colosseum.com/legal/Crypto%20World%27s%20Fair%20Hackathon%20Rules.pdf
 
-On October 5, 2026, bounded read-only requests with TLS verification to all three official URLs failed at the environment proxy: `CONNECT tunnel failed, response 403`, curl exit 56, source HTTP code `000`. This is a network-policy blocker, not evidence that Colosseum rejected the project. No source page or signed-in portal was retrieved. The guidance below preserves the prior repository's reported rules; **it is not fresh official verification**. Earlier text labelled its rules check October 5, but captured organizer responses are not stored in this repository. The owner must compare the current pages, PDF and dashboard before submitting and record any change.
+On October 5, 2026, after the earlier proxy block, bounded read-only requests with TLS verification retrieved all three official sources with **HTTP 200**. The event page, FAQ and extracted rules PDF were read. The earlier proxy CONNECT 403 is superseded by this successful verification. Source bodies, headers, extracted text and a SHA-256 capture manifest are retained outside Git at `/workspace/.gradientmine-setup/final/research/`; that path is machine-local provenance, not a public link. No signed-in dashboard or entrant account was accessed. Current public FAQ fields are verified; signed-in character limits and declarations remain an owner check.
 
-## Rules to confirm before entry
+## Verified rules and remaining entrant checks
 
-| Topic | Inherited guidance / product boundary | Required current check |
+| Topic | Current official source and requirement | Remaining check / product boundary |
 |---|---|---|
-| Deadline | October 12, 2026, 11:59 PM Pacific | Confirm event deadline and timezone. If unchanged: October 13, 06:59 UTC / 2:59 AM America/New_York (Philadelphia) |
-| Event window and prior work | September 14–October 12; earlier development must be disclosed | Read current prior-work terms; disclose idea, ZIP/source, and code developed before the window. Commit timestamps alone do not settle eligibility |
-| Eligibility | New startups without significant outside funding; English materials | Confirm funding thresholds, age, restricted jurisdictions, sanctions, rights/IP and any accelerator conditions using the entrant's own facts |
-| Team | Each person registers, belongs to one team, submits one product | Confirm current team-size and membership rules in dashboard; no maximum size is invented here |
-| Repository | Provide the public GitHub source and history | Confirm visibility, access, open-source/license and submission-time requirements; do not assume a push is an entry |
-| Presentation | 2–3 minutes | Verify current allowed length; prepared script targets 2:30 |
-| Product demo | No more than 3 minutes | Verify current allowed length; prepared walkthrough targets 2:45 |
-| Fields | Product, chain/tools, team/location/background, graphic, repository, videos, market/validation/distribution | Signed-in field names, required attachments and character limits were unavailable; copy prepared text into the actual fields without inventing a portal schema |
-| Judging | FAQ previously listed founder-market fit, insight, execution, market size, communication, viability, traction; rules also discussed functionality, impact, novelty, UX, open-source composability and business planning | Compare current published criteria; no scoring weights or guaranteed prize eligibility are asserted |
-| Solana | Proposed ecosystem track: native Rust Solana program and Devnet escrow | Confirm current track/prize terms. Prior rules did not establish requirements for Anchor, LoRA, LLMs, mainnet, a new token or three GPUs |
-| AI assistance | This project used AI for code, research, tests, design and submission drafts | Check current organizer disclosure/eligibility requirements. Our truthful disclosure is prepared regardless; no organizer-specific AI policy is invented |
-| Procedure | Team leader submits via signed-in Colosseum dashboard | Confirm leader authority, all declarations, video-link access and final confirmation |
+| Deadline | Rules §5: October 12, 2026, 11:59 PM Pacific; event page also lists October 12 | October 13, 06:59 UTC / 2:59 AM America/New_York (Philadelphia). Organizer computer is official timekeeper; check for later changes |
+| Event window and prior work | Rules §5: September 14, 2026, 6:00 AM PT through deadline. FAQ permits earlier development/pre-existing code with disclosure; judging covers work within the event | Disclose relevant earlier idea, ZIP/source and development accurately. FAQ distinguishes third-party open-source composition from the team's own prior development |
+| Eligibility | Rules §3: majority age or 18, whichever is older at start; exclusions/sanctions and employer/entity permissions apply. FAQ: new startups without significant outside capital. Rules §12: all content in English | Owner must check exact jurisdiction, age, sanctions, funding and IP facts; no numeric funding threshold is supplied by the FAQ |
+| Team | Rules §§6–7 and FAQ: every member registers; leader adds members/submits; one team per person, one product per team/person. FAQ allows solo founders | No maximum team size was found in these sources; check any signed-in portal limit without inventing one |
+| Repository | FAQ requires GitHub link; open source encouraged; private repos allowed if review access is granted to `hackathon@colosseum.com` | GradientMine uses its public MIT repository. FAQ assesses significant event work, authorship and strategic priorities, rather than a specific language/framework |
+| Presentation | FAQ: two-to-three-minute presentation | Prepared target 2:30; exported duration must be 120–180 seconds |
+| Product demo | FAQ: no more than three minutes explaining product operation | Prepared target 2:45; exported duration ≤180 seconds |
+| Fields | FAQ lists product name/brief description, blockchains/tools, all teammate backgrounds, team location, logo/graphic, GitHub, both videos, go-to-market/demand validation/distribution | These public field categories are verified. Exact signed-in field labels, character limits and declarations were not inspected |
+| Judging | FAQ: founder/market fit, insight, product/execution, market size, communication, viability, traction. Rules §8: functionality, potential impact, novelty, UX, open-source/composability, business plan | No scoring weights or guaranteed prize outcome asserted; explain the startup and evidence honestly |
+| Solana | Event page offers Solana track; rules §14(e) awards that track to products integrating Solana. FAQ permits all blockchain ecosystems | Native Rust/Devnet implementation is the proposed integration. No Anchor, LoRA, LLM, mainnet, token or three-GPU requirement was found |
+| AI assistance | FAQ acknowledges backed founders who built MVPs entirely with AI coding tools | No specific mandatory AI-disclosure clause found in the retrieved event page/FAQ/rules. Voluntary truthful disclosure is prepared; complete any actual portal declaration |
+| Procedure | FAQ: register, join current competition, access dashboard submission portal; leader completes submission before deadline. Rules §6 requires member registration/profile/consent before deadline | Actual entrant must sign in, verify team/profile facts, review declarations and retain final portal confirmation |
 
-Plan to submit ahead of the reported deadline. Identity and terms must be confirmed by the actual entrant; this package does not establish their eligibility.
+Submit ahead of the deadline. The official PDF is the authority for entrant exclusions and terms; this summary does not establish the owner's personal eligibility. Winning does not require accepting accelerator admission (FAQ), and no accelerator or funding commitment is invented here.
 
 ## Materials to enter
 
@@ -48,7 +48,7 @@ Plan to submit ahead of the reported deadline. Identity and terms must be confir
 
 ## Final submission steps
 
-1. From an authorized browser, inspect the current official event page, FAQ, rules and signed-in fields; update this checklist for any differences.
+1. From an authorized browser, check for official changes since October 5 and inspect the signed-in fields; update this checklist for any differences.
 2. Register actual entrant(s), join the event and verify the team's leader and eligibility facts. Complete TEAM.md and pre-event history in DISCLOSURE.md.
 3. Fill the real dashboard fields from PRODUCT.md. Upload the original logo and enter the public repository; include a live URL only if it really works.
 4. Record both videos following RECORDING.md, validate durations, upload to a judge-accessible host and test playback in a signed-out browser. No final video URL exists in this package.

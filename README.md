@@ -10,6 +10,8 @@ The local training/API loop and compiled Solana program have been exercised. The
 
 The included recorded run is real local CPU training by three independent processes on one machine. It is not a live decentralized network. Recorded runs never show a reward or Explorer link when no blockchain transaction occurred. The public Digits evaluation split can be reconstructed; it is not a secret anti-cheating benchmark.
 
+The current verification passed 119 Python tests with fresh SBF and zero skips, 19 JavaScript tests, 6 Rust tests and 12 browser checks. The integrated test pays the actual trained artifact's worker through compiled SBF in local LiteSVM. Live Devnet genesis was verified, but a single free airdrop failed; deployment and public payout remain unverified. Exact commands, build hashes, current CI and the public funding address are in the build ledger.
+
 **Never deposit mainnet assets. This release accepts local mode or Solana Devnet only.**
 
 ## Run locally
@@ -40,6 +42,8 @@ python -m gradientmine.cli worker --api http://127.0.0.1:8000 \
 ```
 
 Wallet files stay on your machine. They are not needed by reviewers. Do not paste or upload private keys, seed phrases, `.local/`, or the validator's private database.
+
+After an ambiguous response, repeat the same worker command with `--resume` and its existing `--out` directory. The signed checkpoint preserves the artifact and exact pending transaction. It checks finalized registration before bounded replacement; retain the checkpoint while status is unknown. Devnet workers require persistent `--out`.
 
 ## Verified work boundary
 
@@ -76,5 +80,6 @@ Compiled-SBF tests additionally require `GM_SBF_PATH` pointing to the built `gra
 - [Official submission checklist](submission/SUBMIT.md)
 - [Product and honest go-to-market copy](submission/PRODUCT.md)
 - [Pitch script](submission/PITCH.md) and [demo recording instructions](submission/DEMO.md)
+- [Exact presentation/demo recording sheet](submission/RECORDING.md)
 
 A complete submission still requires the owner's registration/identity confirmation and uploaded videos. Do not describe scripts as finished videos or planned interviews as traction. The submission checklist distinguishes implementation from verified live operation.

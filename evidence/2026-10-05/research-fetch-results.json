@@ -1,0 +1,65 @@
+[
+  {
+    "key": "event",
+    "url": "https://colosseum.com/worldsfair",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "faq",
+    "url": "https://colosseum.com/hackathon",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "rules",
+    "url": "https://colosseum.com/legal/Crypto%20World%27s%20Fair%20Hackathon%20Rules.pdf",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "lora",
+    "url": "https://arxiv.org/abs/2106.09685",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "pol",
+    "url": "https://arxiv.org/abs/2103.05633",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "verde",
+    "url": "https://www.gensyn.ai/research/verde-a-verification-system-for-machine-learning-over-untrusted-nodes",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "solana",
+    "url": "https://solana.com/docs/programs/deploying",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "uci",
+    "url": "https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  },
+  {
+    "key": "cc-by-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "curl_exit": 0,
+    "http_status": "200",
+    "error": ""
+  }
+]

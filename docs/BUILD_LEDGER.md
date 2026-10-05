@@ -126,3 +126,40 @@ Therefore the recorded viewer is implemented and testable from `web/`, but there
 - Record and upload the 2–3 minute presentation and <=3 minute product demo.
 - Complete the Colosseum registration/submission through the signed-in owner account and save the confirmation.
 - Any customer interviews, traction, revenue or willingness-to-pay claims remain unverified until actually obtained.
+
+## Product completion pass, October 5, 2026
+
+Native Git fetch confirmed the supplied `d0b3143` was the current upstream starting point. The following coherent changes were committed and pushed to `main`, without rewriting history:
+
+- `dc11dff`: strict finalized transaction header/program privilege checks, including boolean/count and invoked-program mutations.
+- `b434363`: deployed executable/loader/ProgramData inspection, exact ELF-byte comparison and explicit upgrade-authority trust.
+- `2d65b33`: bounded JSON/numeric inputs, exact persisted-origin authentication, directory fsync and atomic failed-evaluation rollback.
+- `8277ab6`: CPU PyTorch 2.14.1 and pip 26.2.1, complete installed dependency inventory audit. CPU build tags are mapped explicitly to upstream advisories rather than silently skipped.
+- `cb96b80`, `c56acfd`: authenticated durable worker checkpoints; exact signed-byte recovery, finalized registration discovery, bounded expiry/absence replacement; confirmation retries remain idempotent after evaluation.
+- `d4d14db`: wallet/disconnect and stale-response protection, exact pending-transaction recovery, accessible evidence dialogs, full/copy hashes, explicit trusted evaluator and eligible-versus-paid states.
+- `f231b5c`: actual API bounty → CPU CLI training → signed artifact → compiled-SBF registration → evaluation/receipt → exact payout integration. Its automated execution is explicitly **local LiteSVM**, not Devnet.
+- `19578cf`: CI SBF upload allowlist excludes the automatically generated private keypair. Fresh locked program and complete ML/program integration tests run in the program job.
+- `a3d3c49`: freshly verified recorded CPU run and submission package. Upgrading PyTorch changed exact floating-point merge bytes for the older recording; historical evidence remains in Git history. The new viewer anchors the same independently remeasured scores to job `d348dcd2-90f3-49a0-949d-4c7801699346`, not the old run.
+- `eb61007`: actual container testing found restrictive source permissions prevented UID 10001 from importing the application. Explicit copy ownership fixes this; a real container regression recreates the private volume and verifies bounty/validator continuity. CI builds from restrictive permissions and audits the installed container inventory. Optional BuildKit CA trust remains confined to the build; TLS verification is preserved.
+
+### Fresh verification
+
+With the fresh SBF supplied, `python -m pytest -q` passed **119 tests, zero skips**, including all compiled tests. This was rerun after container and recording-script changes. `node --test tests/web/*.test.mjs` passed **19**, `npm run check`, Ruff and compileall passed. Locked native Rust tests passed **6**. A new empty Cargo target built the locked SBF with Agave 4.3.0/platform-tools v1.57; **31** chain/deployment/integrated-product tests passed against it. ELF size is **84,720 bytes**, SHA-256 `6a19d26db5f7e5f4a67a021aa55d7f1984064718762bd17276a143745e6e18fb`.
+
+`python -m gradientmine.cli demo --out .local/final-verification` completed three independent CPU worker processes, all exit zero, on one host. Baseline **84.7222%**, winning candidate **95.2778%**, delta **10.5556 percentage points**, **360** held-out examples. State `EVALUATED`; **no on-chain funds moved**. All **14** public referenced artifacts passed hashes, expected worker/validator signatures, cross-artifact provenance, exact current-runtime model merge and deterministic winner selection before export. This is a deliberately budget-limited Digits proof of function, not an LLM/general benchmark or independent-node claim.
+
+Playwright Chromium live-HTTP and recorded QA passed **12** substantive checks, including test-only Wallet Standard authentication, mobile 360/390px layouts, keyboard/focus, stale async responses, hostile strings and expected-signer receipts. It is **not Phantom QA**. Dependency audit found **zero known advisories** across **69** installed development releases, with no silent CPU skip. Real non-root Docker startup/persistence passed; its separate **38**-release installed inventory audit also found zero known advisories. Container health is local verification, not public deployment.
+
+GitHub Actions [37386118051](https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37386118051) at `a3d3c491cc9f5b236e2eb38126cdb56e5fa3b82c` completed successfully. The authenticated GitHub run/job API confirmed every Python/browser/audit/Rust/SBF/VM step succeeded. Artifact/log CDN downloads returned proxy 403, so test counts here come from actual local commands, not inferred CI logs. The subsequent container release runs are recorded separately in final provenance.
+
+Public machine-readable records are under [evidence/2026-10-05](../evidence/2026-10-05/verification.json). Private identities, databases, worker recovery state and video originals remain outside Git. The retained local API was restarted with current code and its original durable validator identity.
+
+### Actual external attempts and boundaries
+
+Later verified-TLS requests retrieved current official Colosseum rules/FAQ, research and dataset/license sources with HTTP 200. This supersedes the earlier proxy block; saving the environment configuration draft is not itself proof of publication. Official rules confirm presentation **2–3 minutes**, demo **≤3 minutes**, deadline **October 12, 2026, 11:59 PM Pacific**. Signed-in entrant fields, identity declarations and submission remain owner actions.
+
+Live Devnet RPC returned the pinned genesis. Exactly **one** legitimate free 2 SOL request failed; finalized balances remained zero. Fresh creator **public** funding address: `9hkeGMLra72RUkdAngRQgmzRRovkMXHircWce2cRkkU8`. The fresh planned program identity has **not** been deployed; there is no bounty account, funding/registration/settlement signature or Explorer payout to claim. [devnet-attempt.json](../evidence/2026-10-05/devnet-attempt.json) records this boundary. Only free Devnet SOL is authorized; no mainnet, purchase, repeated blocked faucet loop or historical exposed identity was used.
+
+Authenticated GitHub access reported repository admin rights, providing a new reason to check Pages creation. The actual Pages POST still returned **403 “Resource not accessible by integration.”** No site or failing deployment workflow was created. No other authorized hosting credential/capacity or default external Solana identity was available. A public live service or static viewer URL remains unverified.
+
+Real extension-wallet approval, free Devnet funding, suitable hosting account access, video public uploads, factual entrant/team review and signed-in Colosseum submission require owner actions. No customer, revenue, private-task validation, independent operator, decentralized evaluation, formal external security audit or submitted entry is invented.
