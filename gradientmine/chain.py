@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import struct
 from solders.hash import Hash
 from solders.instruction import AccountMeta, Instruction
 from solders.keypair import Keypair
@@ -10,7 +11,7 @@ from solders.message import Message
 from solders.pubkey import Pubkey
 from solders.transaction import Transaction
 
-from .crypto import b58decode, validate_address
+from .crypto import b58decode, b58encode, digest, validate_address
 from .rpc import Rpc
 from .wire import (
     BOUNTY_SIZE,
@@ -147,6 +148,55 @@ class Chain:
         if not account or not account.get("executable"):
             raise ValueError("Configured GradientMine program is not executable on this Devnet RPC")
         return {"genesis": genesis, "program_id": self.program_id, "executable": True}
+
+    def verify_program(self, program_bytes):
+        """Compare a built ELF with finalized deployed bytes and record upgrade trust.
+
+        Upgradeable program allocations may contain zero padding after the ELF.
+        Never strip the ELF's own trailing zero bytes before hashing it.
+        """
+        if not isinstance(program_bytes, bytes) or not program_bytes.startswith(b"\x7fELF"):
+            raise ValueError("Expected the exact compiled SBF ELF bytes")
+        if not 4 <= len(program_bytes) <= 10_000_000:
+            raise ValueError("Unsupported SBF binary size")
+        genesis = self.rpc.require_devnet()
+        account = self.rpc.account(self.program_id)
+        if not account or account.get("executable") is not True:
+            raise ValueError("Configured program is not executable on finalized Devnet")
+        upgradeable = "BPFLoaderUpgradeab1e11111111111111111111111"
+        legacy = {"BPFLoader1111111111111111111111111111111111", "BPFLoader2111111111111111111111111111111111"}
+        result = {"genesis": genesis, "program_id": self.program_id, "executable": True,
+                  "loader": account.get("owner"), "programdata_address": None,
+                  "deployment_slot": None, "upgrade_authority": None}
+        try:
+            if account["data"][1] != "base64":
+                raise ValueError("Unsupported program account encoding")
+            raw = base64.b64decode(account["data"][0], validate=True)
+            if account.get("owner") == upgradeable:
+                if len(raw) != 36 or struct.unpack_from("<I", raw)[0] != 2:
+                    raise ValueError("Unrecognized upgradeable program state")
+                address = b58encode(raw[4:36])
+                stored = self.rpc.account(address)
+                if not stored or stored.get("owner") != upgradeable or stored.get("executable") is not False:
+                    raise ValueError("ProgramData is absent or owned by the wrong loader")
+                if stored["data"][1] != "base64":
+                    raise ValueError("Unsupported ProgramData encoding")
+                raw = base64.b64decode(stored["data"][0], validate=True)
+                if len(raw) < 45 or struct.unpack_from("<I", raw)[0] != 3 or raw[12] not in (0, 1):
+                    raise ValueError("Unrecognized ProgramData state")
+                result.update(programdata_address=address, deployment_slot=struct.unpack_from("<Q", raw, 4)[0],
+                              upgrade_authority=b58encode(raw[13:45]) if raw[12] else None)
+                raw = raw[45:]
+            elif account.get("owner") not in legacy:
+                raise ValueError("Unsupported program loader; exact binary verification unavailable")
+            if raw[:len(program_bytes)] != program_bytes or any(raw[len(program_bytes):]):
+                raise ValueError("Deployed program differs from the exact built ELF")
+        except (KeyError, IndexError, TypeError, struct.error) as exc:
+            raise ValueError("Malformed deployed program evidence") from exc
+        result.update(program_sha256=digest(program_bytes), program_size_bytes=len(program_bytes),
+                      upgrade_trust="Upgrade authority can replace the program" if result["upgrade_authority"]
+                      else "No upgrade authority reported by this loader")
+        return result
 
     def intent(self, action, job, sub=None):
         self.deployment()
