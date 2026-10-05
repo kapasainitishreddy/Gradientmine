@@ -17,11 +17,11 @@ Versions are pinned in pyproject.toml / program/Cargo.lock. Python license metad
 | PyTorch | 2.10.0, CPU build | BSD-style; https://github.com/pytorch/pytorch/blob/main/LICENSE |
 | scikit-learn | 1.8.0 | BSD-3-Clause; https://github.com/scikit-learn/scikit-learn/blob/main/COPYING |
 | NumPy | 2.3.5 | BSD-3-Clause with bundled notices; https://numpy.org/doc/stable/license.html |
-| FastAPI | 0.128.2 | MIT; https://github.com/fastapi/fastapi/blob/master/LICENSE |
-| Pydantic | 2.13.4 | MIT; https://github.com/pydantic/pydantic/blob/main/LICENSE |
+| FastAPI | 0.142.2 | MIT; https://github.com/fastapi/fastapi/blob/master/LICENSE |
+| Pydantic | 2.13.5 | MIT; https://github.com/pydantic/pydantic/blob/main/LICENSE |
 | HTTPX | 0.28.1 | BSD-3-Clause; https://github.com/encode/httpx/blob/master/LICENSE.md |
 | Uvicorn | 0.48.0 | BSD-3-Clause; https://github.com/encode/uvicorn/blob/main/LICENSE.md |
-| cryptography | 46.0.4 | Apache-2.0 OR BSD-3-Clause; https://github.com/pyca/cryptography/blob/main/LICENSE |
+| cryptography | 50.0.2 | Apache-2.0 OR BSD-3-Clause; https://github.com/pyca/cryptography/blob/main/LICENSE |
 | solders | 0.29.0 | MIT; https://github.com/kevinheavey/solders/blob/main/LICENSE |
 | Solana program crates | Locked in program/Cargo.lock | Apache-2.0 / individual crate metadata; https://github.com/anza-xyz/solana-sdk |
 | Ruff | 0.14.10, development only | MIT; https://github.com/astral-sh/ruff/blob/main/LICENSE |
