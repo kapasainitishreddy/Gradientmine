@@ -1,0 +1,20 @@
+[package]
+name = "gradientmine_escrow"
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+description = "Named-validator model-improvement escrow; intended for Solana Devnet"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+solana-program = "=2.3.0"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
