@@ -54,7 +54,7 @@ jobs:
           # Solana Foundation faucet explicitly recommends the programmatic PoW
           # faucet for AI agents. Mine only disposable Devnet SOL.
           cargo install devnet-pow --version 0.1.4
-          devnet-pow mine --target-lamports 2000000000 -ud
+          devnet-pow mine -d 3 --reward 0.02 --no-infer --target-lamports 1000000000 -ud
           creator="$(solana-keygen pubkey "$RUNNER_TEMP/creator.json")"
           worker="$(solana-keygen pubkey "$RUNNER_TEMP/worker.json")"
           validator="$(solana-keygen pubkey "$RUNNER_TEMP/validator.json")"
