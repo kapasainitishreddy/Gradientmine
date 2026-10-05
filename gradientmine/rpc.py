@@ -15,6 +15,10 @@ def validate_transaction(value, signature, spec):
         message = tx["message"]
         header = message["header"]
         keys = message["accountKeys"]
+        if any(type(header.get(key)) is not int for key in (
+            "numRequiredSignatures", "numReadonlySignedAccounts", "numReadonlyUnsignedAccounts"
+        )):
+            raise ValueError("Malformed transaction privilege counts")
         if (
             tx["signatures"] != [signature]
             or header["numRequiredSignatures"] != 1
@@ -45,6 +49,8 @@ def validate_transaction(value, signature, spec):
         if len(keys) != len(set(keys)) or set(keys) != expected_keys:
             raise ValueError("Unexpected transaction account set")
         readonly = header["numReadonlyUnsignedAccounts"]
+        if instruction["programIdIndex"] == 0 or instruction["programIdIndex"] < len(keys) - readonly:
+            raise ValueError("The invoked program must be an unsigned read-only account")
         for index, (address, is_signer, is_writable) in zip(instruction["accounts"], spec["accounts"]):
             actual_signer = index == 0
             actual_writable = index == 0 or index < len(keys) - readonly

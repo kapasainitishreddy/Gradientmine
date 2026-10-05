@@ -259,3 +259,26 @@ def test_finalized_transaction_rejects_wrong_evidence(attack):
         message["accountKeys"].append(message["accountKeys"][0])
     with pytest.raises(ValueError):
         validate_transaction(value, signature, spec)
+
+
+@pytest.mark.parametrize("field,value", [("numRequiredSignatures", True), ("numReadonlySignedAccounts", False)])
+def test_finalized_transaction_rejects_boolean_privilege_counts(field, value):
+    payload, signature, spec = transaction_fixture()
+    payload["transaction"]["message"]["header"][field] = value
+    with pytest.raises(ValueError):
+        validate_transaction(payload, signature, spec)
+
+
+def test_finalized_transaction_rejects_writable_program_account():
+    payload, signature, spec = transaction_fixture()
+    message = payload["transaction"]["message"]
+    old = message["accountKeys"][:]
+    # Keep every intended instruction account's privileges while moving only
+    # the invoked program into the writable prefix.
+    message["accountKeys"] = [spec["payer"], spec["accounts"][1][0], spec["program"], spec["accounts"][2][0]]
+    instruction = message["instructions"][0]
+    instruction["accounts"] = [message["accountKeys"].index(old[i]) for i in instruction["accounts"]]
+    instruction["programIdIndex"] = 2
+    message["header"]["numReadonlyUnsignedAccounts"] = 1
+    with pytest.raises(ValueError):
+        validate_transaction(payload, signature, spec)
