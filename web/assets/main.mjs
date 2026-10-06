@@ -3,10 +3,13 @@ import {bytes,base64,sha256,verifyEnvelope,short,percent,delta,lamports,node,exp
 import {validateIntent,validateWalletSignature} from './wire.mjs';
 import {parsePending,recoverPending} from './pending.mjs';
 import {assuranceContract,artifactFirewall,arenaCandidates,modelPassport} from './assurance.mjs';
+import {THEMES,applyTheme,nextTheme,readTheme,writeTheme} from './theme.mjs';
+import {animateBoot,animateDetail,animateThemeChange,installRevealMotion} from './motion-layer.mjs';
 
 const $=id=>document.getElementById(id),state={config:null,recorded:null,jobs:[],job:null,selected:null,busy:false,evidence:null};
 const assetRoot=new URL('./',import.meta.url);
 let wallet=null,creationKey=null,pendingAction=null,evidenceRequest=0,detailRequest=0;
+let currentTheme=applyTheme(readTheme());
 wallet=new WalletSession(()=>queueMicrotask(()=>{renderWallet();if(state.job)renderDetail();}));
 const label=s=>({AWAITING_FUNDING:'Awaiting escrow',OPEN:'Accepting workers',EVALUATED:'Evaluated · not paid',NO_WINNER:'No eligible winner',SETTLING:'Payout pending',SETTLED:'Payout finalized',REFUNDED:'Refund finalized',ELIGIBLE:'Eligible',REJECTED:'Below threshold',REGISTERED:'Registered',AWAITING_REGISTRATION:'Registration pending'}[s]||s);
 const dt=t=>Number.isFinite(t)?new Date(t*1000).toLocaleString(undefined,{timeZoneName:'short'}):'Not recorded';
@@ -27,6 +30,17 @@ function identifier(value,title='identifier'){
  append(box,c,button('Copy',()=>copy(full),'text-button copy-id'));box.lastChild.setAttribute('aria-label',`Copy full ${title}`);return box;
 }
 function showDialog(id){const dialog=$(id);if(!dialog.open)dialog.showModal();}
+function renderTheme(){
+ const button=$('theme-button'),labelEl=$('theme-label'),hint=$('theme-hint'),theme=THEMES[currentTheme]||THEMES.void;
+ if(labelEl)labelEl.textContent=theme.label;
+ if(hint)hint.textContent=`${theme.label}: ${theme.hint}`;
+ if(button){button.dataset.theme=currentTheme;button.title=`Theme: ${theme.label}. Click to switch.`;}
+}
+async function cycleTheme(){
+ currentTheme=applyTheme(writeTheme(nextTheme(currentTheme)));
+ renderTheme();
+ await animateThemeChange($('theme-button'));
+}
 function validatorBadge(address){return append(node('div',null,'validator-badge'),node('strong','Trusted validator'),identifier(address,'validator address'),node('p','This named evaluator measures model quality and authorizes payout. Solana enforces escrow, registered recipients and the timeout refund.'));}
 function modeText(){
  if(state.recorded)return `Recorded local experiment · ${dt(state.recorded.recorded_at)} · Read-only evidence, not a live network. No blockchain payment.`;
@@ -193,6 +207,7 @@ function renderDetail(){
  const events=append(node('details',null,'events'),node('summary','Protocol event log'));
  for(const e of j.events||[])events.append(append(node('p'),node('small',dt(e.created)),node('strong',` ${e.kind}`),node('span',` · ${e.message}`)));
  root.replaceChildren(head,trust,meta,renderAssuranceContract(j),renderArena(j),pipeline,outcome,metrics,tableWrap,proof,renderArtifactFirewall(j),renderPassport(j),lineage,actions,audit,events);
+ queueMicrotask(()=>animateDetail(root).catch(()=>{}));
 }
 function renderWallet(){
  if(!wallet)return;
@@ -291,6 +306,7 @@ $('copy-worker').onclick=()=>copy($('worker-command').textContent).catch(e=>noti
 $('copy-evidence').onclick=()=>copy($('evidence-hash').textContent).catch(e=>notice(e.message));
 $('download-evidence').onclick=()=>{if(!state.evidence)return;const u=URL.createObjectURL(new Blob([state.evidence.raw],{type:'application/json'})),a=node('a');a.href=u;a.download=`${state.evidence.hash}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);};
 $('approve-transaction').onclick=()=>approveTransaction().catch(e=>notice(e.message));
+$('theme-button').onclick=()=>cycleTheme().catch(()=>{});
 for(const b of document.querySelectorAll('dialog .close'))b.onclick=()=>b.closest('dialog').close();
 $('evidence-dialog').addEventListener('close',()=>{evidenceRequest++;state.evidence=null;$('download-evidence').disabled=true;});
 $('transaction-dialog').addEventListener('close',()=>{pendingAction=null;});
@@ -302,4 +318,5 @@ for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener(
  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
 });
 setInterval(()=>{if(!document.hidden&&state.config&&!state.recorded&&!state.busy&&!document.querySelector('dialog[open]'))refresh().catch(e=>notice(e.message));},5000);
-start().catch(e=>notice(e.message));
+renderTheme();
+start().then(()=>Promise.allSettled([animateBoot(document),installRevealMotion(document)])).catch(e=>notice(e.message));

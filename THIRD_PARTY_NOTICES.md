@@ -25,6 +25,7 @@ Direct versions are pinned in pyproject.toml / program/Cargo.lock. On October 5,
 | solders | 0.29.0 | Apache-2.0, confirmed from installed LICENSE; https://github.com/kevinheavey/solders/blob/main/LICENSE |
 | solana-program | 2.3.0, with transitives locked in program/Cargo.lock | Apache-2.0, confirmed from installed Cargo.toml; individual transitive crate licenses also apply; https://github.com/anza-xyz/solana-sdk |
 | Ruff | 0.14.10, development only | MIT; https://github.com/astral-sh/ruff/blob/main/LICENSE |
+| Motion | 13.5.0, browser progressive enhancement via pinned jsDelivr ESM import | MIT; https://github.com/motiondivision/motion/blob/main/LICENSE |
 | Playwright | 1.57.0, development only | Apache-2.0; https://github.com/microsoft/playwright/blob/main/LICENSE |
 | pytest | 9.0.3, development only | MIT; installed licenses/LICENSE |
 | pip-audit | 2.10.0, development only | Apache-2.0; installed licenses/LICENSE |
@@ -32,7 +33,7 @@ Direct versions are pinned in pyproject.toml / program/Cargo.lock. On October 5,
 
 Wallet Standard discovery and signing interfaces were checked on October 5, 2026 through official native-Git source reads at the revisions recorded in docs/RESEARCH.md; both source repositories are Apache-2.0. They are reference interfaces, not bundled npm dependencies: https://github.com/wallet-standard/wallet-standard and https://github.com/anza-xyz/wallet-standard . The browser adapter is original, deliberately restricted to legacy single-instruction transactions. No wallet or sponsor logo is bundled. No external font files are bundled.
 
-Node has no third-party npm runtime dependencies declared in package.json. Tests import LiteSVM from the installed `solders.litesvm` module, supplied by solders 0.29.0; this environment does not have a separate Python `litesvm` distribution. The solders binary includes third-party Rust components whose notices remain applicable. CI install commands are in .github/workflows/verify.yml. Their distributed notices must accompany any redistributed tool binaries.
+Node has no third-party npm runtime dependencies declared in package.json. The browser optionally imports the pinned Motion ESM build directly from jsDelivr at runtime; it is not an npm dependency of the repository. Tests import LiteSVM from the installed `solders.litesvm` module, supplied by solders 0.29.0; this environment does not have a separate Python `litesvm` distribution. The solders binary includes third-party Rust components whose notices remain applicable. CI install commands are in .github/workflows/verify.yml. Their distributed notices must accompany any redistributed tool binaries.
 
 For research credits, source-verification evidence and precisely limited claims, read docs/RESEARCH.md. The paper licenses are not used as licenses for any third-party implementation. New tasks/models must separately document model and dataset licenses before use.
 
@@ -43,3 +44,8 @@ For research credits, source-verification evidence and precisely limited claims,
 - **feitangyuan/onetake** — https://github.com/feitangyuan/onetake — PolyForm Noncommercial 1.0.0. GradientMine documentation uses its publicly described continuity/carry ideas only as creative reference. Do not copy, vendor, modify, or execute OneTake code for a commercial/promotional deliverable unless the intended use is confirmed to comply with its license.
 
 No OneTake source code or assets are vendored into GradientMine.
+
+## UI design references
+
+- **Motion** — https://motion.dev — MIT. GradientMine uses the pinned open-source Motion 13.5.0 browser ESM build for optional entrance, winner and theme-change animation. The application remains functional when the module cannot load and disables the enhancement for `prefers-reduced-motion`.
+- **Radix Colors / Radix Themes** — https://github.com/radix-ui/colors and https://github.com/radix-ui/themes — MIT. Consulted as open-source references for accessible contrast scales and theme-system ergonomics. GradientMine's Void, Aurora and Paper palettes, CSS, layout and components are original; Radix packages or component source are not bundled.
