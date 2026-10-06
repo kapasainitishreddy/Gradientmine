@@ -1,15 +1,26 @@
-# 55-second judge-facing evidence tour
+# 60-second judge-facing evidence tour
 
-This is a plan for a longer hands-on tour, separate from the 22-second launch cut and the official hackathon recordings. Use the actual recorded experiment first; demonstrate live transactions only after public signatures and program state verify.
+This is the fastest path through the public product at https://gradientmine.pages.dev . It is separate from the required 2–3 minute presentation and ≤3 minute technical demo.
 
-| Time | Actual action | What the viewer learns |
+| Time | Actual action | What the judge should learn |
 |---|---|---|
-| 0–7s | Open the current bounty interface; show the recorded-mode banner and product explanation. | The reward targets measured model improvement. Solana provides the escrow/settlement boundary; the named evaluator remains trusted. |
-| 7–16s | Open policy; expand/copy the full policy hash and validator key. Read threshold and cutoff. | Parent, metric, threshold, deadline and evaluator are frozen before evaluation. |
-| 16–25s | Show worker onboarding, then the three actual signed submissions and disclosed shuffled-label negative control. | Workers train real CPU head-LoRA adapters; this experiment used three processes on one host. A signed artifact authenticates its author, not the training claim. |
-| 25–34s | Show the actual held-out comparison and best eligible row. | 84.72% → 95.28%, +10.56 percentage points on 360 held-out examples. Eligible means selected by policy; it does not mean paid. |
-| 34–45s | Open the winning receipt; show the SHA-256 and expected-validator Ed25519 check, copy its full hash, then follow parent/accepted-model lineage. | Signed, content-addressed evidence is inspectable. One validator evaluates this MVP; the signature is not trustless correctness. |
-| 45–51s | Show local lifecycle and honest live-mode boundary. | This run is evaluated locally. Devnet settlement is implemented; public payout evidence is pending. No Explorer link is invented. |
-| 51–55s | Return to bounty and end on the product wordmark/tagline. | Measure the work. Reward the improvement. |
+| 0–7s | Open the site and leave the recorded-mode banner visible. | This is real recorded local evidence, not a fake live network or fake payment. |
+| 7–17s | Stop on **ASSURANCE CONTRACT**. Show the primary metric, minimum delta, family-wise target, candidate budget, assurance-set commitment, named evaluator and numeric-adapter policy. | GradientMine defines what evidence is required before choosing a winner. |
+| 17–30s | Scroll to **GRADIENTMINE ARENA**. Compare development and assurance scores. Point out the 95.28% winner and 25.00% disclosed negative control. | Workers can report public validation, but the named evaluator independently recomputes held-out assurance after cutoff. |
+| 30–39s | Show +10.56 pp observed improvement, +6.11 pp adjusted lower bound and 360 held-out examples. | A point-estimate leaderboard is not enough; the current v1 contract includes an explicit statistical gate. |
+| 39–49s | Show **ARTIFACT FIREWALL**. | This task accepts bounded numeric adapters, hashes and signed manifests against a known architecture instead of executing arbitrary worker code. |
+| 49–57s | Show **MODEL PASSPORT** and click **Download JSON**. | The accepted result has inspectable provenance linking parent, artifact, worker, evaluator, policy, assurance commitment and measured evidence. |
+| 57–60s | Return to the mode banner / lineage. | Solana settlement is a separate economic layer. This recorded run does not invent a payout. |
 
-If a real Devnet proof becomes available, independently verify program ID, cluster, escrow state and signatures before replacing the final boundary. Preserve the local example label and scores unless the displayed live run itself contains those exact measurements.
+## If integrated Devnet proof is completed before submission
+
+After independently verifying the deployed program, funding, registration, settlement, winner and recipient balance delta, replace the final three seconds with the real Explorer transaction. Do not replace the local recorded scores unless the live Devnet run itself produced those exact measurements.
+
+## Reviewer links
+
+- Product: https://gradientmine.pages.dev
+- Source: https://github.com/kapasainitishreddy/Gradientmine
+- Paste-ready application copy: ../FINAL_FORM_COPY.md
+- Technical demo script: ../DEMO.md
+- Pitch script: ../PITCH.md
+- Assurance research synthesis: ../../docs/ASSURANCE_RESEARCH.md
