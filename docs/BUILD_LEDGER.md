@@ -209,3 +209,36 @@ Current cloud-instance development setup is tested and running. Complete install
 ### Remaining assurance-release boundaries
 
 No integrated live Devnet training-to-payout transaction was created by this release. No deployed program ID, funding/registration/settlement signatures, payout Explorer URL, actual Phantom-extension QA, new assurance-interface recording, external customer validation or official Colosseum submission is claimed. The existing 150-second presentation and 165-second demo were recorded before this assurance-interface redesign and should be re-recorded if the new story is used in the final submission.
+
+
+## Motion theme release verification
+
+- The UI/UX redesign merged through PR #3. The final verified code head is `5b2c311b2ff3e1e3a911842e1cbf74ce3ecea25d`; the main redesign commit is `84824598cfb5ded14ed97d0637624e3003687410`.
+- The browser now ships three allowlisted, locally persisted visual themes: **Void**, **Aurora** and **Paper**. The switcher also updates the browser `theme-color` metadata. No user-supplied value is written directly as a theme attribute.
+- Motion.dev **13.5.0** is loaded as a pinned, optional ESM progressive enhancement from jsDelivr. The app remains functional if that import fails and marks the enhancement state as `active`, `fallback` or `reduced`. Users with `prefers-reduced-motion: reduce` receive no Motion enhancement.
+- Motion is used only for entrance/stagger polish, Arena bar interpolation, winner emphasis and theme-change feedback. It does not alter scores, protocol state, evaluation decisions or settlement evidence.
+- The redesign also adds the sticky glass top bar, themed hero glyph/grid/glow treatment, theme-aware Assurance/Arena/Firewall/Passport panels and responsive theme controls. No external font or third-party component implementation is bundled.
+- Motion is MIT licensed. Radix Colors / Radix Themes were consulted as MIT-licensed design-system references for contrast/theme ergonomics; GradientMine's theme palettes and CSS are original. See [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+
+### Final automated verification
+
+GitHub Actions [run 37407582740](https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37407582740) completed **successfully** against exact code head `5b2c311b2ff3e1e3a911842e1cbf74ce3ecea25d`.
+
+- General Python: **109 passed / 10 skipped** in 14.10s. The ten skips are the compiled-SBF-only tests intentionally rerun with `GM_SBF_PATH` in the dedicated program job.
+- JavaScript: **28 passed / 0 failed**, including theme registry/allowlist, cycling, pinned Motion URL and reduced-motion behavior.
+- Browser QA: **15 substantive checks passed**. New checks verify reduced-motion fallback and Void → Aurora → Paper → Void theme cycling/persistence/theme-color metadata, alongside Wallet Standard auth, local bounty creation, focus handling, XSS/shell quoting, stale response protection, 360/390px mobile overflow, Assurance/Arena/Firewall/Passport rendering, evidence integrity/signatures and zero browser JavaScript exceptions.
+- Real training exercise: three actual worker processes exited zero; parent **84.7222%**, selected candidate **95.2778%**, observed delta **+10.5556 pp**, adjusted lower bound **+6.1111 pp**, **360** held-out examples; `on_chain=false`.
+- Native Rust program: **6 passed / 0 failed**.
+- Fresh compiled SBF + LiteSVM integration: **31 passed / 0 failed** in 5.69s.
+- Development dependency audit: **69 installed releases**, **zero known advisories**.
+- Container verification also passed non-root build, HTTP health, durable validator/bounty state across recreation and exact installed-inventory audit.
+- Retained CI artifact digests: `python-verification` SHA-256 `c7230560877ea14936fe5247959e7724404cafdd03bb7976a8c61dd732e478f3`; `escrow-verification` SHA-256 `35c77bb95753e1c4731ba2ee01753d1ba6709d1a5ae3aa95ebca226d0a5a132f`; `container-verification` SHA-256 `471c18ec98e9009b44b61aae591f37a1fe6da1db5a28ac223b502f27ed6347d1`.
+
+### Public deployment verification
+
+- Cloudflare Pages deployment `6860687f-d762-4035-b40a-8d430f7c4655` completed successfully from exact code head `5b2c311b2ff3e1e3a911842e1cbf74ce3ecea25d`.
+- Canonical public viewer: `https://gradientmine.pages.dev`.
+- A signed-out Cloudflare Browser Rendering pass returned HTTP 200 and observed `data-theme="void"` and `data-motion="active"`, proving the pinned Motion runtime loaded in a normal-motion browser. It also confirmed the theme control, Assurance Contract, GradientMine Arena, Artifact Firewall, Model Passport and the explicit local boundary text: `Read-only evidence, not a live network. No blockchain payment.`
+- CI separately runs Chromium with reduced motion and confirmed Motion is disabled without disabling the product.
+
+This redesign changes presentation only. It does **not** create a Devnet deployment, Phantom-extension test, finalized payout or new customer/traction evidence.
