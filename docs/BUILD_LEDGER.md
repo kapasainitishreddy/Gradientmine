@@ -177,3 +177,11 @@ GitHub release creation at `dfa77c7` succeeded, but the actual public-only asset
 [Verify GradientMine run 37388405319](https://github.com/kapasainitishreddy/Gradientmine/actions/runs/37388405319) at exact commit `dfa77c7a9a793c1ffb91ac07fef39b32baa0c7be` succeeded. Authenticated GitHub run/job API confirms all four jobs and all executed steps passed, including source readiness, actual non-root container recreation, installed-container advisory audit, Python/JS/static checks, real three-process CPU training, browser QA, complete development advisory audit, locked Rust tests, fresh SBF compilation and compiled LiteSVM integration. The separate verification-toolchain and reproducible-source-bundle workflows also succeeded for that source. Local test counts above remain explicitly local, not inferred from blocked log downloads.
 
 Current cloud-instance development setup is tested and running. Complete install/start instructions and the additive network requirements are saved in the environment draft, including `uploads.github.com` following the observed failure. Review/Save/Publish in environment settings is still required to activate future-task configuration; draft saving does not publish or prove fresh-task restoration. No secret values were requested or saved.
+
+
+### Public judge viewer hosting
+
+- On October 5, 2026 (October 6 UTC), a Cloudflare Pages project named `gradientmine` was created on the connected Cloudflare account and linked to `kapasainitishreddy/Gradientmine` branch `main`.
+- Build output is the committed `web/` directory with no build command. This is intentionally the **read-only recorded evidence viewer**, not the live API/validator and not Devnet payout proof.
+- Canonical Pages hostname: `https://gradientmine.pages.dev`. The first production deployment is pending the next linked-source commit; do not cite the URL as working until the deployment is observed ready and signed-out HTTP access is verified.
+- Railway remains blocked by the connected account's free resource limit. Vercel project creation again returned HTTP 403 for project-create permission. No paid upgrade was authorized.
