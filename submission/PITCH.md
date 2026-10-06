@@ -1,39 +1,51 @@
 # Presentation script
 
-Target: about 2 minutes 30 seconds with natural pauses. The official FAQ checked October 5, 2026 requires a 2–3 minute presentation; see SUBMIT.md. **This file is a script, not a completed video.** Use the timed action/caption plan in [RECORDING.md](RECORDING.md). Read the latest ledger first; do not add payment, customer or hosting claims without evidence.
+Target: 2 minutes 30 seconds. The current Colosseum FAQ asks for a two-to-three-minute presentation. This is the startup pitch, not the technical demo.
 
-## 0:00–0:25 | Problem and proposition
+## 0:00–0:25 | Problem
 
-“An AI team does not ultimately want another invoice for compute. It wants a model that performs better on a task it cares about. GradientMine explores a different contract: define the improvement, commit the reward, and inspect the evidence before settlement.
+“AI teams do not ultimately want another invoice for GPU time. They want a model that performs better on a task they care about.
 
-We are building model-improvement bounties, not a new cryptocurrency or a general-purpose GPU cloud.”
+But outcome-based AI work creates a harder question: when an outside worker claims an improvement, what evidence is strong enough to pay for?”
 
-## 0:25–0:55 | Product
+## 0:25–0:52 | Insight and product
 
-“A task owner selects a frozen parent model and commits the evaluation rules, deadline and reward. Workers independently train candidate updates. A named evaluator tests those candidates against the same held-out examples and records signed, content-addressed receipts.
+“GradientMine is an assurance market for AI improvement.
 
-The Solana escrow program binds the bounty terms, records candidate commitments and restricts settlement to a registered winner. A creator has an on-chain timeout refund rather than a promise from an unavailable server.”
+A task owner defines a capability contract: the frozen parent model, objective metric, minimum useful improvement, evaluator, candidate budget, deadline and reward. Independent workers compete by training real model updates.
 
-## 0:55–1:25 | Evidence
+We keep the trust boundary explicit. Solana commits the economic terms. A named evaluator judges model quality.”
 
-“The included task is intentionally small enough to reproduce: a real neural digit classifier with a low-rank update trained on a CPU. We run separate worker processes, compare actual before-and-after results, inspect artifact hashes and verify the expected evaluator's signature.
+## 0:52–1:22 | Real evidence
 
-The interface separates an eligible result from a paid result. Local runs never show pretend token transfers. A Devnet payment needs finalized transaction evidence, not a green animation.”
+“Our reproducible proof-of-function runs three independent worker processes on one machine using actual PyTorch training.
 
-## 1:25–1:55 | Trust and differentiation
+The parent scores 84.72 percent on the held-out set. The best candidate reaches 95.28 percent, an observed improvement of 10.56 percentage points across 360 held-out examples. The adjusted paired-bootstrap lower bound is positive at 6.11 percentage points.
 
-“The difficult part is trust. We do not claim that a signature proves training, or that one server is decentralized verification. The public digits benchmark is reconstructible and unsuitable for real-money competition.
+The Arena deliberately separates each worker's development score from the held-out assurance score.”
 
-Our initial contribution is a coherent, inspectable workflow: explicit terms, exact wallet transaction checks, independent experiments, evidence downloads and documented recovery. We are building on established low-rank adaptation and learning from verification research rather than claiming to have invented them.”
+## 1:22–1:48 | Security and provenance
 
-## 1:55–2:30 | Market and next test
+“Winning is more than a leaderboard row.
 
-“Our first customer hypothesis is small model-owning teams with a narrow, measurable task and properly licensed data. We plan to test the workflow with consenting design partners and compare total cost, including losing experiments, against ordinary contracted fine-tuning.
+GradientMine uses content-addressed artifacts, signed worker manifests and signed evaluator receipts. The Artifact Firewall accepts bounded numeric adapters against a known architecture rather than executing arbitrary worker-supplied code. The accepted result receives a downloadable Model Passport linking its parent, artifact, policy, evaluator and measured delta.
 
-A future fee on successful bounties is a business-model hypothesis. We have internal engineering evidence, not validated customer traction yet.
+Those controls improve inspectability; they do not prove that a model is backdoor-free or that training happened exactly as claimed.”
 
-GradientMine: measure the work, make the trust visible, and reward the improvement.”
+## 1:48–2:08 | Why Solana
 
-## Recording
+“The chain handles the part it is good at: escrow and settlement rules.
 
-Use the actual UI, original logo and repository evidence. A screen recording with your natural narration is sufficient; a face camera is optional. Export 1920x1080 H.264 MP4, keep the total between 120 and 180 seconds, upload to an accessible host and check it signed out. Do not voice-clone anyone, imply affiliation with Colosseum or use unlicensed background music.
+A creator can commit a test reward, recipients can be registered, the selected winner can be paid by the program, and an unpaid bounty has an on-chain timeout refund. Models and private evaluation data stay off-chain.”
+
+## 2:08–2:30 | Business and vision
+
+“Our first customer hypothesis is a small model-owning team with a narrow, measurable failure and properly licensed data. We plan to test outcome-priced competitions against ordinary contracted fine-tuning, including the cost of losing experiments and evaluation.
+
+Today we have engineering evidence, not customer traction.
+
+Compute markets sell GPU time. GradientMine buys assured capability improvement.”
+
+## Recording notes
+
+Use https://gradientmine.pages.dev for the public evidence surface, plus terminal/source footage where useful. Keep the public mode banner visible when discussing recorded evidence. If a real Devnet payout has not been finalized before recording, say so clearly and do not show a synthetic Explorer transaction. Natural narration is preferred over a silent caption-only pitch.
