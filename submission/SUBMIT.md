@@ -44,7 +44,7 @@ Submit ahead of the deadline. The official PDF is the authority for entrant excl
 | Optional short launch film | [Rendered 22-second landscape / 20-second portrait films](tour/README.md) | A separate marketing artifact; it replaces neither required video |
 | Market, business model, validation and distribution | [PRODUCT.md](PRODUCT.md), [VALIDATION.md](VALIDATION.md) | Keep hypotheses separate from completed customer research |
 | Prior work and AI assistance | [DISCLOSURE.md](DISCLOSURE.md) | Add factual pre-event history and required portal declarations |
-| Live URL / chain evidence | [docs/BUILD_LEDGER.md](../docs/BUILD_LEDGER.md); public evidence files if produced | Only enter verified URLs, addresses and signatures. Recorded local viewer is read-only; chain-only smoke tests do not prove trained-artifact payout |
+| Live URL / chain evidence | https://gradientmine.pages.dev and [docs/BUILD_LEDGER.md](../docs/BUILD_LEDGER.md) | Public URL is verified signed-out as a read-only recorded evidence viewer. It is not the live API/validator and does not prove a Devnet payout. Only enter chain addresses/signatures after finalized verification. |
 
 ## Final submission steps
 
