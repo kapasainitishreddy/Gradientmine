@@ -79,6 +79,8 @@ def main():
                 page.add_init_script(TEST_WALLET)
                 page.goto(origin)
                 page.get_by_text("Live local server", exact=False).wait_for()
+                page.wait_for_function("document.documentElement.dataset.motion === 'reduced'")
+                checks.append("Reduced-motion preference disables Motion enhancement without disabling the product")
                 assert page.locator("html").get_attribute("data-theme") == "void"
                 page.get_by_role("button", name="Change color theme", exact=True).click()
                 assert page.locator("html").get_attribute("data-theme") == "aurora"
