@@ -185,3 +185,7 @@ Current cloud-instance development setup is tested and running. Complete install
 - Build output is the committed `web/` directory with no build command. This is intentionally the **read-only recorded evidence viewer**, not the live API/validator and not Devnet payout proof.
 - Canonical Pages hostname: `https://gradientmine.pages.dev`. The first production deployment is pending the next linked-source commit; do not cite the URL as working until the deployment is observed ready and signed-out HTTP access is verified.
 - Railway remains blocked by the connected account's free resource limit. Vercel project creation again returned HTTP 403 for project-create permission. No paid upgrade was authorized.
+
+- Cloudflare Pages deployment `4acdbbc2-2027-4b3d-a184-907d965ecdd4` completed successfully from commit `5d2da202434e75e9cbf22ea3acd413797cc7e8ae`; canonical hostname is `https://gradientmine.pages.dev`.
+- Signed-out browser verification succeeded for `https://gradientmine.pages.dev/` using Cloudflare Browser Rendering. The page loaded the committed JavaScript/CSS, rendered the recorded bounty, disabled live wallet/create actions, and visibly stated: `Recorded local experiment ... Read-only evidence, not a live network. No blockchain payment.`
+- The verified page shows the disclosed local evidence: frozen parent 84.72%, best eligible model 95.28%, +10.56 percentage points across 360 held-out examples, the negative-control result, named validator, policy/evaluation commitments, lineage, and no finalized payout claim.
