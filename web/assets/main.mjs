@@ -90,7 +90,7 @@ function renderAssuranceContract(j){
  const grid=node('div',null,'contract-grid');
  append(grid,
   contractValue('Primary metric',c.metric||'Not declared',c.minimum_delta==null?'':`Minimum ${delta(c.minimum_delta)}`),
-  contractValue('Statistical warranty',c.familywise_confidence==null?'Not declared':percent(c.familywise_confidence),c.statistical_rule||''),
+  contractValue('Family-wise target',c.familywise_confidence==null?'Not declared':percent(c.familywise_confidence),c.statistical_rule||''),
   contractValue('Candidate budget',c.max_candidates==null?'Not declared':String(c.max_candidates),c.bootstrap_resamples==null?'':`${c.bootstrap_resamples.toLocaleString()} bootstrap resamples`),
   contractValue('Assurance set','SEALED COMMITMENT',short(c.evaluation_commitment||'',10)),
   contractValue('Evaluator',short(c.evaluator||'',8),'One named validator'),
@@ -112,7 +112,8 @@ function renderArena(j){
   const assurance=append(node('div',null,'arena-score assurance'),node('span','Assurance'),node('strong',r.assurance_score==null?'SEALED':percent(r.assurance_score)));
   append(scores,dev,assurance);
   const bar=node('div',null,'arena-bar');const fill=node('span');fill.style.width=r.assurance_score==null?'0%':`${Math.max(2,Math.min(100,(r.assurance_score/max)*100))}%`;bar.append(fill);
-  const verdict=append(node('div',null,'arena-verdict'),node('strong',r.winner?'VERIFIED':r.eligible?'ELIGIBLE':'REJECTED'),node('small',r.delta==null?'Awaiting held-out evaluation':`${delta(r.delta)} · LCB ${delta(r.lower_bound)}`));
+  const verdictLabel=r.assurance_state==='sealed'?'SEALED':r.winner?'VERIFIED':r.eligible?'ELIGIBLE':'REJECTED';
+  const verdict=append(node('div',null,'arena-verdict'),node('strong',verdictLabel),node('small',r.delta==null?'Awaiting held-out evaluation':`${delta(r.delta)} · LCB ${delta(r.lower_bound)}`));
   if(r.runtime_efficiency_pp_per_second!=null)verdict.append(node('small',`${r.runtime_efficiency_pp_per_second.toFixed(2)} pp/s · worker-reported runtime`));
   append(row,identity,scores,bar,verdict);section.append(row);
  }
