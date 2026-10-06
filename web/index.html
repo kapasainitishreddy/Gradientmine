@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="GradientMine: actual model-improvement experiments, signed evidence and Solana Devnet bounty settlement. Inspect every result.">
+<meta name="description" content="GradientMine is an assurance market for measurable AI improvement: capability contracts, real training, held-out evaluation, inspectable evidence and Solana Devnet settlement.">
 <meta name="theme-color" content="#0a0a0b"><title>GradientMine | Measured improvement</title>
 <link rel="icon" href="./assets/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="./assets/style.css">
 <script type="module" src="./assets/main.mjs"></script>
 </head>
 <body>
 <a class="skip" href="#workspace">Skip to experiments</a>
-<header class="topbar"><a class="brand" href="./" aria-label="GradientMine home"><img src="./assets/mark.svg" alt="" width="34" height="34">Gradient<span>Mine</span></a><nav aria-label="Main"><a href="#workspace">Experiments</a><a href="#workers">Run a worker</a><a href="#trust">Trust &amp; evidence</a></nav><button id="wallet-button" class="button secondary">Connect wallet</button></header>
+<header class="topbar"><a class="brand" href="./" aria-label="GradientMine home"><img src="./assets/mark.svg" alt="" width="34" height="34">Gradient<span>Mine</span></a><nav aria-label="Main"><a href="#workspace">Arena</a><a href="#assurance-contract">Assurance</a><a href="#workers">Run a worker</a><a href="#trust">Trust</a></nav><button id="wallet-button" class="button secondary">Connect wallet</button></header>
 <main>
-<section class="intro"><div><h1>Measure the work.<br><span>Reward the improvement.</span></h1><p>Model-improvement bounties pay for a measurable gain over a frozen parent.<br class="desktop"> Workers train real models; one explicitly trusted validator evaluates the result.</p><p class="intro-explainer">Why Solana? Committed escrow, registered recipients and a timeout refund.<br class="desktop"> The chain enforces payment rules. The named validator judges model quality.</p></div><button id="create-button" class="button primary">Create a bounty <span aria-hidden="true">+</span></button></section>
+<section class="intro"><div><h1>Measure the work.<br><span>Reward the improvement.</span></h1><p>An assurance market for AI capability improvements.<br class="desktop"> Define what better means, let independent workers compete, and inspect the evidence before settlement.</p><p class="intro-explainer">Solana commits the economic terms. A named evaluator judges model quality.<br class="desktop"> GradientMine keeps those trust boundaries separate instead of pretending the chain can verify machine learning.</p></div><button id="create-button" class="button primary">Create a bounty <span aria-hidden="true">+</span></button></section>
 <div id="mode-banner" class="mode-banner" role="status">Connecting to this deployment…</div>
 <div id="notice" class="notice" role="alert" hidden></div>
 <section id="workspace" class="workspace" aria-label="Experiments">
