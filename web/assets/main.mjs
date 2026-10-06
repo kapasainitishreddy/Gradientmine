@@ -207,7 +207,7 @@ function renderDetail(){
  const events=append(node('details',null,'events'),node('summary','Protocol event log'));
  for(const e of j.events||[])events.append(append(node('p'),node('small',dt(e.created)),node('strong',` ${e.kind}`),node('span',` · ${e.message}`)));
  root.replaceChildren(head,trust,meta,renderAssuranceContract(j),renderArena(j),pipeline,outcome,metrics,tableWrap,proof,renderArtifactFirewall(j),renderPassport(j),lineage,actions,audit,events);
- queueMicrotask(()=>animateDetail(root));
+ queueMicrotask(()=>animateDetail(root).catch(()=>{}));
 }
 function renderWallet(){
  if(!wallet)return;
@@ -319,4 +319,4 @@ for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener(
 });
 setInterval(()=>{if(!document.hidden&&state.config&&!state.recorded&&!state.busy&&!document.querySelector('dialog[open]'))refresh().catch(e=>notice(e.message));},5000);
 renderTheme();
-start().then(()=>{animateBoot(document);installRevealMotion(document);}).catch(e=>notice(e.message));
+start().then(()=>Promise.allSettled([animateBoot(document),installRevealMotion(document)])).catch(e=>notice(e.message));
