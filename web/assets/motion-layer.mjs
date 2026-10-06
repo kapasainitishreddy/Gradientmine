@@ -12,7 +12,10 @@ async function runtime(){
 const ease=[0.22,1,0.36,1];
 
 export async function animateBoot(root=globalThis.document){
-  const m=await runtime();if(!m||!root)return false;
+  if(!root)return false;
+  if(!motionAllowed()){if(root.documentElement)root.documentElement.dataset.motion='reduced';return false;}
+  const m=await runtime();if(!m){if(root.documentElement)root.documentElement.dataset.motion='fallback';return false;}
+  if(root.documentElement)root.documentElement.dataset.motion='active';
   const hero=root.querySelectorAll('.intro h1,.intro p,.intro .button,.mode-banner');
   if(hero.length)m.animate(hero,{opacity:[0,1],y:[16,0],filter:['blur(5px)','blur(0px)']},{duration:.65,delay:m.stagger(.055),ease});
   const nav=root.querySelectorAll('.topbar .brand,.topbar nav a,.topbar-actions>*');
