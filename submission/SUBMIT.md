@@ -43,12 +43,16 @@ Use [FINAL_FORM_COPY.md](FINAL_FORM_COPY.md) as the single paste-ready source fo
 | Founder background, location and actual team | [TEAM.md](TEAM.md) | Confirm name/location, real members, funding and rights |
 | Original logo | [logo.svg](logo.svg) | File exists; upload SVG if accepted, otherwise export PNG as described in RECORDING.md |
 | Repository | https://github.com/kapasainitishreddy/Gradientmine | Verify judge access to final source commit |
-| Presentation video | [150-second captioned recording](PRESENTATION_VIDEO.md), [PITCH.md](PITCH.md) | Review silent candidate; optionally add natural narration; verify permitted hosting and signed-out playback |
-| Product-demo video | [165-second captioned recording](DEMO_VIDEO.md), [RECORDING.md](RECORDING.md) | Review actual recorded-local evidence; verify judge-accessible hosting and signed-out playback |
+| Presentation video | [150-second captioned fallback recording](PRESENTATION_VIDEO.md), updated [PITCH.md](PITCH.md) | Existing recording predates the Assurance/Arena redesign. Prefer a new narrated 2–3 minute recording using the updated public viewer; otherwise disclose that the older video shows the prior interface. Verify signed-out playback. |
+| Product-demo video | [165-second captioned fallback recording](DEMO_VIDEO.md), updated [DEMO.md](DEMO.md) | Existing recording predates the Assurance/Arena redesign. Prefer re-recording the current public viewer from the updated ≤3-minute script. Never splice a fake Devnet payout; verify judge-accessible signed-out playback. |
 | Optional short launch film | [Rendered 22-second landscape / 20-second portrait films](tour/README.md) | A separate marketing artifact; it replaces neither required video |
 | Market, business model, validation and distribution | [PRODUCT.md](PRODUCT.md), [VALIDATION.md](VALIDATION.md) | Keep hypotheses separate from completed customer research |
 | Prior work and AI assistance | [DISCLOSURE.md](DISCLOSURE.md) | Add factual pre-event history and required portal declarations |
 | Live URL / chain evidence | https://gradientmine.pages.dev and [docs/BUILD_LEDGER.md](../docs/BUILD_LEDGER.md) | Public URL is verified signed-out as a read-only recorded evidence viewer. It is not the live API/validator and does not prove a Devnet payout. Only enter chain addresses/signatures after finalized verification. |
+
+## Assurance-market release
+
+The research-driven interface is now merged and verified on the public viewer. The latest product surfaces are Assurance Contract, GradientMine Arena, Artifact Firewall and downloadable Model Passport. GitHub Actions run 37402699747 passed against product commit `87200f39f25eeead7551461fd878c47845374089`, and the public Cloudflare viewer was independently rendered signed out. The previous long-form videos are still valid historical recordings of the local evidence, but they do not show this redesigned interface.
 
 ## Final submission steps
 
