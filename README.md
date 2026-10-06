@@ -56,6 +56,17 @@ After an ambiguous response, repeat the same worker command with `--resume` and 
 
 Training: a small 64→48→10 Digits classifier; real rank-limited updates to its output head. No LLM fine-tuning, royalties, zkML or autonomous research agents are claimed.
 
+## Assurance market interface
+
+The current browser surface derives four research-driven views from the same job/evidence objects used by the protocol:
+
+- **Assurance Contract** — frozen objective, minimum delta, family-wise target, candidate budget, held-out commitment, evaluator and artifact policy.
+- **GradientMine Arena** — worker-reported development score kept separate from the held-out assurance score; sealed candidates are never labelled rejected before evaluation.
+- **Artifact Firewall** — makes the current submission boundary explicit: bounded numeric JSON adapters, content hashes, signed manifests, known architecture, shape checks and merged-weight validation; no arbitrary worker code is executed by the validator.
+- **Model Passport** — downloadable JSON linking the parent, accepted model, artifact, worker, validator, policy, assurance-set commitment, measured delta and settlement status.
+
+These are inspectability features around mechanisms already present in the release. They do not add decentralized verification, hidden-commercial-benchmark security, backdoor certification, TEE attestation or zkML. See [the assurance research synthesis](docs/ASSURANCE_RESEARCH.md).
+
 ## Test
 
 ```bash

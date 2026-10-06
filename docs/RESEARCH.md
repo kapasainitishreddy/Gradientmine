@@ -1,5 +1,7 @@
 # Research and differentiating scope
 
+For the current assurance-market product thesis and the implemented-vs-roadmap boundary around benchmark hacking, anytime-valid ranking, adaptive evaluation, strategy auctions and AI/ML provenance, see [ASSURANCE_RESEARCH.md](ASSURANCE_RESEARCH.md).
+
 These are primary research or project references, with verification status made explicit below. No competing protocol implementation is vendored. No claim of being the first outcome-paid AI marketplace is made.
 
 ## Verification status, October 5, 2026

@@ -31,11 +31,15 @@ On October 5, 2026, after the earlier proxy block, bounded read-only requests wi
 
 Submit ahead of the deadline. The official PDF is the authority for entrant exclusions and terms; this summary does not establish the owner's personal eligibility. Winning does not require accepting accelerator admission (FAQ), and no accelerator or funding commitment is invented here.
 
+## Paste-ready portal material
+
+Use [FINAL_FORM_COPY.md](FINAL_FORM_COPY.md) as the single paste-ready source for product, problem, insight, Solana, market, GTM, validation, business-model and trust-disclosure fields. TEAM.md and DISCLOSURE.md still require owner review because identity, team, funding, IP and pre-event history cannot be inferred safely.
+
 ## Materials to enter
 
 | Material | Prepared source | Remaining action |
 |---|---|---|
-| Product name, one line, description, chain/tools, why blockchain | [PRODUCT.md](PRODUCT.md) | Fit actual field lengths; review latest implementation/evidence |
+| Product name, one line, description, chain/tools, why blockchain | [FINAL_FORM_COPY.md](FINAL_FORM_COPY.md), [PRODUCT.md](PRODUCT.md) | Fit actual field lengths; review latest implementation/evidence |
 | Founder background, location and actual team | [TEAM.md](TEAM.md) | Confirm name/location, real members, funding and rights |
 | Original logo | [logo.svg](logo.svg) | File exists; upload SVG if accepted, otherwise export PNG as described in RECORDING.md |
 | Repository | https://github.com/kapasainitishreddy/Gradientmine | Verify judge access to final source commit |

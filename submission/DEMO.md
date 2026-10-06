@@ -1,39 +1,81 @@
-# Product demo: at most 3 minutes
+# Product demo: maximum 3 minutes
 
-For the short launch film and continuous visual product-tour grammar, also read [PRODUCT_TOUR.md](PRODUCT_TOUR.md). The prepared submission demo is an evidence-first walkthrough; a stylized launch clip does not replace the required product demo.
+Target: 2 minutes 45 seconds. This video answers “how does the product work?” rather than repeating the startup pitch.
 
-Target 2:45 under the official FAQ’s ≤3-minute limit, verified October 5, 2026; see SUBMIT.md. The exact narration, screen actions, time-cut captions and export checks are in [RECORDING.md](RECORDING.md). **Script and recording instructions, not a recorded or uploaded video.** Use only the mode that is actually running. Do not splice simulated transactions into a Devnet claim.
+## 0:00–0:12 | Establish truth
 
-## 0:00–0:15 | Establish what is real
+Open the actual deployment or https://gradientmine.pages.dev.
 
-Show the app's mode banner. Say: “GradientMine turns a measurable model improvement into a bounty with explicit evaluation evidence.” State whether the session is a live Devnet run, live local run or a recorded local result. Keep the banner visible.
+Say: “This page is a read-only recording of a verified local experiment. It is not a live decentralized network and no blockchain payment occurred in this run.”
 
-## 0:15–0:45 | Terms and wallet
+Keep the mode banner visible.
 
-On a live server, connect your actual Wallet Standard wallet, create a bounty and inspect the fixed parent, improvement threshold and deadline. For a verified Devnet deployment, show the full program ID, reward, rent and fee in the review dialog, approve in your wallet and open the **actual finalized funding transaction**. Connecting or creating a draft alone is not escrow.
+## 0:12–0:42 | Assurance Contract
 
-For a local-only recording, explicitly say “No funds move in this local demonstration” and show the immutable policy instead. Do not enter a fake transaction signature.
+Open the selected bounty and pause on **ASSURANCE CONTRACT**.
 
-## 0:45–1:20 | Actual experiments
+Explain:
+- primary metric: accuracy
+- minimum required improvement
+- named evaluator
+- predeclared eight-candidate budget
+- 20,000 bootstrap resamples
+- committed assurance-set hash
+- bounded numeric adapter policy
 
-Show the real worker commands and their logs. Three processes can run on one host; say so. They train numeric low-rank adapters. Identify the shuffled-label worker as a disclosed negative control, not a caught cheater. It is acceptable to cut a waiting period, but label the cut “After training and submission cutoff”; never show a fabricated live training speed.
+Say: “These terms are committed before the result is known. Solana will ultimately bind the economic terms; the evaluator still judges model quality.”
 
-## 1:20–1:55 | Evidence before a reward
+If a verified live Devnet session exists, create the bounty with a dedicated test wallet and show the exact transaction review. Otherwise stay in the recorded viewer.
 
-Return to the actual results table. Read the measured baseline, eligible candidate and improvement in **percentage points** from that run, not an invented example. Open one winning receipt. Show the browser's SHA-256 check and expected-signer Ed25519 verification. Explain that the evaluator remains trusted and the statistical comparison has limitations.
+## 0:42–1:20 | Arena
 
-## 1:55–2:25 | Settlement or honest local boundary
+Show **GRADIENTMINE ARENA**.
 
-On Devnet, show the finalized payout link, recipient and reward, then compare the app's state with Explorer. Include only signatures present in the evidence bundle. If the transaction is pending or failed, show that rather than claiming success.
+Use the real recorded values:
+- frozen parent: 84.72%
+- worker A assurance: 95.00%
+- worker B assurance: 95.28%, winner
+- disclosed shuffled-label negative control: 25.00%
 
-For a local-only recording, say “This run verifies training and evaluation, not an on-chain payout.” Show the native program's SBF test evidence, labelled local VM testing, and mark deployment/payment unfinished.
+Point out that development scores are worker-reported public validation, while assurance scores are held-out evaluator results released after cutoff.
 
-## 2:25–2:45 | Lineage and failure handling
+Say: “Workers cannot make themselves eligible by posting a flattering public score. The named evaluator recomputes the held-out result.”
 
-Show the parent-to-winner model relationship and downloadable artifacts. Point out the timeout refund and explicit validator trust. End: “Compute is not the outcome. An inspectable improvement is.”
+## 1:20–1:52 | Statistical gate
 
-## Exact recording procedure
+Show:
+- observed winner delta: +10.56 pp
+- adjusted lower confidence bound: +6.11 pp
+- 360 held-out examples
 
-Use OBS, a browser recording tool or your operating system's screen recorder. Capture 1920x1080 at 30fps, crop to the app and terminal and hide notifications, private identity files, bearer tokens and wallet recovery phrases. Record the session with a dedicated test wallet only. Keep transaction approval visible without exposing secrets. Add captions for any time cuts. Export H.264 MP4 and verify duration with `ffprobe -v error -show_entries format=duration -of default=nw=1 demo.mp4`. It must not exceed 180 seconds. Upload it and test the resulting URL without your login.
+Say: “A higher point estimate is not enough. The current v1 policy requires the minimum delta and a positive, multiple-candidate-adjusted paired-bootstrap lower bound. It is an approximate finite-sample check, not a guarantee of generalization.”
 
-A developer browser harness is useful QA, but is not a substitute for recording an actual Phantom interaction. No final demo URL is asserted in this file.
+## 1:52–2:18 | Artifact Firewall + Passport
+
+Scroll to **ARTIFACT FIREWALL**.
+
+Show that this release accepts a bounded numeric adapter, verifies content hashes and signed manifests, requires the known model architecture and validates merged weights, and does not execute arbitrary worker code.
+
+Then show **MODEL PASSPORT** and download the JSON.
+
+Say: “The passport links the parent, accepted model, worker, evaluator, policy commitment, assurance-set commitment and measured evidence. Provenance is evidence, not a declaration that the model is trustworthy.”
+
+## 2:18–2:36 | Solana boundary
+
+If an integrated Devnet run has been completed, show the real finalized funding/registration/settlement links and winner address.
+
+If it has not, say:
+
+“This recorded run verifies the training and assurance workflow, not a blockchain payout. The native Solana program has been compiled and exercised locally in LiteSVM; integrated Devnet settlement remains pending and the UI does not invent a transaction.”
+
+## 2:36–2:45 | Close
+
+Show the lineage from parent to accepted candidate.
+
+End:
+
+“Compute is an input. The product is an assured improvement.”
+
+## Recording safety
+
+Use only dedicated test wallets. Never expose a seed phrase, private key, bearer token, validator database or private evaluation data. Do not call the negative control a detected cheater. Do not claim customer traction, decentralized verification or a Devnet payout without the corresponding evidence.

@@ -4,30 +4,49 @@
 GradientMine
 
 ## One line
-Model-improvement bounties with actual training, inspectable evaluation evidence and Solana Devnet escrow.
+GradientMine is an assurance market for AI improvement: define a measurable capability delta, let independent workers compete, and settle only against committed evaluation evidence.
 
 ## Product description
-GradientMine turns a model-improvement target into a bounded competition with explicit terms. A task owner commits a parent model, evaluation rules, deadline and reward. Workers independently train low-rank candidates and submit content-addressed artifacts. A named evaluator compares candidates with the same parent on held-out examples, issues signed receipts and selects an eligible winner under the committed observed-delta and approximate paired-bootstrap rule. The parent is intentionally budget-limited; the statistical rule is not a guarantee of generalization. The Solana program restricts escrow settlement to a registered worker and allows the creator to recover an unpaid reward after a timeout.
+AI teams do not ultimately buy GPU-hours. They buy a model that performs better on a task they care about. GradientMine turns that outcome into an explicit assurance contract: a task owner commits a frozen parent model, metric, minimum improvement, evaluator, candidate budget, deadline and reward. Independent workers run real training and submit content-addressed numeric adapters plus signed manifests. After the cutoff, one named evaluator compares candidates on held-out examples, applies the predeclared threshold and adjusted paired-bootstrap rule, signs receipts, and selects an eligible winner.
 
-The included workload is a real CPU-trained neural digit classifier, not an LLM or generated scores. Local mode never simulates tokens. Devnet payments must have finalized, independently checked transaction evidence. The product makes its central evaluator and reconstructible public benchmark explicit rather than calling signatures decentralized verification.
+The interface separates worker-reported development scores from held-out assurance scores, exposes the confidence lower bound, shows an Artifact Firewall describing the admission controls, and generates a downloadable Model Passport from the winning evidence. Solana is used for economic commitments and recovery: Devnet escrow, registered recipients, authorized settlement and a timeout refund. Model files and evaluation data stay off-chain.
+
+The current public proof uses real CPU PyTorch training on a deliberately small digit-classification task. The recorded run improved held-out accuracy from 84.72% to 95.28%, a +10.56 percentage-point observed delta across 360 held-out examples, with a +6.11 pp adjusted lower bound. That is engineering evidence, not a claim of LLM-scale performance or generalization. The published viewer is read-only local evidence and shows no blockchain payout because no integrated Devnet payout has yet been finalized.
 
 ## Blockchain and tools
-Solana Devnet; native Rust Solana program; solders client; Wallet Standard; FastAPI; SQLite; PyTorch; scikit-learn digits; WebCrypto SHA-256 and Ed25519; vanilla JavaScript; reproducible tests and content-addressed numeric JSON.
+Solana Devnet; native Rust Solana escrow program; solders client; Wallet Standard; FastAPI; SQLite; PyTorch; scikit-learn digits; WebCrypto SHA-256 and Ed25519; vanilla JavaScript; Cloudflare Pages for the public read-only evidence viewer.
 
 ## Why blockchain here?
-A task owner can commit a reward and cutoff; registration and payout leave public evidence; the creator can invoke a timeout refund even if the coordinator is unavailable. The chain enforces those financial state transitions, not model quality. This is narrower than claiming blockchain solves the trust problem of ML evaluation.
+The chain does not decide whether a model is good. It commits the economic terms around the experiment. A creator escrows a test reward, candidate recipients can be registered, the named validator can authorize the selected payout, and the creator can recover an unpaid reward after the timeout even if the coordinator disappears. That financial state is independently inspectable. Models, training data and private evaluation data remain off-chain.
 
-## Initial customer hypothesis
-Small model-owning teams seeking a narrowly measurable improvement are the proposed initial buyers. Independent ML developers are the proposed contributors. Begin with one task type and known participants rather than advertising a giant permissionless GPU network. A stronger baseline and genuinely controlled evaluation set are prerequisites for meaningful commercial testing.
-
-## Go-to-market hypothesis
-Recruit a small opt-in design-partner group through ML engineering communities and direct founder outreach. Help each team define a licensed task, baseline, utility metric and evaluation budget. Publish permissioned, reproducible case studies with total compute cost and failures, not only the winning gain. Grow through repeat task owners and contributor referrals only after measured usefulness is demonstrated.
-
-## Business-model hypothesis
-A possible future model is a disclosed service fee on successfully settled bounties plus separately priced private evaluation. A 5% example is a pricing hypothesis, not an implemented fee or validated willingness to pay. This release charges no protocol commission and has no token sale. Open competition may waste losing workers' compute; this must be measured against ordinary contracted fine-tuning.
-
-## Honest traction
-The project has internal engineering evidence: actual worker processes, measured model comparisons, signed artifacts and automated tests. External customer demand, repeat usage, willingness to pay and revenue have not been validated in this build. The latest exact commands and results are in docs/BUILD_LEDGER.md; web/assets/recorded-run.json and its hash-addressed artifacts are the published local example. Any additional public evidence bundle must exist and be checked before it is cited. Do not count demo wallets or repeated CI runs as customers.
+## Insight
+Compute markets sell an input. Model owners care about an outcome. The difficult part is not only finding compute; it is deciding when an improvement claim is strong enough to pay for when workers, benchmarks, evaluators and submitted artifacts may all be strategic or unreliable. GradientMine makes that assurance policy visible instead of hiding it behind a leaderboard score.
 
 ## Differentiation
-A compact, inspectable outcome-bounty workflow with exact wallet-intent checks, explicit evaluator authority, measurable eligibility, evidence downloads and failure/refund handling. No claim of first-in-category novelty or replacement of decentralized training research. Important follow-up work is private-task validation and economic efficiency, not decorative miner counts.
+GradientMine is not presented as the first proof-of-improvement system and does not claim decentralized ML verification. Its current differentiation is the productized assurance workflow around a customer-defined model-improvement bounty:
+
+- immutable policy and explicit evaluator authority
+- development score separated from held-out assurance
+- adjusted lower-bound evidence rather than point-estimate-only ranking
+- content-addressed artifacts and signed worker/evaluator statements
+- an Artifact Firewall that rejects arbitrary worker code in favor of bounded numeric adapters against a known architecture
+- a machine-readable Model Passport for the accepted result
+- exact browser-side wallet intent checking and recovery/refund paths
+- no custom token and no fake local token activity
+
+## Initial customer hypothesis
+The initial buyer is a small model-owning team with a narrow, measurable problem: improve a classifier, reduce a failure rate, or beat a frozen baseline under explicit constraints. The initial contributor is an independent ML engineer or research agent operator willing to compete on a bounded task. A properly licensed private assurance set and a stronger parent are prerequisites for commercial testing.
+
+## Go-to-market hypothesis
+Start with a small, opt-in design-partner cohort recruited through ML engineering communities and founder outreach. Work with each task owner to define the baseline, metric, minimum useful delta, non-regression requirements, evaluation budget and artifact rights. Publish permissioned case studies that report total compute, evaluator cost, failed experiments and uncertainty, not only the winner. Expand only if task owners repeat and contributors accept the real risk/reward terms.
+
+## Business-model hypothesis
+A future business model could charge a disclosed fee on successfully settled bounties plus separately priced private evaluation or higher-assurance execution. A 5% service fee is only an example hypothesis. This release charges no protocol commission and has no token sale.
+
+## Honest traction
+Implemented and internally verified: real CPU worker processes, bounded adapters, signed manifests and receipts, held-out evaluation, statistical eligibility, exact wallet-intent checks, recovery paths, a native Rust escrow program exercised locally in LiteSVM, browser QA, dependency/security checks, and a public read-only evidence viewer at https://gradientmine.pages.dev .
+
+Not yet validated: customer demand, willingness to pay, repeat usage, independent worker economics, a private benchmark, real Phantom-extension QA, or an integrated finalized Devnet training-to-payout run. Demo wallets and repeated CI runs are not customers.
+
+## Research roadmap, not shipped claims
+Research directions include anytime-valid sequential ranking, adaptive evaluation, richer non-regression contracts, probabilistic replay audits, hardware attestation, multiple independent evaluators, safe model-composition rounds and privacy-preserving evaluation. These are not presented as implemented features.

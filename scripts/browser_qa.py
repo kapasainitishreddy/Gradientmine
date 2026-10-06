@@ -164,6 +164,14 @@ def main():
                 )
                 page.reload()
                 page.get_by_text("Recorded local experiment", exact=False).wait_for()
+                page.get_by_text("ASSURANCE CONTRACT", exact=True).wait_for()
+                page.get_by_text("GRADIENTMINE ARENA", exact=True).wait_for()
+                page.get_by_text("ARTIFACT FIREWALL", exact=True).wait_for()
+                page.get_by_text("MODEL PASSPORT", exact=True).wait_for()
+                assert page.get_by_text("95.28%", exact=True).count() >= 1
+                assert page.get_by_text("+10.56 pp", exact=True).count() >= 1
+                assert page.get_by_role("button", name="Download JSON", exact=True).count() == 1
+                checks.append("Research-driven assurance contract, arena, artifact firewall and downloadable model passport render from recorded evidence")
                 assert page.locator("#wallet-button").is_disabled()
                 assert page.locator("#create-button").is_disabled()
                 page.get_by_role("button", name="Receipt", exact=True).first.click()
