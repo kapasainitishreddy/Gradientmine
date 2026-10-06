@@ -115,3 +115,11 @@ test('passport handles an inconclusive/no-winner bounty without fabricating a mo
   assert.equal(p.worker, null);
   assert.equal(p.paid, false);
 });
+
+test('sealed candidate remains sealed before held-out evaluation', () => {
+  const open = {...job, winner: null, state: 'OPEN', submissions: [{...job.submissions[0], score: undefined, state: 'REGISTERED'}]};
+  const row = arenaCandidates(open)[0];
+  assert.equal(row.assurance_score, null);
+  assert.equal(row.assurance_state, 'sealed');
+  assert.equal(row.eligible, false);
+});
