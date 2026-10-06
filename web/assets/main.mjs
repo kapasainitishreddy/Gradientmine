@@ -2,6 +2,7 @@ import {WalletSession} from './wallet.mjs';
 import {bytes,base64,sha256,verifyEnvelope,short,percent,delta,lamports,node,explorer,solToLamports,equal,shellQuote} from './core.mjs';
 import {validateIntent,validateWalletSignature} from './wire.mjs';
 import {parsePending,recoverPending} from './pending.mjs';
+import {assuranceContract,artifactFirewall,arenaCandidates,modelPassport} from './assurance.mjs';
 
 const $=id=>document.getElementById(id),state={config:null,recorded:null,jobs:[],job:null,selected:null,busy:false,evidence:null};
 const assetRoot=new URL('./',import.meta.url);
@@ -75,6 +76,73 @@ function renderJobs(){
 }
 function metric(title,value,detail){return append(node('div',null,'metric'),node('label',title),node('strong',value),node('small',detail));}
 function evidenceButton(title,hash,signer=null){const b=button(title,()=>inspect(hash,signer),'text-button');b.disabled=!hash;return b;}
+
+function downloadJson(filename,value){
+ const blob=new Blob([JSON.stringify(value,null,2)+'\n'],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),0);
+}
+function contractValue(labelText,value,detail=''){
+ const item=node('div',null,'contract-item');append(item,node('span',labelText,'contract-label'),node('strong',value??'Not declared'));if(detail)item.append(node('small',detail));return item;
+}
+function renderAssuranceContract(j){
+ const c=assuranceContract(j),section=node('section',null,'assurance-panel');section.id='assurance-contract';
+ append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','ASSURANCE CONTRACT','eyebrow'),node('h3','What must be true before a model can win')),node('span',j.winner?'ASSURED RESULT':'COMMITTED POLICY','assurance-status')));
+ const grid=node('div',null,'contract-grid');
+ append(grid,
+  contractValue('Primary metric',c.metric||'Not declared',c.minimum_delta==null?'':`Minimum ${delta(c.minimum_delta)}`),
+  contractValue('Statistical warranty',c.familywise_confidence==null?'Not declared':percent(c.familywise_confidence),c.statistical_rule||''),
+  contractValue('Candidate budget',c.max_candidates==null?'Not declared':String(c.max_candidates),c.bootstrap_resamples==null?'':`${c.bootstrap_resamples.toLocaleString()} bootstrap resamples`),
+  contractValue('Assurance set','SEALED COMMITMENT',short(c.evaluation_commitment||'',10)),
+  contractValue('Evaluator',short(c.evaluator||'',8),'One named validator'),
+  contractValue('Artifact policy','NUMERIC ADAPTER ONLY','No arbitrary worker code')
+ );
+ section.append(grid,node('p',c.benchmark_warning||c.trust_boundary,'assurance-note'));
+ return section;
+}
+function renderArena(j){
+ const rows=arenaCandidates(j),section=node('section',null,'arena');section.id='arena';
+ append(section,append(node('div',null,'arena-heading'),append(node('div'),node('span','GRADIENTMINE ARENA','eyebrow'),node('h3','Development score vs held-out assurance')),node('span',rows.length?`${rows.length} CANDIDATE${rows.length===1?'':'S'}`:'NO SUBMISSIONS','arena-count')));
+ if(!rows.length){section.append(node('p','Workers have not submitted candidates yet.','assurance-note'));return section;}
+ const max=Math.max(...rows.map(r=>r.assurance_score??0),1);
+ for(const r of [...rows].sort((a,b)=>(b.assurance_score??-1)-(a.assurance_score??-1))){
+  const row=node('div',null,`arena-row${r.winner?' arena-winner':''}${r.negative_control?' arena-negative':''}`);
+  const identity=append(node('div',null,'arena-identity'),node('strong',r.winner?'★ WINNER':r.negative_control?'NEGATIVE CONTROL':'WORKER'),node('small',short(r.worker||'',8)));
+  const scores=node('div',null,'arena-scores');
+  const dev=append(node('div',null,'arena-score'),node('span','Development'),node('strong',r.development_score==null?'—':percent(r.development_score)));
+  const assurance=append(node('div',null,'arena-score assurance'),node('span','Assurance'),node('strong',r.assurance_score==null?'SEALED':percent(r.assurance_score)));
+  append(scores,dev,assurance);
+  const bar=node('div',null,'arena-bar');const fill=node('span');fill.style.width=r.assurance_score==null?'0%':`${Math.max(2,Math.min(100,(r.assurance_score/max)*100))}%`;bar.append(fill);
+  const verdict=append(node('div',null,'arena-verdict'),node('strong',r.winner?'VERIFIED':r.eligible?'ELIGIBLE':'REJECTED'),node('small',r.delta==null?'Awaiting held-out evaluation':`${delta(r.delta)} · LCB ${delta(r.lower_bound)}`));
+  if(r.runtime_efficiency_pp_per_second!=null)verdict.append(node('small',`${r.runtime_efficiency_pp_per_second.toFixed(2)} pp/s · worker-reported runtime`));
+  append(row,identity,scores,bar,verdict);section.append(row);
+ }
+ section.append(node('p','Development scores are worker-reported public validation. Assurance scores come from the named validator after cutoff. Runtime efficiency is descriptive and does not decide the winner.','assurance-note'));
+ return section;
+}
+function renderArtifactFirewall(j){
+ const winnerSub=(j.submissions||[]).find(s=>s.id===j.winner?.submission_id)||(j.submissions||[])[0],f=artifactFirewall(winnerSub),section=node('section',null,'firewall');
+ append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','ARTIFACT FIREWALL','eyebrow'),node('h3','Constrain what an untrusted worker may submit')),node('span',winnerSub?'ADMISSION CONTROLS':'POLICY','assurance-status')));
+ const checks=[
+  ['Bounded numeric adapter',f.protocol_format==='bounded numeric JSON adapter'],
+  ['Content-addressed SHA-256',f.content_addressed],
+  ['Worker-signed manifest',f.signed_manifest_present],
+  ['Known architecture required',f.known_architecture_required],
+  ['Shape + merged-weight validation',f.shape_validation_required&&f.merged_weight_validation_required],
+  ['Arbitrary executable payload',f.executable_payload_allowed===false,'BLOCKED']
+ ];
+ const list=node('div',null,'firewall-grid');
+ for(const [name,ok,custom] of checks)append(list,append(node('div',null,'firewall-check'),node('span',ok?'✓':'·','firewall-icon'),node('strong',name),node('small',custom||(ok?'ENFORCED':'UNVERIFIED'))));
+ section.append(list,node('p',f.limit,'assurance-note'));return section;
+}
+function renderPassport(j){
+ const p=modelPassport(j),section=node('section',null,'passport');
+ append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','MODEL PASSPORT','eyebrow'),node('h3','Machine-readable provenance for the accepted result')),p.model_sha256?button('Download JSON',()=>downloadJson(`gradientmine-passport-${p.job_id}.json`,p),'button secondary compact'):node('span','NO ACCEPTED MODEL','assurance-status')));
+ const dl=node('dl',null,'passport-grid');
+ const values=[['Parent',p.parent_sha256],['Accepted model',p.model_sha256],['Artifact',p.artifact_sha256],['Worker',p.worker],['Validator',p.validator],['Policy',p.policy_sha256],['Evaluation commitment',p.evaluation_commitment],['Observed delta',p.observed_delta==null?null:delta(p.observed_delta)],['Adjusted lower bound',p.lower_bound==null?null:delta(p.lower_bound)],['Settlement',p.paid?'Finalized Devnet payout':'No finalized payout claimed']];
+ for(const [name,value] of values){append(dl,node('dt',name),append(node('dd'),value&&value.length>28?identifier(value,name.toLowerCase()):code(value||'Not available')));}
+ section.append(dl,node('p',p.assurance_level,'assurance-note'));return section;
+}
+
 function renderDetail(){
  const root=$('detail'),j=state.job;if(!j){root.replaceChildren(validatorBadge(state.config?.validator),append(node('div',null,'empty'),node('h2','A result starts with a bounty'),node('p','Connect your wallet and define the improvement you want to measure.'),button('Create an experiment',()=>openCreate())));return;}
  const w=j.winner,p=j.policy,subs=j.submissions||[],finished=['EVALUATED','SETTLING','SETTLED','NO_WINNER'].includes(j.state),paid=j.mode==='devnet'&&j.state==='SETTLED'&&!!explorer(j.mode,j.settlement_signature);
@@ -123,7 +191,7 @@ function renderDetail(){
  if(j.settlement_warning)audit.append(node('p',`Settlement requires attention: ${j.settlement_warning}`,'form-error'));
  const events=append(node('details',null,'events'),node('summary','Protocol event log'));
  for(const e of j.events||[])events.append(append(node('p'),node('small',dt(e.created)),node('strong',` ${e.kind}`),node('span',` · ${e.message}`)));
- root.replaceChildren(head,trust,meta,pipeline,outcome,metrics,tableWrap,proof,lineage,actions,audit,events);
+ root.replaceChildren(head,trust,meta,renderAssuranceContract(j),renderArena(j),pipeline,outcome,metrics,tableWrap,proof,renderArtifactFirewall(j),renderPassport(j),lineage,actions,audit,events);
 }
 function renderWallet(){
  if(!wallet)return;
