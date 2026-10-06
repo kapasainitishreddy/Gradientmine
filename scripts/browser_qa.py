@@ -79,6 +79,20 @@ def main():
                 page.add_init_script(TEST_WALLET)
                 page.goto(origin)
                 page.get_by_text("Live local server", exact=False).wait_for()
+                assert page.locator("html").get_attribute("data-theme") == "void"
+                page.get_by_role("button", name="Change color theme", exact=True).click()
+                assert page.locator("html").get_attribute("data-theme") == "aurora"
+                assert page.locator("#theme-label").inner_text() == "Aurora"
+                assert page.evaluate("localStorage.getItem('gradientmine-theme')") == "aurora"
+                assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#06131a"
+                page.reload()
+                page.get_by_text("Live local server", exact=False).wait_for()
+                assert page.locator("html").get_attribute("data-theme") == "aurora"
+                page.get_by_role("button", name="Change color theme", exact=True).click()
+                assert page.locator("html").get_attribute("data-theme") == "paper"
+                page.get_by_role("button", name="Change color theme", exact=True).click()
+                assert page.locator("html").get_attribute("data-theme") == "void"
+                checks.append("Theme control cycles Void/Aurora/Paper, persists safely, and updates browser theme color")
                 page.get_by_role("button", name="Connect wallet", exact=True).click()
                 page.get_by_role("button", name="QA ephemeral wallet", exact=True).click()
                 page.get_by_role("button", name="Disconnect", exact=False).wait_for()
