@@ -37,6 +37,7 @@ export function arenaCandidates(job) {
       runtime_efficiency_pp_per_second: finite(scoreDelta) && finite(elapsed) && elapsed > 0 ? (scoreDelta * 100) / elapsed : null,
       eligible: sub?.score?.eligible === true,
       winner: winnerId != null && sub.id === winnerId,
+      assurance_state: sub?.score == null ? 'sealed' : (winnerId != null && sub.id === winnerId ? 'winner' : (sub?.score?.eligible === true ? 'eligible' : 'rejected')),
       negative_control: sub?.worker_metrics?.negative_control === true,
       artifact_sha256: sub.artifact_sha256 || null,
       receipt_sha256: sub.receipt_sha256 || null,
