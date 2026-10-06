@@ -85,3 +85,8 @@ Compiled-SBF tests additionally require `GM_SBF_PATH` pointing to the built `gra
 - [Recorded 150-second presentation](submission/PRESENTATION_VIDEO.md), [165-second demo](submission/DEMO_VIDEO.md), and [rendered launch films](submission/tour/README.md)
 
 A complete submission still requires the owner's registration/identity confirmation, review of the captioned videos, permitted judge-accessible playback URLs and portal confirmation. Do not describe scripts as finished videos or planned interviews as traction. The submission checklist distinguishes implementation from verified live operation.
+
+
+## Public evidence viewer
+
+A judge-accessible, read-only viewer of the verified local run is deployed at https://gradientmine.pages.dev . It is intentionally not the live API or a Devnet validator. The page labels the run as recorded/local and shows no payout or Explorer link because no Devnet payment has occurred.
