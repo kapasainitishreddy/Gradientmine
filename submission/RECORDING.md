@@ -1,74 +1,149 @@
-# Recording sheet: presentation and product demo
+# Final recording sheet: model bug bounty narrative
 
-**Recording instructions for the official presentation and demo.** [SUBMIT.md](SUBMIT.md) records freshly verified official rules: presentation 2–3 minutes; product demo ≤3 minutes. Actual [150-second captioned presentation](PRESENTATION_VIDEO.md) and [165-second captioned demo](DEMO_VIDEO.md) candidates have been produced and reviewed, with their own provenance sheets; no upload or portal confirmation follows from a local MP4. Check for later rule changes before upload.
+Use this for new Colosseum recordings after the model-bug-bounty UI is deployed.
 
-## Capture preparation
+## Presentation
 
-1. Read [BUILD_LEDGER.md](../docs/BUILD_LEDGER.md), [PITCH.md](PITCH.md), [DEMO.md](DEMO.md), and the current public evidence. Choose a single demonstration mode: live local, recorded local, or an actually verified integrated Devnet run. Never use chain-only smoke evidence as the payout for an unrelated trained artifact.
-2. Use a clean browser profile and 1920×1080 capture canvas at 30 fps. Increase the browser zoom until policy, results and receipt text are readable at 1080p. Pre-open only the app, the public repo, public verification output, and Explorer if real finalized signatures exist. Disable notifications. Do not capture private JSON identities, recovery phrases, browser storage, Authorization headers or CI secret panels.
-3. Record a 10-second microphone/cursor test. Use natural owner narration, with no music needed. Use licensed music only if rights have been confirmed. A face camera is optional; no founder photo is needed. Record the whole UI take and keep the original privately so cuts can be checked against it.
-4. Prefer the existing original [logo.svg](logo.svg). If the portal needs PNG, export that SVG at 1024×1024 in a vector editor; preserve its square proportions and verify the resulting image. The logo is an original geometric mark, not a Colosseum, Solana or wallet endorsement.
-5. For a new local capture on an installed checkout, run the following **before capture**, with shell pipe failure enabled. These generate real training evidence; they do not make a video or a public deployment. Do not record the private output directory listing.
+Target: 2:35 to 2:50. Official range is 2 to 3 minutes.
 
-```sh
-set -o pipefail
-python -m gradientmine.cli demo --out .local/recording-run 2>&1 | tee .local/recording-training.log
-python -m scripts.publish_demo --run .local/recording-run/run.json
-```
+### Shot 1 — 0:00 to 0:20
 
-The local demo creates separate worker processes and public results alongside private identities; only publish through the repository's artifact allowlist. Serve the prepared recorded viewer separately from a live API, following the current runbook. Verify the visible mode rather than assuming that an empty live server is the recorded result. If using the checked-in snapshot, identify it as recorded and do not fabricate contemporaneous logs.
+Screen: hero.
 
-## Presentation: exact 2:30 shot plan
+Narration:
 
-Read the exact spoken paragraphs in [PITCH.md](PITCH.md) at a relaxed pace. Each row is a fixed edit boundary, leaving short click/pause space. Rehearse and trim pauses to 150 seconds; never speed the voice to hide missing content.
+"AI teams spend money on engineers and compute hoping a model gets better. But they do not actually want GPU hours. They want the model fixed. GradientMine is a bug bounty marketplace for AI models."
 
-| Time | Screen action | On-screen caption |
-|---|---|---|
-| 0:00–0:25 | Start with original logo for 2 seconds, then actual app overview and mode badge. Deliver “Problem and proposition.” | “Pay for measurable model improvement” + persistent actual mode label |
-| 0:25–0:55 | Open the policy; point at parent commitment, minimum improvement, cutoff, evaluator. Show native-program source or actual evidence when discussing escrow; do not imply a deployment from source. Deliver “Product.” | “Committed terms → independent candidates → named evaluator” |
-| 0:55–1:25 | Show the actual experiment results and winning receipt; keep hash/signer verification legible. Deliver “Evidence.” | “Real CPU training · numeric adapters · inspectable receipts” |
-| 1:25–1:55 | Show the trust/benchmark warning and briefly the threat-model table. Deliver “Trust and differentiation.” | “Trusted evaluator · public reconstructible benchmark” |
-| 1:55–2:30 | Show the proposed customer/validation paragraph, then return to actual UI and logo. Deliver “Market and next test.” Finish at 2:30, including the final hold. | “Customer and pricing hypotheses · no validated traction” then “GradientMine — reward the improvement” |
+Hold on:
 
-Use truthful state labels alongside the footage: “Recorded local experiment — no funds moved,” “Live local — no funds move,” or “Live Solana Devnet — test funds only,” as applicable. Presentation narration about implemented escrow rules does not imply a completed payment.
+**Put a bounty on your AI's worst problem.**
 
-## Product demo: exact 2:45 local narration and actions
+### Shot 2 — 0:20 to 0:45
 
-This is the ready-to-record local version. Read the quoted narration verbatim, except replace measured values if recording a different run. Leave enough pause for every click. The checked-in example inspected during this pass is job `d348dcd2-90f3-49a0-949d-4c7801699346` in `web/assets/recorded-run.json`: 84.72% baseline, 95.28% winner, +10.56 **percentage points**, 360 evaluation examples, `EVALUATED`, no funding or settlement signature. These are that snapshot's measurements only.
+Screen: four-step flow.
 
-| Time | Screen action and exact narration | Caption |
-|---|---|---|
-| 0:00–0:15 | Show mode badge and actual bounty. “GradientMine pays for measurable model improvement. This is a recorded local CPU experiment. No funds moved, and this page is read-only evidence.” If recording live local, replace “recorded”/“read-only” with the actual state. | “Recorded local experiment · read-only · no funds moved” |
-| 0:15–0:45 | Open policy, copy the full policy hash, point at parent, cutoff and threshold. “The owner commits a frozen parent, evaluation rules and deadline before workers enter. The hash binds these terms. This classifier's parent is deliberately budget-limited. The evaluator is named, and the public digits benchmark can be reconstructed.” | “Immutable policy · trusted evaluator · public benchmark” |
-| 0:45–1:20 | Show public real worker output from the captured run, then candidate table. For the checked-in snapshot without corresponding logs, show its recorded process disclosure and artifacts instead. “Three independent worker processes on one host trained numeric low-rank updates using PyTorch. This is real CPU optimization, not an LLM or three independently owned GPUs. One worker shuffled labels as a disclosed negative control. The evaluator waits until cutoff. Any waiting time omitted from this recording is labelled.” Show only an actual labelled cut. | “Three processes · one host · disclosed negative control”; at a real cut: “After training and submission cutoff — elapsed time omitted” |
-| 1:20–1:55 | Open winner and receipt, open the browser receipt inspector and show its automatic hash/signature verification result. “In this recorded run, accuracy rose from 84.72 to 95.28 percent on 360 held-out examples: 10.56 percentage points. The browser checks the receipt hash and the expected evaluator's signature. Eligibility uses a declared approximate paired-bootstrap comparison. A valid signature authenticates the report; it does not prove training or remove evaluator trust.” | “This run: 84.72% → 95.28% · +10.56 pp · n=360”; then “Hash + expected-signer verification” |
-| 1:55–2:25 | Show `EVALUATED`, absence of payout, and public compiled-SBF test evidence only if passed for the cited build. “An eligible winner is not a paid worker. This local run has no on-chain payout. The native Rust program's local VM tests exercise escrow, registration, payout and refund rules. A local VM is not Devnet. A real payment claim needs the exact trained artifact, registered worker, signed receipt and finalized payout evidence together.” | “Eligible ≠ paid · local VM ≠ Devnet”; include test commit/build identifier from current evidence |
-| 2:25–2:45 | Show parent/winner relationship, download an artifact, point to refund/trust explanation and hold on app. “The evidence links parent, adapter, evaluator receipt and resulting model. Devnet escrow has a creator timeout refund; this local job has no escrow. Next comes private-task customer validation. Compute is not the outcome. An inspectable improvement is.” | “Downloadable evidence · explicit trust · customer hypothesis” |
+Narration:
 
-The first-round snapshot has no earlier-round ancestors (`lineage: []`). Show its parent/winner model relationship; do not invent a multi-round graph. Use subsequent-round lineage only if that round actually exists.
+"A model owner freezes the failure, metric, minimum improvement, evaluator, deadline and reward. Independent engineers or AI agents compete on fixes. Public development feedback helps them iterate, but hidden verification decides who actually wins."
 
-## Devnet substitutions: only after the integrated proof exists
+### Shot 3 — 0:45 to 1:15
 
-Keep the same 165-second timeline. Replace the opening sentence with “This is a verified Solana Devnet run using test SOL.” During 0:15–0:45 show the dedicated real wallet's authentication, transaction review and actual finalized funding link, saying: “This review names the exact program, reward, rent and fee. The owner's wallet signs; finalized evidence confirms escrow.” Label any time cut to a completed approval/confirmation.
+Screen: recorded proof.
 
-During 0:45–1:20 show the actual trained adapter and matching on-chain registration, saying: “This worker's artifact commitment was registered before cutoff.” During 1:55–2:25 replace the local-boundary paragraph with: “The registered worker selected by this receipt received the committed Devnet reward. Here are the finalized payout, recipient and chain state. The winning artifact and receipt hashes match the public evidence bundle. This is test SOL, not revenue.” Open the real Explorer link and compare recipient/reward with the UI and bundle. If any match is missing, pending or failed, retain the local version or describe that exact failure; no success sentence may be used.
+Narration:
 
-Wallet footage must be the actual extension interaction. A Playwright test wallet can be labelled a harness in engineering evidence; it cannot stand in for Phantom. Do not expose the extension's recovery settings.
+"This repository includes a real CPU proof-of-function. A small classifier starts at 84.72%. Three worker processes submit actual low-rank model updates. The selected fix scores 95.28% on 360 held-out examples, a 10.56 percentage-point improvement."
 
-## Captions, edit and export
+Show the negative control.
 
-Add complete spoken-word captions from the final narration, with manually corrected terms: “GradientMine,” “Solana Devnet,” “PyTorch,” “low-rank,” “Ed25519,” and “percentage points.” Break captions into one or two readable lines, usually 32–42 characters per line, time them to the real speech, and avoid covering the mode badge or verification result. Use the table's captions as separate evidence labels, not a substitute for accessible speech captions. Keep every claim visible long enough to inspect. Cut only waits/navigation, label elapsed time, and never reorder footage to imply an unperformed approval or payment.
+### Shot 4 — 1:15 to 1:45
 
-Export separate `presentation.mp4` (target 150 s) and `demo.mp4` (target 165 s): 1920×1080, 30 fps, H.264, yuv420p, AAC 48 kHz stereo, approximately 8–12 Mbps video, 160–192 kbps audio, fast-start enabled. Export both a corrected `.srt` file and burned-in captions if supported. For an already recorded and edited master, this optional command transcodes the real footage; it does not generate footage:
+Screen: Bounty Rules and Fix Arena.
 
-```sh
-ffmpeg -i edited-master.mov -vf 'scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,fps=30' -c:v libx264 -pix_fmt yuv420p -b:v 10M -c:a aac -b:a 192k -ar 48000 -movflags +faststart presentation.mp4
-ffprobe -v error -show_entries format=duration -show_entries stream=codec_name,width,height,r_frame_rate -of json presentation.mp4
-ffprobe -v error -show_entries format=duration -show_entries stream=codec_name,width,height,r_frame_rate -of json demo.mp4
-```
+Narration:
 
-Check the entire exported file, including black frames and end card: presentation 120–180 seconds under verified official guidance; demo ≤180 seconds, preferably 165. These are instructions, not commands claimed executed in this environment. Watch both exports with sound and captions. Confirm that addresses/hashes remain legible and no secret appears in a frame.
+"The rules are committed before evaluation. Workers cannot win on their own reported score. The named evaluator applies the same held-out test and predeclared statistical rule to every admitted candidate."
 
-## Upload and portal handoff
+### Shot 5 — 1:45 to 2:10
 
-Owner chooses a permitted judge-accessible host, uploads both distinct videos, adds corrected captions, and tests each URL signed out on desktop and phone. Avoid a login gate, expired link, private cloud folder or processing-in-progress page. Retain filename, exact duration, upload date, playback URL and visibility setting privately until ready to enter the portal. Enter the two URLs in the actual dashboard and save final portal confirmation. Do not substitute a script, launch clip, repository link or localhost address for a video URL.
+Screen: Safe Submission Boundary and Fix Passport.
+
+Narration:
+
+"The current task format accepts bounded numeric adapters rather than arbitrary worker code. Hashes, signatures, architecture and shape are checked. The accepted result gets a machine-readable Fix Passport linking the parent, worker, evaluator, policy and measured improvement."
+
+### Shot 6 — 2:10 to 2:35
+
+Screen: lifecycle / Solana evidence / trust.
+
+Narration:
+
+"Solana handles the economic layer: escrow, registered recipients, evaluator-authorized settlement and timeout refunds. Model quality remains off-chain with the named evaluator. No custom token is needed."
+
+### Shot 7 — 2:35 to 2:50
+
+Screen: hero.
+
+Narration:
+
+"Compute markets sell GPU time. Freelance platforms sell labor. GradientMine is designed to sell the outcome: measurable AI improvement. Put a bounty on the model bug. Pay for the fix that actually works."
+
+## Product demo
+
+Target: 2:35 to 2:50. Maximum 3 minutes.
+
+### 0:00 to 0:15
+
+Show hero and four-step flow.
+
+Say:
+
+"Here is the whole product: post a measurable model bug, let workers compete, verify fixes on held-out evaluation, then settle the winner."
+
+### 0:15 to 0:40
+
+Open the recorded Digits bounty.
+
+Say:
+
+"This is recorded local evidence, not customer data and not a live payment. The baseline is deliberately budget-limited at 84.72%."
+
+### 0:40 to 1:05
+
+Show lifecycle and candidate table.
+
+Say:
+
+"Three actual worker processes on one host submitted low-rank numeric updates. This third worker is a disclosed shuffled-label negative control. Held-out results are unavailable to workers until cutoff."
+
+### 1:05 to 1:35
+
+Show Bounty Rules and Fix Arena.
+
+Say:
+
+"The primary metric, minimum delta, candidate budget, evaluator, assurance-set commitment and artifact policy are frozen. Public progress and hidden verification are separate."
+
+### 1:35 to 2:00
+
+Show winner and statistical evidence.
+
+Say:
+
+"The selected candidate reaches 95.28%, improving the parent by 10.56 percentage points across 360 held-out examples. It clears the minimum and has a positive adjusted lower bound."
+
+### 2:00 to 2:20
+
+Show Safe Submission Boundary.
+
+Say:
+
+"The validator does not execute arbitrary worker code in this task format. It verifies bounded model data, hashes, signatures, architecture and merged-weight shape."
+
+### 2:20 to 2:38
+
+Show Fix Passport.
+
+Say:
+
+"The result gets a downloadable passport linking the parent, accepted model, worker, evaluator, policy and measured delta."
+
+### 2:38 to 2:50
+
+Show settlement status and trust section.
+
+Say:
+
+"This run is local, so it correctly says no finalized payout. Solana settlement is a separate economic layer. GradientMine never turns missing evidence into a success claim."
+
+## Capture rules
+
+- 1920×1080, 30 fps
+- readable browser zoom
+- no notifications
+- never expose private keys, seed phrases, auth headers or private identities
+- use natural narration if possible
+- keep the visible recorded/local/unpaid state readable
+- no fake Devnet transaction or Explorer link
+- do not use the illustrative support-routing use case as if it were the recorded demo
+- test final video signed out after upload
