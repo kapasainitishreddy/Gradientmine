@@ -1,8 +1,12 @@
 # GradientMine
 
-**Model-improvement bounties, with inspectable evidence and an explicitly trusted validator.**
+**Model bug bounties: post a measurable AI failure, let engineers and AI agents compete to fix it, and pay for the best verified improvement.**
 
-GradientMine runs actual PyTorch low-rank-adapter experiments, compares submitted models with a fixed baseline, signs evaluation receipts, and integrates a native Solana escrow program. It does not mine a blockchain, mint an investment token, or claim trustless verification.
+GradientMine turns model improvement into an outcome market. A task owner freezes the parent model, metric, minimum useful delta, evaluator, deadline and reward. Independent workers submit bounded model updates. After cutoff, a named evaluator scores every admitted candidate on the same held-out set and selects the best eligible fix. Solana handles escrow and settlement; model files and evaluation stay off-chain.
+
+**The category:** HackerOne-style bounties for model performance. Instead of buying GPU hours or engineering time, a team can put a price on an objective improvement.
+
+The current release runs actual PyTorch low-rank-adapter experiments, compares submitted models with a fixed baseline, signs evaluation receipts, and integrates a native Solana escrow program. It does not mine a blockchain, mint an investment token, or claim trustless verification.
 
 ## What is verified, and what is not
 
@@ -56,14 +60,14 @@ After an ambiguous response, repeat the same worker command with `--resume` and 
 
 Training: a small 64→48→10 Digits classifier; real rank-limited updates to its output head. No LLM fine-tuning, royalties, zkML or autonomous research agents are claimed.
 
-## Assurance market interface
+## Model bug bounty assurance interface
 
-The current browser surface derives four research-driven views from the same job/evidence objects used by the protocol:
+The browser keeps the simple bounty story on top and exposes four deeper assurance views from the same job/evidence objects:
 
-- **Assurance Contract** — frozen objective, minimum delta, family-wise target, candidate budget, held-out commitment, evaluator and artifact policy.
-- **GradientMine Arena** — worker-reported development score kept separate from the held-out assurance score; sealed candidates are never labelled rejected before evaluation.
-- **Artifact Firewall** — makes the current submission boundary explicit: bounded numeric JSON adapters, content hashes, signed manifests, known architecture, shape checks and merged-weight validation; no arbitrary worker code is executed by the validator.
-- **Model Passport** — downloadable JSON linking the parent, accepted model, artifact, worker, validator, policy, assurance-set commitment, measured delta and settlement status.
+- **Bounty Rules / Assurance Contract** — frozen objective, minimum delta, family-wise target, candidate budget, held-out commitment, evaluator and artifact policy.
+- **Fix Arena** — worker-reported public progress kept separate from hidden verification; sealed candidates are never labelled rejected before evaluation.
+- **Safe Submission Boundary / Artifact Firewall** — bounded numeric JSON adapters, content hashes, signed manifests, known architecture, shape checks and merged-weight validation; no arbitrary worker code is executed by the validator.
+- **Fix Passport / Model Passport** — downloadable JSON linking the parent, accepted model, artifact, worker, validator, policy, assurance-set commitment, measured delta and settlement status.
 
 These are inspectability features around mechanisms already present in the release. They do not add decentralized verification, hidden-commercial-benchmark security, backdoor certification, TEE attestation or zkML. See [the assurance research synthesis](docs/ASSURANCE_RESEARCH.md).
 
