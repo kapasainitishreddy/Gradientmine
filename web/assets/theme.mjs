@@ -1,7 +1,7 @@
 export const THEMES = Object.freeze({
-  void: Object.freeze({label:'Void', meta:'#08080b', hint:'Graphite + lunar violet'}),
-  aurora: Object.freeze({label:'Aurora', meta:'#06131a', hint:'Deep ocean + electric cyan'}),
-  paper: Object.freeze({label:'Paper', meta:'#f6f4ef', hint:'Warm research notebook'}),
+  void: Object.freeze({label:'Void', meta:'#050505', hint:'Fixed black + signal red'}),
+  aurora: Object.freeze({label:'Aurora', meta:'#050505', hint:'Fixed black + signal red'}),
+  paper: Object.freeze({label:'Paper', meta:'#050505', hint:'Fixed black + signal red'}),
 });
 export const THEME_ORDER = Object.freeze(['void','aurora','paper']);
 
