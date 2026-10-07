@@ -128,7 +128,7 @@ def main():
                 page.get_by_role("heading", name=attack, exact=True).wait_for()
                 assert page.locator("#detail img").count() == 0
                 assert page.evaluate("window.__gm_xss === undefined")
-                assert "--job '$(printf unsafe);'\\''" in page.locator("#worker-command").inner_text()
+                assert "--job '$(printf unsafe);'\\''" in (page.locator("#worker-command").text_content() or "")
                 page.unroute("**/api/jobs/*", hostile_detail)
                 page.reload()
                 page.get_by_role("heading", name="Browser-verified bounty", exact=True).wait_for()
