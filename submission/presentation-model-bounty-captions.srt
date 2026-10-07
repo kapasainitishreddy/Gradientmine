@@ -1,0 +1,34 @@
+1
+00:00:00,000 --> 00:00:20,000
+AI teams spend money on engineers and compute hoping a model gets better.
+GradientMine is a bug bounty marketplace for AI models.
+
+2
+00:00:20,000 --> 00:00:45,000
+A model owner freezes the failure, metric, minimum improvement,
+evaluator, deadline and reward before workers compete.
+
+3
+00:00:45,000 --> 00:01:15,000
+This repository includes a real CPU proof:
+84.72% to 95.28%, across 360 held-out examples.
+
+4
+00:01:15,000 --> 00:01:45,000
+Public development feedback helps workers iterate.
+Hidden verification and frozen rules decide who wins.
+
+5
+00:01:45,000 --> 00:02:10,000
+Bounded artifacts, hashes, signatures, architecture and shape checks
+create an inspectable boundary for untrusted submissions.
+
+6
+00:02:10,000 --> 00:02:35,000
+Solana handles escrow, registered recipients,
+authorized settlement and timeout refunds.
+
+7
+00:02:35,000 --> 00:02:50,000
+Compute markets sell GPU time.
+GradientMine sells the outcome: measurable AI improvement.
