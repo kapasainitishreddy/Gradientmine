@@ -184,6 +184,13 @@ def main():
                 page.get_by_text("GRADIENTMINE ARENA", exact=True).wait_for()
                 page.get_by_text("ARTIFACT FIREWALL", exact=True).wait_for()
                 page.get_by_text("MODEL PASSPORT", exact=True).wait_for()
+                page.get_by_role("heading", name="Watch the improvement move through the protocol.", exact=True).wait_for()
+                page.get_by_text("84.72 → 95.28 · +10.56 pp", exact=False).wait_for()
+                assert "LOCAL EVIDENCE" in page.locator("#proof-summary").inner_text()
+                assert "no payout claimed" in page.locator("#proof-summary").inner_text()
+                box = page.locator("#proof-canvas").bounding_box()
+                assert box and box["width"] > 250 and box["height"] > 250
+                checks.append("Cinematic proof stage renders recorded evidence and preserves the local/unpaid boundary")
                 assert page.get_by_text("95.28%", exact=True).count() >= 1
                 assert page.get_by_text("+10.56 pp", exact=True).count() >= 1
                 assert page.get_by_role("button", name="Download JSON", exact=True).count() == 1
