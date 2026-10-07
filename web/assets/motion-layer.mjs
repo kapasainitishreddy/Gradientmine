@@ -44,7 +44,7 @@ export async function animateThemeChange(target){
 }
 export async function installRevealMotion(root=globalThis.document){
   const m=await runtime();if(!m||!root)return false;
-  const targets=root.querySelectorAll('.guide,.trust');
+  const targets=root.querySelectorAll('.cinematic,.guide,.trust');
   for(const el of targets){
     m.inView(el,()=>{m.animate(el,{opacity:[.55,1],y:[18,0]},{duration:.6,ease});},{amount:.18});
   }

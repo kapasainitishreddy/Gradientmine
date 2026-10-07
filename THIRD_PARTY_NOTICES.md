@@ -49,3 +49,9 @@ No OneTake source code or assets are vendored into GradientMine.
 
 - **Motion** — https://motion.dev — MIT. GradientMine uses the pinned open-source Motion 13.5.0 browser ESM build for optional entrance, winner and theme-change animation. The application remains functional when the module cannot load and disables the enhancement for `prefers-reduced-motion`.
 - **Radix Colors / Radix Themes** — https://github.com/radix-ui/colors and https://github.com/radix-ui/themes — MIT. Consulted as open-source references for accessible contrast scales and theme-system ergonomics. GradientMine's Void, Aurora and Paper palettes, CSS, layout and components are original; Radix packages or component source are not bundled.
+
+
+## Colosseum motion-design references
+
+- **yihui-dev/awesome-opus5-5-videos** — https://github.com/yihui-dev/awesome-opus5-5-videos — MIT. Used as a reference collection of publicly shared motion-design prompts and implementation techniques. GradientMine's cinematic proof stage is an original Canvas implementation; no source code, media assets, branded artwork, or prompt text from the collection is vendored.
+- The design pass specifically drew high-level inspiration from entries by **@ajith_io** (Canvas particle motion), **@heyiammallik** (showreel pacing / “every frame matters”), and **@brainextends** (compact premium product-stage composition and coordinated motion grammar). Their original posts remain credited by the reference repository.

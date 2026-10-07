@@ -66,3 +66,27 @@ input,select{background:color-mix(in srgb,var(--bg) 84%,var(--surface))}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 
 .brand .brand-mark{margin-left:0;color:inherit}
+
+
+/* Colosseum cinematic proof stage — original implementation inspired by the motion-design prompt collection credited in THIRD_PARTY_NOTICES.md. */
+.cinematic{max-width:var(--max);margin:8px auto 56px;padding:0 32px;display:grid;grid-template-columns:minmax(260px,.72fr) minmax(0,1.55fr);gap:34px;align-items:stretch;scroll-margin-top:96px}
+.cinematic-copy{padding:30px 4px 28px 0;align-self:center}
+.cinematic-copy h2{font-size:clamp(28px,3vw,43px);line-height:1.06;letter-spacing:-1.55px;max-width:500px;margin:8px 0 16px}
+.cinematic-copy>p:not(.proof-summary){font-size:13px;max-width:430px}
+.proof-legend{display:flex;flex-wrap:wrap;gap:9px 15px;margin:22px 0 15px;color:var(--muted);font:600 9px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase;letter-spacing:.08em}
+.proof-legend span{display:inline-flex;align-items:center;gap:7px}
+.legend-dot{width:7px;height:7px;border-radius:50%;display:inline-block;box-shadow:0 0 12px currentColor}
+.legend-dot.parent,.legend-dot.winner{background:var(--accent-bg);color:var(--accent-bg)}
+.legend-dot.eligible{background:var(--good);color:var(--good)}
+.legend-dot.rejected{background:var(--bad);color:var(--bad)}
+.proof-summary{margin-top:15px;padding-top:15px;border-top:1px solid var(--line);font:600 10px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--accent)}
+.proof-stage{position:relative;min-height:390px;border:1px solid color-mix(in srgb,var(--line) 90%,transparent);border-radius:22px;overflow:hidden;background:radial-gradient(circle at 80% 28%,color-mix(in srgb,var(--accent-bg) 11%,transparent),transparent 34%),linear-gradient(145deg,color-mix(in srgb,var(--surface) 97%,transparent),color-mix(in srgb,var(--bg) 93%,var(--surface)));box-shadow:0 38px 120px color-mix(in srgb,var(--bg) 68%,#000),inset 0 1px 0 color-mix(in srgb,var(--text) 7%,transparent);isolation:isolate}
+.proof-stage::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(color-mix(in srgb,var(--text) 4%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--text) 4%,transparent) 1px,transparent 1px);background-size:29px 29px;mask-image:linear-gradient(#000b,transparent 90%)}
+.proof-stage::after{content:"";position:absolute;inset:-40% -15%;z-index:-1;background:conic-gradient(from 100deg at 70% 45%,transparent,color-mix(in srgb,var(--accent-bg) 7%,transparent),transparent 28%,color-mix(in srgb,var(--good) 4%,transparent),transparent 58%);filter:blur(30px);opacity:.85;pointer-events:none}
+.stage-chrome,.stage-footer{position:absolute;z-index:3;left:17px;right:17px;display:flex;justify-content:space-between;gap:12px;color:var(--muted);font:650 8px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;pointer-events:none}
+.stage-chrome{top:15px}.stage-footer{bottom:13px;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--line) 72%,transparent)}
+#proof-canvas{display:block;width:100%;height:100%;min-height:390px}
+.proof-stage:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+@media(max-width:980px){.cinematic{grid-template-columns:1fr;gap:16px}.cinematic-copy{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;align-items:start;padding-bottom:4px}.cinematic-copy .eyebrow,.cinematic-copy h2{grid-column:1}.cinematic-copy>p:not(.proof-summary),.proof-legend,.proof-summary{grid-column:2}.cinematic-copy .eyebrow{align-self:end}.cinematic-copy h2{margin-bottom:0}.proof-legend{margin-top:14px}.proof-summary{margin-top:8px}.proof-stage{min-height:360px}#proof-canvas{min-height:360px}}
+@media(max-width:740px){.cinematic{padding:0 20px;margin-bottom:38px}.cinematic-copy{display:block;padding:8px 0}.cinematic-copy h2{font-size:31px;letter-spacing:-1.1px}.proof-stage{min-height:310px;border-radius:15px}.stage-chrome,.stage-footer{font-size:7px;left:12px;right:12px}.stage-chrome span:last-child,.stage-footer span:last-child{display:none}#proof-canvas{min-height:310px}}
+@media(max-width:430px){.proof-stage{min-height:280px}#proof-canvas{min-height:280px}}
