@@ -5,11 +5,13 @@ import {parsePending,recoverPending} from './pending.mjs';
 import {assuranceContract,artifactFirewall,arenaCandidates,modelPassport} from './assurance.mjs';
 import {THEMES,applyTheme,nextTheme,readTheme,writeTheme} from './theme.mjs';
 import {animateBoot,animateDetail,animateThemeChange,installRevealMotion} from './motion-layer.mjs';
+import {createShowcase} from './showcase.mjs';
 
 const $=id=>document.getElementById(id),state={config:null,recorded:null,jobs:[],job:null,selected:null,busy:false,evidence:null};
 const assetRoot=new URL('./',import.meta.url);
 let wallet=null,creationKey=null,pendingAction=null,evidenceRequest=0,detailRequest=0;
 let currentTheme=applyTheme(readTheme());
+let showcase=null;
 wallet=new WalletSession(()=>queueMicrotask(()=>{renderWallet();if(state.job)renderDetail();}));
 const label=s=>({AWAITING_FUNDING:'Awaiting escrow',OPEN:'Accepting workers',EVALUATED:'Evaluated · not paid',NO_WINNER:'No eligible winner',SETTLING:'Payout pending',SETTLED:'Payout finalized',REFUNDED:'Refund finalized',ELIGIBLE:'Eligible',REJECTED:'Below threshold',REGISTERED:'Registered',AWAITING_REGISTRATION:'Registration pending'}[s]||s);
 const dt=t=>Number.isFinite(t)?new Date(t*1000).toLocaleString(undefined,{timeZoneName:'short'}):'Not recorded';
@@ -207,6 +209,7 @@ function renderDetail(){
  const events=append(node('details',null,'events'),node('summary','Protocol event log'));
  for(const e of j.events||[])events.append(append(node('p'),node('small',dt(e.created)),node('strong',` ${e.kind}`),node('span',` · ${e.message}`)));
  root.replaceChildren(head,trust,meta,renderAssuranceContract(j),renderArena(j),pipeline,outcome,metrics,tableWrap,proof,renderArtifactFirewall(j),renderPassport(j),lineage,actions,audit,events);
+ showcase?.update(j);
  queueMicrotask(()=>animateDetail(root).catch(()=>{}));
 }
 function renderWallet(){
@@ -319,4 +322,5 @@ for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener(
 });
 setInterval(()=>{if(!document.hidden&&state.config&&!state.recorded&&!state.busy&&!document.querySelector('dialog[open]'))refresh().catch(e=>notice(e.message));},5000);
 renderTheme();
+showcase=createShowcase(document);
 start().then(()=>Promise.allSettled([animateBoot(document),installRevealMotion(document)])).catch(e=>notice(e.message));
