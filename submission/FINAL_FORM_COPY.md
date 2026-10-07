@@ -1,84 +1,159 @@
 # Final Colosseum form copy
 
-This sheet is designed to paste into the signed-in submission portal. Fit to actual field limits if the portal differs. Owner-only identity/team declarations still require founder review.
+Use this sheet for the signed-in submission portal. Adjust only for exact field limits. Owner-only identity, team, prior-work and eligibility declarations still require founder review.
 
 ## Product name
+
 GradientMine
 
+## Tagline
+
+**Put a bounty on your AI's worst problem.**
+
 ## One-line description
-An assurance market where teams post measurable AI-improvement bounties, independent workers compete with real model updates, and rewards settle against committed evaluation evidence.
+
+GradientMine is a bug bounty marketplace for AI models: companies post measurable model failures, engineers and AI agents compete to fix them, and the best verified improvement can settle through Solana.
 
 ## Short description
-GradientMine turns a model-improvement target into an explicit assurance contract. A task owner freezes the parent model, metric, minimum useful delta, evaluator, deadline and reward. Workers run real training and submit content-addressed numeric adapters. After cutoff, a named evaluator recomputes held-out results, applies the predeclared statistical rule, signs receipts and selects an eligible winner. The UI separates development scores from assurance scores, exposes artifact admission controls and produces a Model Passport. Solana Devnet handles escrow, registered recipients, authorized settlement and timeout refunds; model files and evaluation data stay off-chain.
+
+AI teams do not really want GPU hours or engineering activity. They want a model problem fixed.
+
+GradientMine turns a measurable AI failure into a bounty. The task owner freezes the parent model, metric, minimum useful improvement, evaluator, candidate budget, deadline and reward. Independent workers submit bounded model updates. After cutoff, the named evaluator scores admitted candidates on the same held-out set, applies the predeclared eligibility rule and selects the best verified fix. Solana handles escrow, registered recipients, authorized settlement and timeout refunds while model files and evaluation remain off-chain.
+
+The current repository includes real PyTorch training, three worker processes, held-out evaluation, signed evidence, an artifact admission boundary, a downloadable Fix Passport and a native Rust Solana escrow program.
 
 ## Problem
-GPU and DePIN markets sell compute, but an AI team usually cares about the outcome: did the model actually get better on the task that matters? Outsourcing that outcome creates a trust problem because worker-reported scores can overfit benchmarks, artifacts can be malformed or unsafe to execute, evaluators remain a point of authority, and payment rules can change after work has been done.
+
+Model-owning teams regularly face narrow failures such as weak classification accuracy, poor retrieval, regressions, excessive inference cost or latency.
+
+Today they typically pay for engineering time or compute and absorb the experimentation risk themselves.
+
+There is no simple outcome market where a team can say:
+
+**"Here is the frozen model and metric. Improve it by at least X. The best independently verified fix earns Y."**
 
 ## Insight
-Treat model improvement as a procurement contract with an explicit assurance policy, not as raw compute rental. Separate development feedback from held-out assurance, bind the evaluation and economic terms before settlement, and make the resulting evidence inspectable.
+
+Treat model improvement like a bug bounty.
+
+Security bug-bounty platforms reward people for finding security failures. GradientMine is designed to reward engineers and AI agents for fixing measurable model failures.
+
+The buyer pays for an outcome rather than selecting the winning approach or solver in advance.
 
 ## What we built
+
 - actual CPU PyTorch low-rank model updates from independent worker processes
-- content-addressed adapters and signed worker manifests
+- immutable bounty / assurance policy
+- public-development vs held-out-verification separation
 - held-out evaluator scoring after cutoff
-- predeclared minimum delta and adjusted paired-bootstrap eligibility
+- minimum-delta plus adjusted paired-bootstrap eligibility
 - deterministic winner selection
-- Assurance Contract UI
-- Arena comparing development vs held-out assurance
-- Artifact Firewall showing enforced admission constraints
-- downloadable Model Passport
-- exact wallet authentication and transaction-intent checking
-- native Rust Solana escrow program with registration, settlement and timeout refund paths
-- local compiled-program integration through LiteSVM
+- bounded numeric artifact admission
+- content-addressed model artifacts
+- signed worker manifests and evaluator receipts
+- Fix Arena
+- Bounty Rules
+- Safe Submission Boundary
+- downloadable Fix Passport
+- wallet authentication and exact transaction-intent checking
+- native Rust Solana escrow with registration, settlement and timeout refunds
+- compiled-program local integration through LiteSVM
 - public read-only evidence viewer
 
-## Current measured result
+## Current proof
+
 Recorded proof-of-function:
+
 - parent held-out accuracy: 84.72%
-- accepted candidate: 95.28%
+- selected candidate: 95.28%
 - observed delta: +10.56 percentage points
-- adjusted lower bound: +6.11 pp
+- adjusted lower bound: +6.11 percentage points
 - held-out examples: 360
 - three actual worker processes on one host
-- third worker is a disclosed shuffled-label negative control
-- local evidence only; no integrated Devnet payout is claimed
+- one disclosed shuffled-label negative control
+- real bounded model artifacts and signed evidence
+- local experiment only; no integrated Devnet payout is claimed
+
+## Initial use case
+
+Start with small AI teams that own a model and have a narrow objective metric.
+
+Good early bounty types include classification accuracy, retrieval quality, narrow fine-tuning improvements, inference cost reduction with quality guardrails, and latency reduction with non-regression constraints.
+
+Illustrative production example: a support-routing model is at 84%. The team wants at least 92% and posts a fixed bounty. Multiple engineers or agents submit fixes. The held-out evaluator identifies the best candidate that clears the frozen threshold. The winner receives settlement.
+
+The current recorded demo is a Digits classifier proof, not this customer example.
 
 ## Why Solana
-Solana commits and exposes the financial state of the competition. The task creator can fund escrow, candidates can be registered, the named evaluator can authorize payment to the selected worker, and the creator can recover an unpaid bounty after the immutable timeout. The model-quality decision remains off-chain because model files and evaluation data do not belong in consensus.
 
-## Blockchains and tools
-Solana Devnet; native Rust Solana program; Wallet Standard; solders; FastAPI; SQLite; PyTorch; scikit-learn; WebCrypto SHA-256 and Ed25519; vanilla JavaScript; Cloudflare Pages.
+A model owner and an unknown engineer or autonomous agent need a neutral way to lock economic terms before work begins.
+
+Solana provides escrow, public economic state, registered recipients, evaluator-authorized settlement and timeout refunds with no custom token.
+
+Model quality is deliberately evaluated off-chain.
+
+## Differentiation
+
+Compute markets sell compute. Freelance markets sell labor. Benchmark tools measure models.
+
+GradientMine is designed to procure a **verified improvement outcome**.
+
+Its differentiation is the workflow combining precommitted objectives, hidden final evaluation, safe artifact admission, statistical eligibility, signed evidence, model provenance and programmable settlement.
+
+## Initial market
+
+Small model-owning teams, agent startups and applied-ML teams with narrow measurable model failures.
+
+Solver supply can come from independent ML engineers, fine-tuning specialists, research teams and autonomous research agents.
+
+## Go-to-market
+
+Recruit 3-5 design partners through direct founder outreach and ML/AI engineering communities. Co-design one narrow bounty per team, run controlled competitions, and publish permissioned case studies showing baseline, winning improvement, failed experiments, total compute, evaluation cost and settlement.
+
+Do not count interviews, outreach or demo wallets as traction before they happen.
+
+## Business model
+
+Planned, not implemented:
+
+- 10% success fee on successfully settled bounties
+- optional private / enterprise evaluator deployments
+- optional higher-assurance evaluation and audit services
+
+There is no custom token.
+
+## Demand validation
+
+No external customer demand or willingness-to-pay claim is made yet.
+
+Current evidence is engineering validation: real training processes, measured before/after results, signed artifacts and receipts, browser/protocol tests, compiled Solana program tests and a public evidence surface.
 
 ## Public links
+
 Repository: https://github.com/kapasainitishreddy/Gradientmine
 
 Public evidence viewer: https://gradientmine.pages.dev
 
-The viewer is intentionally read-only recorded evidence, not the live validator/API and not proof of a Devnet payout.
-
-## Differentiation
-GradientMine does not claim to have invented proof-of-improvement or decentralized ML. The product differentiation is the assurance workflow around customer-defined model-improvement procurement: explicit evaluator authority, development-vs-assurance separation, statistical eligibility, safe bounded artifact admission, provenance/passport evidence, wallet-intent verification, and recoverable on-chain settlement without a custom token.
-
-## Initial market
-Start with small model-owning teams that have a narrow measurable task and can provide properly licensed training/evaluation data. Initial contributors are independent ML engineers or research-agent operators. A private assurance set and stronger production baseline are required before real-money testing.
-
-## Go-to-market
-Recruit a small opt-in design-partner cohort through ML engineering communities and direct founder outreach. Co-design one narrow contract per team, run a controlled competition, and publish permissioned case studies with total compute, evaluation cost, failed experiments and uncertainty. Expand through repeat task owners and contributor referrals only after the workflow demonstrates acceptable economics.
-
-## Demand validation
-No external customer demand or willingness-to-pay claim is made yet. Current evidence is product/engineering validation: real training processes, measured before/after results, signed artifacts/receipts, browser and protocol tests, compiled Solana program tests, and a public evidence surface. Planned interviews or demo wallets are not counted as traction.
-
-## Business model
-Future hypothesis: a transparent service fee on successfully settled bounties plus optional private/higher-assurance evaluation. No fee is implemented today, no willingness-to-pay result is claimed, and there is no custom token sale.
+The public viewer is intentionally read-only recorded evidence, not the live validator/API and not proof of a Devnet payout.
 
 ## Trust disclosure
-One named evaluator remains trusted. Hashes and signatures authenticate content and statements; they do not prove that training happened or guarantee generalization. The public Digits benchmark is reconstructible and therefore is not suitable as a secure commercial assurance set. The Artifact Firewall prevents arbitrary submitted code in the current task format but does not prove a model is free of behavioral backdoors or poisoned training. Integrated Devnet payment should be claimed only after finalized matching transaction evidence exists.
+
+One named evaluator remains trusted. Hashes and signatures authenticate exact content and statements but do not prove that training happened or guarantee generalization.
+
+The included Digits benchmark is reconstructible and is not a secure production assurance set.
+
+The current artifact boundary prevents arbitrary submitted code in this task format but does not certify a model free of behavioral backdoors.
+
+Only claim an integrated Devnet payment after finalized matching transaction evidence exists.
 
 ## Research roadmap, not shipped
-Anytime-valid sequential ranking, adaptive assurance-set sampling, richer multi-objective/non-regression contracts, probabilistic replay audits, hardware attestation, multiple independent evaluators, safe model composition, and privacy-preserving evaluation.
+
+Richer multi-objective/non-regression contracts, private production assurance sets, reputation for posters and solvers, multiple independent evaluators, adaptive evaluation sampling, probabilistic replay audits, hardware attestation, broader safe model-composition formats and privacy-preserving evaluation.
 
 ## Founder/team
+
 Use submission/TEAM.md only after confirming the actual registered founder/team, location, background, funding, prior work, IP rights and eligibility declarations.
 
 ## Prior work / AI assistance
-Use submission/DISCLOSURE.md and disclose all relevant pre-event work. AI assistance was used for research, programming, debugging, tests, design and draft submission materials under owner direction.
+
+Use submission/DISCLOSURE.md and disclose relevant pre-event work and AI assistance used for research, programming, debugging, testing, design and draft submission materials under owner direction.
