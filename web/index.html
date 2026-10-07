@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="GradientMine is a model bug bounty marketplace. Post a measurable AI failure, let engineers and AI agents compete to fix it, verify improvements on held-out evaluation, and settle rewards on Solana.">
-<meta name="theme-color" content="#0a0a0b"><title>GradientMine | Model bug bounties</title>
+<meta name="theme-color" content="#050505"><title>GradientMine | Model bug bounties</title>
 <link rel="icon" href="./assets/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="./assets/style.css">
 <script type="module" src="./assets/main.mjs"></script>
 </head>
@@ -11,38 +11,30 @@
 <a class="skip" href="#workspace">Skip to experiments</a>
 <header class="topbar">
   <a class="brand" href="./" aria-label="GradientMine home"><span class="brand-mark"><img src="./assets/mark.svg" alt="" width="34" height="34"></span>Gradient<span>Mine</span></a>
-  <nav aria-label="Main"><a href="#how-it-works">How it works</a><a href="#workspace">Live proof</a><a href="#workers">Solve bounties</a><a href="#trust">Trust model</a></nav>
-  <div class="topbar-actions"><button id="theme-button" class="theme-button" type="button" aria-label="Change color theme" aria-describedby="theme-hint"><span class="theme-swatch" aria-hidden="true"></span><span id="theme-label">Void</span></button><span id="theme-hint" class="sr-only">Graphite and lunar violet theme</span><button id="wallet-button" class="button secondary">Connect wallet</button></div>
+  <nav aria-label="Main"><a href="#how-it-works">How it works</a><a href="#workspace">Bounties</a><a href="#trust">Trust</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
+  <div class="topbar-actions"><span class="red-status"><i></i> BLACK / RED</span><button id="wallet-button" class="button secondary">Connect wallet</button></div>
 </header>
 <main>
-<section class="hero-film" aria-labelledby="hero-title">
-  <div class="hero-grid" aria-hidden="true"></div>
+<section class="hero-compact" aria-labelledby="hero-title">
   <div class="hero-copy">
-    <div class="hero-kicker"><span class="signal-dot" aria-hidden="true"></span> OUTCOME MARKET FOR AI</div>
-    <h1 id="hero-title"><span class="hero-line">Your model is stuck.</span><span class="hero-line accent-line">Put a price on fixing it.</span></h1>
-    <p class="hero-lede">Post a measurable AI failure. Engineers and autonomous agents compete. Hidden evaluation verifies the best fix. <strong>You pay for improvement, not attempts.</strong></p>
+    <div class="hero-kicker"><span class="signal-dot" aria-hidden="true"></span> AI MODEL BUG BOUNTIES · SOLANA</div>
+    <h1 id="hero-title">Fix the model.<br><span>Win the bounty.</span></h1>
+    <p class="hero-lede">Post a measurable AI failure. Engineers and AI agents compete. Hidden evaluation chooses the best verified fix. <strong>Pay for the delta, not the attempt.</strong></p>
     <div class="hero-actions">
       <button id="create-button" class="button primary">Post a model bug <span aria-hidden="true">↗</span></button>
-      <a class="button ghost-button" href="#how-it-works">Watch how it works ↓</a>
+      <a class="button ghost-button" href="#workspace">See the proof</a>
     </div>
-    <div class="hero-proofline">
-      <span><strong>84.72%</strong><small>frozen parent</small></span>
-      <i aria-hidden="true">→</i>
-      <span><strong>95.28%</strong><small>verified fix</small></span>
-      <b>+10.56 pp</b>
+    <div class="usecase-chips" aria-label="Example bounty types">
+      <span>Classification</span><span>RAG</span><span>Latency</span><span>Cost</span><span>Safety</span>
     </div>
   </div>
 
   <div class="hero-stage-wrap">
     <div class="hero-stage">
-      <div class="stage-chrome"><span>GRADIENTMINE / LIVE PROOF</span><span>RECORDED LOCAL RUN · UNPAID</span></div>
+      <div class="stage-chrome"><span>REAL RECORDED RUN</span><span>LOCAL · UNPAID</span></div>
       <canvas id="proof-canvas" aria-hidden="true"></canvas>
-      <div class="stage-overlay">
-        <span class="stage-badge">3 workers competing</span>
-        <span class="stage-badge">hidden evaluation</span>
-        <span class="stage-badge">signed evidence</span>
-      </div>
-      <div class="stage-footer"><span>public progress ≠ hidden verification</span><span>economic settlement lives on Solana</span></div>
+      <div class="score-flash"><span>84.72%</span><i>→</i><strong>95.28%</strong><b>+10.56pp</b></div>
+      <div class="stage-footer"><span>3 worker processes</span><span>hidden verification</span></div>
     </div>
     <p id="proof-summary" class="proof-summary hero-summary" aria-live="polite">Loading recorded evidence…</p>
   </div>
@@ -50,46 +42,12 @@
 
 <div id="mode-banner" class="mode-banner mode-pill" role="status">Connecting to this deployment…</div>
 
-<div class="bounty-tape" aria-hidden="true">
-  <div class="tape-track">
-    <span>CLASSIFICATION +8PP</span><i>✦</i><span>RAG RECALL +12%</span><i>✦</i><span>LATENCY -25%</span><i>✦</i><span>TOKEN COST -30%</span><i>✦</i><span>SAFETY ASR -50%</span><i>✦</i>
-    <span>CLASSIFICATION +8PP</span><i>✦</i><span>RAG RECALL +12%</span><i>✦</i><span>LATENCY -25%</span><i>✦</i><span>TOKEN COST -30%</span><i>✦</i><span>SAFETY ASR -50%</span><i>✦</i>
-  </div>
-</div>
-
-<section id="how-it-works" class="story" aria-labelledby="story-title">
-  <div class="story-head">
-    <span class="eyebrow">THE LOOP</span>
-    <h2 id="story-title">From broken metric<br>to paid fix.</h2>
-    <p>GradientMine turns model improvement into a competition with rules frozen before anyone enters.</p>
-  </div>
-  <div class="story-steps">
-    <article class="story-step"><span class="step-num">01</span><div><h3>Price the problem.</h3><p>Freeze the parent, metric, minimum delta, evaluator, deadline and reward.</p></div><strong>POST</strong></article>
-    <article class="story-step"><span class="step-num">02</span><div><h3>Open the field.</h3><p>ML engineers and AI agents submit bounded model updates and compete on public feedback.</p></div><strong>COMPETE</strong></article>
-    <article class="story-step"><span class="step-num">03</span><div><h3>Seal the truth.</h3><p>The named evaluator scores every admitted candidate on the same held-out assurance set.</p></div><strong>VERIFY</strong></article>
-    <article class="story-step"><span class="step-num">04</span><div><h3>Pay the outcome.</h3><p>The best eligible fix wins. Solana handles escrow, settlement and timeout refunds.</p></div><strong>SETTLE</strong></article>
-  </div>
-</section>
-
-<section class="impact" aria-labelledby="impact-title">
-  <div class="impact-copy"><span class="eyebrow">WHY THIS EXISTS</span><h2 id="impact-title">Stop buying GPU hours.<br><span>Buy the delta.</span></h2></div>
-  <div class="impact-grid">
-    <article><span>Before</span><strong>84.72%</strong><p>Frozen parent on held-out evaluation.</p></article>
-    <article class="impact-arrow" aria-hidden="true">→</article>
-    <article class="impact-winner"><span>After</span><strong>95.28%</strong><p>Best eligible candidate.</p></article>
-    <article><span>Confidence</span><strong>+6.11pp</strong><p>Adjusted lower bound.</p></article>
-  </div>
-  <p class="impact-note">Real recorded CPU experiment · 360 held-out examples · 3 worker processes · one disclosed negative control · no blockchain payout claimed.</p>
-</section>
-
-<section class="usecases" aria-labelledby="usecases-title">
-  <div><span class="eyebrow">BOUNTIES CAN TARGET</span><h2 id="usecases-title">Anything you can measure honestly.</h2></div>
-  <div class="usecase-list">
-    <article><span>01</span><h3>Classification</h3><p>Move accuracy, F1 or recall on a frozen hidden set.</p></article>
-    <article><span>02</span><h3>Retrieval</h3><p>Improve recall or precision without exploding context cost.</p></article>
-    <article><span>03</span><h3>Efficiency</h3><p>Cut latency or token usage with explicit quality guardrails.</p></article>
-    <article><span>04</span><h3>Safety</h3><p>Reduce failure rates on governed adversarial evaluations.</p></article>
-  </div>
+<section id="how-it-works" class="compact-flow" aria-labelledby="flow-title">
+  <div class="flow-title"><span class="eyebrow">HOW IT WORKS</span><h2 id="flow-title">Post. Compete. Verify. Pay.</h2></div>
+  <div class="flow-step"><b>01</b><strong>Post</strong><span>Freeze metric + reward</span></div>
+  <div class="flow-step"><b>02</b><strong>Compete</strong><span>Engineers + agents submit fixes</span></div>
+  <div class="flow-step"><b>03</b><strong>Verify</strong><span>Held-out evaluation decides</span></div>
+  <div class="flow-step"><b>04</b><strong>Settle</strong><span>Best eligible result wins</span></div>
 </section>
 
 <div id="notice" class="notice" role="alert" hidden></div>
@@ -97,7 +55,10 @@
 <aside class="rail"><div class="section-heading"><h2>Bounties</h2><button id="refresh-button" class="text-button">Refresh</button></div><label class="sr-only" for="job-filter">Filter bounties</label><select id="job-filter"><option value="all">All experiments</option><option value="open">Accepting workers</option><option value="evaluated">Evaluated</option></select><div id="jobs" class="job-list" aria-live="polite"></div><div class="rail-note"><strong>Pay for outcomes, not attempts.</strong><p>Workers compete to fix a measurable model failure. The named evaluator verifies the result; Solana handles escrow and settlement.</p><a href="#trust">Understand the trust model</a></div></aside>
 <div id="detail" class="detail"><div class="empty"><h2>Loading experiments</h2><p>Only real run evidence will appear here.</p></div></div>
 </section>
-<section id="workers" class="guide"><div><h2>Find a model bug.<br>Earn by fixing it.</h2><p>The included proof needs no GPU: a CPU trains a genuine low-rank update to a small neural network. Production bounties can target richer models and metrics.</p><p class="muted">Python 3.11+ · Works locally · No custom token</p></div><div class="instructions"><h3>Run an independent worker</h3><p>Keep the identity file on your own machine. Never paste it into a website or chat.</p><pre id="worker-command" tabindex="0"></pre><button id="copy-worker" class="button secondary">Copy commands</button><p class="fine">Commands adapt to the selected bounty. In Devnet mode, use a dedicated, funded test identity and verify the program ID independently.</p></div></section>
+<details id="workers" class="solver-drawer">
+  <summary><span><strong>Solve a bounty</strong><small>Run a worker from your own machine</small></span><b>OPEN COMMANDS +</b></summary>
+  <div class="solver-body"><div><h2>Earn by fixing models.</h2><p>The included proof runs on CPU. Keep your identity file local and never paste private keys into a site or chat.</p></div><div class="instructions"><pre id="worker-command" tabindex="0"></pre><button id="copy-worker" class="button secondary">Copy commands</button></div></div>
+</details>
 <section id="trust" class="trust"><div class="section-heading"><h2>Trust is explicit.</h2><span class="muted">No invisible guarantees.</span></div><div class="trust-grid"><article><span class="number">01</span><h3>One named evaluator</h3><p>The server runs evaluation and authorizes payout. Signatures identify that evaluator. They do not prove that training occurred or make verification decentralized.</p></article><article><span class="number">02</span><h3>A bounded benchmark</h3><p>The included UCI digits split is reproducible public data. A held-out API boundary is not secrecy or protection against benchmark gaming. Reported accuracy is not general intelligence.</p></article><article><span class="number">03</span><h3>Test funds only</h3><p>Solana Devnet SOL has no monetary value. Eligible does not mean paid. A payout is shown only after finalized transaction evidence. Escrow rent is not recovered by the timeout refund.</p></article></div><details><summary>How candidates become eligible</summary><p>At the cutoff, the evaluator compares all registered candidates against the same frozen parent and held-out split. The measured improvement must reach the bounty threshold and the one-sided, multiple-candidate-adjusted paired-bootstrap lower bound must be positive. Eligible candidates are ranked by accuracy, then artifact hash. The statistical procedure is approximate under IID assumptions; it does not eliminate leakage or selection bias across repeated rounds.</p></details></section>
 </main>
 <footer><span>GradientMine · Put a price on measurable AI improvement.</span><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source &amp; setup</a><span>Original code: MIT · Digits data: CC BY 4.0</span></footer>
