@@ -309,7 +309,7 @@ $('copy-worker').onclick=()=>copy($('worker-command').textContent).catch(e=>noti
 $('copy-evidence').onclick=()=>copy($('evidence-hash').textContent).catch(e=>notice(e.message));
 $('download-evidence').onclick=()=>{if(!state.evidence)return;const u=URL.createObjectURL(new Blob([state.evidence.raw],{type:'application/json'})),a=node('a');a.href=u;a.download=`${state.evidence.hash}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);};
 $('approve-transaction').onclick=()=>approveTransaction().catch(e=>notice(e.message));
-$('theme-button').onclick=()=>cycleTheme().catch(()=>{});
+if($('theme-button'))$('theme-button').onclick=()=>cycleTheme().catch(()=>{});
 for(const b of document.querySelectorAll('dialog .close'))b.onclick=()=>b.closest('dialog').close();
 $('evidence-dialog').addEventListener('close',()=>{evidenceRequest++;state.evidence=null;$('download-evidence').disabled=true;});
 $('transaction-dialog').addEventListener('close',()=>{pendingAction=null;});
