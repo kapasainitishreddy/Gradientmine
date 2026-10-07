@@ -53,7 +53,7 @@ export function createShowcase(doc=globalThis.document){
   const canvas=doc?.getElementById?.('proof-canvas');
   if(!canvas)return {update(){},destroy(){}};
   const ctx=canvas.getContext('2d');
-  const stage=canvas.closest('.proof-stage');
+  const stage=canvas.closest('.hero-stage,.proof-stage');
   const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
   let model=showcaseModel({});
   let raf=0,start=performance.now(),width=1,height=1,dpr=1,pointer={x:.5,y:.5};
