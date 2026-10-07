@@ -1,81 +1,89 @@
-# Product demo: maximum 3 minutes
+# Colosseum demo runbook
 
-Target: 2 minutes 45 seconds. This video answers “how does the product work?” rather than repeating the startup pitch.
+Target: 2:30 to 2:55. Hard stop before 3:00.
 
-## 0:00–0:12 | Establish truth
+The current public viewer is recorded local evidence. Do not imply that buttons on the static viewer create a live bounty.
 
-Open the actual deployment or https://gradientmine.pages.dev.
+## 0:00-0:15 — Problem first
 
-Say: “This page is a read-only recording of a verified local experiment. It is not a live decentralized network and no blockchain payment occurred in this run.”
+Open the homepage.
 
-Keep the mode banner visible.
+Say:
 
-## 0:12–0:42 | Assurance Contract
+"GradientMine is a bug bounty marketplace for AI models. You post a measurable failure. Engineers and AI agents compete to fix it. You pay for the best verified improvement."
 
-Open the selected bounty and pause on **ASSURANCE CONTRACT**.
+Show **Put a bounty on your AI's worst problem.**
 
-Explain:
-- primary metric: accuracy
-- minimum required improvement
-- named evaluator
-- predeclared eight-candidate budget
-- 20,000 bootstrap resamples
-- committed assurance-set hash
-- bounded numeric adapter policy
+## 0:15-0:35 — Explain the loop
 
-Say: “These terms are committed before the result is known. Solana will ultimately bind the economic terms; the evaluator still judges model quality.”
+Scroll through **Post the failure → Compete on fixes → Verify privately → Pay the winner**.
 
-If a verified live Devnet session exists, create the bounty with a dedicated test wallet and show the exact transaction review. Otherwise stay in the recorded viewer.
+Say:
 
-## 0:42–1:20 | Arena
+"The metric, minimum improvement, evaluator, deadline and reward are committed before competition. Public progress does not decide the winner."
 
-Show **GRADIENTMINE ARENA**.
+## 0:35-0:55 — Recorded proof
 
-Use the real recorded values:
-- frozen parent: 84.72%
-- worker A assurance: 95.00%
-- worker B assurance: 95.28%, winner
-- disclosed shuffled-label negative control: 25.00%
+Scroll to the recorded proof.
 
-Point out that development scores are worker-reported public validation, while assurance scores are held-out evaluator results released after cutoff.
+Say:
 
-Say: “Workers cannot make themselves eligible by posting a flattering public score. The named evaluator recomputes the held-out result.”
+"This proof is real local CPU training on a small classifier. It is not customer data and it is not a live blockchain payment."
 
-## 1:20–1:52 | Statistical gate
+Point to 84.72% parent, 95.28% selected fix, +10.56 percentage points and three worker processes.
 
-Show:
-- observed winner delta: +10.56 pp
-- adjusted lower confidence bound: +6.11 pp
-- 360 held-out examples
+## 0:55-1:25 — Open the bounty
 
-Say: “A higher point estimate is not enough. The current v1 policy requires the minimum delta and a positive, multiple-candidate-adjusted paired-bootstrap lower bound. It is an approximate finite-sample check, not a guarantee of generalization.”
+Select the recorded Digits bounty.
 
-## 1:52–2:18 | Artifact Firewall + Passport
+Say:
 
-Scroll to **ARTIFACT FIREWALL**.
+"The model starts at 84.72%. Workers submit model updates. Held-out scores stay sealed until cutoff."
 
-Show that this release accepts a bounded numeric adapter, verifies content hashes and signed manifests, requires the known model architecture and validates merged weights, and does not execute arbitrary worker code.
+Show the submissions table and the disclosed negative control.
 
-Then show **MODEL PASSPORT** and download the JSON.
+## 1:25-1:50 — Bounty Rules + Fix Arena
 
-Say: “The passport links the parent, accepted model, worker, evaluator, policy commitment, assurance-set commitment and measured evidence. Provenance is evidence, not a declaration that the model is trustworthy.”
+Show Bounty Rules.
 
-## 2:18–2:36 | Solana boundary
+Say:
 
-If an integrated Devnet run has been completed, show the real finalized funding/registration/settlement links and winner address.
+"These are frozen before evaluation: metric, minimum delta, candidate budget, evaluator, hidden-set commitment and artifact policy."
 
-If it has not, say:
+Show Fix Arena.
 
-“This recorded run verifies the training and assurance workflow, not a blockchain payout. The native Solana program has been compiled and exercised locally in LiteSVM; integrated Devnet settlement remains pending and the UI does not invent a transaction.”
+Say:
 
-## 2:36–2:45 | Close
+"Workers can optimize against public development feedback, but the hidden verification score comes from the named evaluator after cutoff."
 
-Show the lineage from parent to accepted candidate.
+## 1:50-2:10 — Safe Submission Boundary
 
-End:
+Say:
 
-“Compute is an input. The product is an assured improvement.”
+"The validator does not execute arbitrary worker code in this task format. It accepts bounded numeric adapters and validates hashes, signatures, architecture and shape."
 
-## Recording safety
+## 2:10-2:30 — Fix Passport
 
-Use only dedicated test wallets. Never expose a seed phrase, private key, bearer token, validator database or private evaluation data. Do not call the negative control a detected cheater. Do not claim customer traction, decentralized verification or a Devnet payout without the corresponding evidence.
+Show or download the Fix Passport.
+
+Say:
+
+"The accepted fix gets a machine-readable passport linking the parent, model artifact, worker, evaluator, policy, measured delta and settlement status."
+
+Then state clearly:
+
+"This recorded run is local, so no blockchain payout is claimed."
+
+## 2:30-2:50 — Solana and close
+
+Say:
+
+"Solana is the economic coordination layer: escrow, payout authorization and timeout refunds. Model quality remains off-chain with the named evaluator.
+
+Compute markets sell GPU time. GradientMine pays for the verified improvement."
+
+End on the hero.
+
+## Optional live-server segment
+
+Only include this if a local or Devnet API is visibly running and reliable during recording. Never show or expose wallet secrets. If live Devnet settlement is not finalized, do not end the demo with a simulated payment.
