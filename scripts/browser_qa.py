@@ -184,13 +184,13 @@ def main():
                 page.get_by_text("FIX ARENA", exact=True).wait_for()
                 page.get_by_text("SAFE SUBMISSION BOUNDARY", exact=True).wait_for()
                 page.get_by_text("FIX PASSPORT", exact=True).wait_for()
-                page.get_by_role("heading", name="A model bug went from 84.72% to 95.28%.", exact=True).wait_for()
+                page.get_by_role("heading", name="Your model is stuck. Put a price on fixing it.", exact=True).wait_for()
                 page.get_by_text("84.72 → 95.28 · +10.56 pp", exact=False).wait_for()
                 assert "LOCAL EVIDENCE" in page.locator("#proof-summary").inner_text()
                 assert "no payout claimed" in page.locator("#proof-summary").inner_text()
                 box = page.locator("#proof-canvas").bounding_box()
                 assert box and box["width"] > 250 and box["height"] > 250
-                checks.append("Cinematic proof stage renders recorded evidence and preserves the local/unpaid boundary")
+                checks.append("Cinematic hero renders recorded evidence and preserves the local/unpaid boundary")
                 assert page.get_by_text("95.28%", exact=True).count() >= 1
                 assert page.get_by_text("+10.56 pp", exact=True).count() >= 1
                 assert page.get_by_role("button", name="Download JSON", exact=True).count() == 1
