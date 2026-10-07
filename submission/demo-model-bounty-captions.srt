@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:15,000
+Post a measurable model bug. Let workers compete.
+Verify fixes on held-out evaluation. Settle the winner.
+
+2
+00:00:15,000 --> 00:00:40,000
+Recorded local proof, not customer data and not a live payment.
+The frozen parent starts at 84.72%.
+
+3
+00:00:40,000 --> 00:01:05,000
+Three real worker processes submitted low-rank model updates.
+One is a disclosed shuffled-label negative control.
+
+4
+00:01:05,000 --> 00:01:35,000
+Bounty rules are frozen before evaluation.
+Public progress and hidden verification stay separate.
+
+5
+00:01:35,000 --> 00:02:00,000
+The selected fix reaches 95.28%:
+a 10.56 percentage-point improvement over 360 held-out examples.
+
+6
+00:02:00,000 --> 00:02:20,000
+The current task format accepts bounded model data,
+not arbitrary worker executable code.
+
+7
+00:02:20,000 --> 00:02:38,000
+The Fix Passport links the parent, accepted model,
+worker, evaluator, policy and measured improvement.
+
+8
+00:02:38,000 --> 00:02:50,000
+This run is local and correctly claims no finalized payout.
+Missing evidence never becomes a success claim.

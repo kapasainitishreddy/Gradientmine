@@ -102,7 +102,7 @@ function contractValue(labelText,value,detail=''){
 }
 function renderAssuranceContract(j){
  const c=assuranceContract(j),section=node('section',null,'assurance-panel');section.id='assurance-contract';
- append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','ASSURANCE CONTRACT','eyebrow'),node('h3','What must be true before a model can win')),node('span',j.winner?'ASSURED RESULT':'COMMITTED POLICY','assurance-status')));
+ append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','BOUNTY RULES','eyebrow'),node('h3','Rules locked before anyone competes')),node('span',j.winner?'VERIFIED RESULT':'LOCKED POLICY','assurance-status')));
  const grid=node('div',null,'contract-grid');
  append(grid,
   contractValue('Primary metric',c.metric||'Not declared',c.minimum_delta==null?'':`Minimum ${delta(c.minimum_delta)}`),
@@ -117,15 +117,15 @@ function renderAssuranceContract(j){
 }
 function renderArena(j){
  const rows=arenaCandidates(j),section=node('section',null,'arena');section.id='arena';
- append(section,append(node('div',null,'arena-heading'),append(node('div'),node('span','GRADIENTMINE ARENA','eyebrow'),node('h3','Development score vs held-out assurance')),node('span',rows.length?`${rows.length} CANDIDATE${rows.length===1?'':'S'}`:'NO SUBMISSIONS','arena-count')));
+ append(section,append(node('div',null,'arena-heading'),append(node('div'),node('span','FIX ARENA','eyebrow'),node('h3','Public progress vs hidden verification')),node('span',rows.length?`${rows.length} CANDIDATE${rows.length===1?'':'S'}`:'NO SUBMISSIONS','arena-count')));
  if(!rows.length){section.append(node('p','Workers have not submitted candidates yet.','assurance-note'));return section;}
  const max=Math.max(...rows.map(r=>r.assurance_score??0),1);
  for(const r of [...rows].sort((a,b)=>(b.assurance_score??-1)-(a.assurance_score??-1))){
   const row=node('div',null,`arena-row${r.winner?' arena-winner':''}${r.negative_control?' arena-negative':''}`);
   const identity=append(node('div',null,'arena-identity'),node('strong',r.winner?'★ WINNER':r.negative_control?'NEGATIVE CONTROL':'WORKER'),node('small',short(r.worker||'',8)));
   const scores=node('div',null,'arena-scores');
-  const dev=append(node('div',null,'arena-score'),node('span','Development'),node('strong',r.development_score==null?'—':percent(r.development_score)));
-  const assurance=append(node('div',null,'arena-score assurance'),node('span','Assurance'),node('strong',r.assurance_score==null?'SEALED':percent(r.assurance_score)));
+  const dev=append(node('div',null,'arena-score'),node('span','Public progress'),node('strong',r.development_score==null?'—':percent(r.development_score)));
+  const assurance=append(node('div',null,'arena-score assurance'),node('span','Hidden verification'),node('strong',r.assurance_score==null?'SEALED':percent(r.assurance_score)));
   append(scores,dev,assurance);
   const bar=node('div',null,'arena-bar');const fill=node('span');fill.style.width=r.assurance_score==null?'0%':`${Math.max(2,Math.min(100,(r.assurance_score/max)*100))}%`;bar.append(fill);
   const verdictLabel=r.assurance_state==='sealed'?'SEALED':r.winner?'VERIFIED':r.eligible?'ELIGIBLE':'REJECTED';
@@ -133,12 +133,12 @@ function renderArena(j){
   if(r.runtime_efficiency_pp_per_second!=null)verdict.append(node('small',`${r.runtime_efficiency_pp_per_second.toFixed(2)} pp/s · worker-reported runtime`));
   append(row,identity,scores,bar,verdict);section.append(row);
  }
- section.append(node('p','Development scores are worker-reported public validation. Assurance scores come from the named validator after cutoff. Runtime efficiency is descriptive and does not decide the winner.','assurance-note'));
+ section.append(node('p','Public progress is worker-reported validation. Hidden verification comes from the named evaluator after cutoff. Runtime efficiency is descriptive and does not decide the winner.','assurance-note'));
  return section;
 }
 function renderArtifactFirewall(j){
  const winnerSub=(j.submissions||[]).find(s=>s.id===j.winner?.submission_id)||(j.submissions||[])[0],f=artifactFirewall(winnerSub),section=node('section',null,'firewall');
- append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','ARTIFACT FIREWALL','eyebrow'),node('h3','Constrain what an untrusted worker may submit')),node('span',winnerSub?'ADMISSION CONTROLS':'POLICY','assurance-status')));
+ append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','SAFE SUBMISSION BOUNDARY','eyebrow'),node('h3','Accept model fixes without executing worker code')),node('span',winnerSub?'ADMISSION CONTROLS':'POLICY','assurance-status')));
  const checks=[
   ['Bounded numeric adapter',f.protocol_format==='bounded numeric JSON adapter'],
   ['Content-addressed SHA-256',f.content_addressed],
@@ -153,7 +153,7 @@ function renderArtifactFirewall(j){
 }
 function renderPassport(j){
  const p=modelPassport(j),section=node('section',null,'passport');
- append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','MODEL PASSPORT','eyebrow'),node('h3','Machine-readable provenance for the accepted result')),p.model_sha256?button('Download JSON',()=>downloadJson(`gradientmine-passport-${p.job_id}.json`,p),'button secondary compact'):node('span','NO ACCEPTED MODEL','assurance-status')));
+ append(section,append(node('div',null,'assurance-heading'),append(node('div'),node('span','FIX PASSPORT','eyebrow'),node('h3','A receipt for the verified model improvement')),p.model_sha256?button('Download JSON',()=>downloadJson(`gradientmine-passport-${p.job_id}.json`,p),'button secondary compact'):node('span','NO ACCEPTED MODEL','assurance-status')));
  const dl=node('dl',null,'passport-grid');
  const values=[['Parent',p.parent_sha256],['Accepted model',p.model_sha256],['Artifact',p.artifact_sha256],['Worker',p.worker],['Validator',p.validator],['Policy',p.policy_sha256],['Evaluation commitment',p.evaluation_commitment],['Observed delta',p.observed_delta==null?null:delta(p.observed_delta)],['Adjusted lower bound',p.lower_bound==null?null:delta(p.lower_bound)],['Settlement',p.paid?'Finalized Devnet payout':'No finalized payout claimed']];
  for(const [name,value] of values){append(dl,node('dt',name),append(node('dd'),value&&value.length>28?identifier(value,name.toLowerCase()):code(value||'Not available')));}
@@ -161,17 +161,17 @@ function renderPassport(j){
 }
 
 function renderDetail(){
- const root=$('detail'),j=state.job;if(!j){root.replaceChildren(validatorBadge(state.config?.validator),append(node('div',null,'empty'),node('h2','A result starts with a bounty'),node('p','Connect your wallet and define the improvement you want to measure.'),button('Create an experiment',()=>openCreate())));return;}
+ const root=$('detail'),j=state.job;if(!j){root.replaceChildren(validatorBadge(state.config?.validator),append(node('div',null,'empty'),node('h2','A fix starts with a model bug bounty'),node('p','Define a measurable model failure, lock the rules, and let workers compete to fix it.'),button('Post a model bug',()=>openCreate())));return;}
  const w=j.winner,p=j.policy,subs=j.submissions||[],finished=['EVALUATED','SETTLING','SETTLED','NO_WINNER'].includes(j.state),paid=j.mode==='devnet'&&j.state==='SETTLED'&&!!explorer(j.mode,j.settlement_signature);
  const head=append(node('div',null,'detail-header'),append(node('div'),node('span',j.state==='SETTLED'&&!paid?'Payout evidence unavailable':label(j.state),'state'),node('h2',j.title)),node('span',j.mode==='devnet'?`${lamports(p.reward_lamports)} reward`:'No monetary reward','reward'));
  const trust=validatorBadge(p.validator);
  const meta=append(node('div',null,'detail-meta'),node('span','digits-lora-v1 · Neural classifier'),node('span',`Cutoff: ${dt(p.deadline)}`),node('span',`Minimum: ${delta(p.minimum_delta)}`));
  const pipeline=node('ol',null,'pipeline');pipeline.setAttribute('aria-label','Bounty lifecycle');
  [['Bounty',true],['Escrow',j.mode==='devnet'&&!!explorer(j.mode,j.funding_signature)],['Submitted',subs.length>0],['Registered',subs.some(s=>j.mode==='local'||!!explorer(j.mode,s.registration_signature))],['Evaluated',finished],['Winner',!!w],['Paid',paid]].forEach(([text,done])=>{const stage=append(node('li',null,`stage${done?' done':''}`),node('span',done?'✓':'·','dot'),node('span',text==='Escrow'&&j.mode==='local'?'No escrow':text==='Paid'&&j.mode==='local'?'No payout':text==='Registered'&&j.mode==='local'?'Admitted locally':text));stage.setAttribute('aria-label',`${text}: ${done?'complete':j.mode==='local'&&['Escrow','Paid'].includes(text)?'not applicable':'pending'}`);pipeline.append(stage);});
- const outcome=append(node('div',null,`outcome${paid?' paid':''}`),node('strong',paid?'Selected worker paid · finalized Devnet evidence':w?'Eligible winner selected · not paid':j.state==='REFUNDED'?'Reward refunded · no worker payout':finished?'No eligible winner · not paid':j.state==='AWAITING_FUNDING'?'Awaiting escrow funding · no submissions yet':(j.server_time||Date.now()/1000)>=p.deadline?'Submissions closed · evaluation pending':'Accepting model improvements · not paid'),node('p',w?j.mode==='local'?'This local experiment selected an eligible model. No blockchain funds moved.':paid?'The API checked the finalized payout against the selected, registered worker. Inspect the public transaction below.':'Eligibility is an evaluation decision. Payment remains unconfirmed until exact finalized chain evidence is checked.':'Workers are rewarded for measured improvement over the frozen parent, after the cutoff and eligibility rules.'));
+ const outcome=append(node('div',null,`outcome${paid?' paid':''}`),node('strong',paid?'Selected worker paid · finalized Devnet evidence':w?'Eligible winner selected · not paid':j.state==='REFUNDED'?'Reward refunded · no worker payout':finished?'No eligible winner · not paid':j.state==='AWAITING_FUNDING'?'Awaiting escrow funding · no submissions yet':(j.server_time||Date.now()/1000)>=p.deadline?'Submissions closed · evaluation pending':'Accepting fixes · not paid'),node('p',w?j.mode==='local'?'This local experiment selected an eligible model. No blockchain funds moved.':paid?'The API checked the finalized payout against the selected, registered worker. Inspect the public transaction below.':'Eligibility is an evaluation decision. Payment remains unconfirmed until exact finalized chain evidence is checked.':'Workers compete to fix the posted model bug. Rewards depend on measured improvement over the frozen parent after the cutoff and eligibility rules.'));
  if(state.recorded)outcome.append(node('p',state.recorded.disclosure,'fine'));
- const metrics=append(node('div',null,'metric-band'),metric('Frozen parent',finished?percent(j.baseline_accuracy):'—','Held-out accuracy'),metric('Best eligible model',w?percent(w.candidate_accuracy):'—',w?(paid?'Registered winner · payout finalized':'Eligible is not the same as paid'):'No eligible result yet'),metric('Measured improvement',w?delta(w.delta):'—',w?`${w.n} held-out examples`:'Scores withheld until cutoff'));
- const table=node('table');const caption=node('caption','Submitted experiments');caption.className='sr-only';
+ const metrics=append(node('div',null,'metric-band'),metric('Before',finished?percent(j.baseline_accuracy):'—','Held-out accuracy'),metric('Best verified fix',w?percent(w.candidate_accuracy):'—',w?(paid?'Registered winner · payout finalized':'Eligible is not the same as paid'):'No eligible result yet'),metric('Measured improvement',w?delta(w.delta):'—',w?`${w.n} held-out examples`:'Scores withheld until cutoff'));
+ const table=node('table');const caption=node('caption','Submitted fixes');caption.className='sr-only';
  const thead=node('thead'),hr=node('tr');for(const t of ['Worker','Held-out result','Decision','Evidence']){const th=node('th',t);th.scope='col';hr.append(th);}thead.append(hr);const tbody=node('tbody');
  for(const s of subs){
   const tr=node('tr',null,w?.submission_id===s.id?'winner':null);const who=node('td');append(who,identifier(s.worker,'worker address'),node('small',s.worker_metrics?.negative_control?'Disclosed negative control':`Worker-reported ${s.worker_metrics?.device||'device unknown'}`));

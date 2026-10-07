@@ -100,9 +100,9 @@ def main():
                 page.get_by_role("button", name="Disconnect", exact=False).wait_for()
                 checks.append("Real Wallet Standard auth with test-only Ed25519 signer and live nonce API")
                 page.locator("#create-button").click()
-                page.get_by_label("Experiment name").fill("Browser-verified bounty")
+                page.get_by_label("Model failure to fix").fill("Browser-verified bounty")
                 page.locator("input[name=understand]").check()
-                page.get_by_role("button", name="Create bounty", exact=True).click()
+                page.get_by_role("button", name="Post model bug", exact=True).click()
                 page.get_by_role("heading", name="Browser-verified bounty", exact=True).wait_for()
                 assert page.locator("#detail").get_by_text("No monetary reward", exact=True).count() == 1
                 checks.append(
@@ -180,11 +180,11 @@ def main():
                 )
                 page.reload()
                 page.get_by_text("Recorded local experiment", exact=False).wait_for()
-                page.get_by_text("ASSURANCE CONTRACT", exact=True).wait_for()
-                page.get_by_text("GRADIENTMINE ARENA", exact=True).wait_for()
-                page.get_by_text("ARTIFACT FIREWALL", exact=True).wait_for()
-                page.get_by_text("MODEL PASSPORT", exact=True).wait_for()
-                page.get_by_role("heading", name="Watch the improvement move through the protocol.", exact=True).wait_for()
+                page.get_by_text("BOUNTY RULES", exact=True).wait_for()
+                page.get_by_text("FIX ARENA", exact=True).wait_for()
+                page.get_by_text("SAFE SUBMISSION BOUNDARY", exact=True).wait_for()
+                page.get_by_text("FIX PASSPORT", exact=True).wait_for()
+                page.get_by_role("heading", name="A model bug went from 84.72% to 95.28%.", exact=True).wait_for()
                 page.get_by_text("84.72 → 95.28 · +10.56 pp", exact=False).wait_for()
                 assert "LOCAL EVIDENCE" in page.locator("#proof-summary").inner_text()
                 assert "no payout claimed" in page.locator("#proof-summary").inner_text()
@@ -194,7 +194,7 @@ def main():
                 assert page.get_by_text("95.28%", exact=True).count() >= 1
                 assert page.get_by_text("+10.56 pp", exact=True).count() >= 1
                 assert page.get_by_role("button", name="Download JSON", exact=True).count() == 1
-                checks.append("Research-driven assurance contract, arena, artifact firewall and downloadable model passport render from recorded evidence")
+                checks.append("Bounty rules, fix arena, safe submission boundary and downloadable fix passport render from recorded evidence")
                 assert page.locator("#wallet-button").is_disabled()
                 assert page.locator("#create-button").is_disabled()
                 page.get_by_role("button", name="Receipt", exact=True).first.click()
