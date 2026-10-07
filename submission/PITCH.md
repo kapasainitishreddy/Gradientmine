@@ -1,51 +1,71 @@
-# Presentation script
+# Colosseum pitch script
 
-Target: 2 minutes 30 seconds. The current Colosseum FAQ asks for a two-to-three-minute presentation. This is the startup pitch, not the technical demo.
+Target: 2 to 3 minutes.
 
-## 0:00–0:25 | Problem
+## 0:00-0:20 — Hook
 
-“AI teams do not ultimately want another invoice for GPU time. They want a model that performs better on a task they care about.
+"AI teams spend money on engineers and compute hoping a model gets better. But they do not actually want GPU hours. They want the model fixed.
 
-But outcome-based AI work creates a harder question: when an outside worker claims an improvement, what evidence is strong enough to pay for?”
+GradientMine is a bug bounty marketplace for AI models. A company posts a measurable model failure, engineers and AI agents compete to fix it, and the best verified improvement gets paid."
 
-## 0:25–0:52 | Insight and product
+On screen: **Put a bounty on your AI's worst problem.**
 
-“GradientMine is an assurance market for AI improvement.
+## 0:20-0:45 — Concrete use case
 
-A task owner defines a capability contract: the frozen parent model, objective metric, minimum useful improvement, evaluator, candidate budget, deadline and reward. Independent workers compete by training real model updates.
+"Imagine your support-routing model is stuck at 84% accuracy. You need at least 92%.
 
-We keep the trust boundary explicit. Solana commits the economic terms. A named evaluator judges model quality.”
+Instead of hiring one consultant and paying for the attempt, you post the model, metric, minimum improvement, deadline and reward. Those rules are frozen before anyone competes."
 
-## 0:52–1:22 | Real evidence
+On screen: Bounty Rules.
 
-“Our reproducible proof-of-function runs three independent worker processes on one machine using actual PyTorch training.
+"This generalizes to retrieval quality, small-model fine-tuning, latency, cost and other measurable model failures."
 
-The parent scores 84.72 percent on the held-out set. The best candidate reaches 95.28 percent, an observed improvement of 10.56 percentage points across 360 held-out examples. The adjusted paired-bootstrap lower bound is positive at 6.11 percentage points.
+## 0:45-1:15 — Competition
 
-The Arena deliberately separates each worker's development score from the held-out assurance score.”
+"Workers can be independent ML engineers or autonomous research agents. They train a fix and submit a bounded model artifact.
 
-## 1:22–1:48 | Security and provenance
+They can see development feedback, but not the held-out result that decides the bounty."
 
-“Winning is more than a leaderboard row.
+On screen: Fix Arena.
 
-GradientMine uses content-addressed artifacts, signed worker manifests and signed evaluator receipts. The Artifact Firewall accepts bounded numeric adapters against a known architecture rather than executing arbitrary worker-supplied code. The accepted result receives a downloadable Model Passport linking its parent, artifact, policy, evaluator and measured delta.
+"That separation matters because a worker-reported score is not evidence that the model generalizes."
 
-Those controls improve inspectability; they do not prove that a model is backdoor-free or that training happened exactly as claimed.”
+## 1:15-1:45 — Real proof
 
-## 1:48–2:08 | Why Solana
+"This is a recorded real run from the repository, not a mockup.
 
-“The chain handles the part it is good at: escrow and settlement rules.
+The parent classifier scored 84.72%. Three independent worker processes submitted actual low-rank updates. The selected candidate scored 95.28% on 360 held-out examples, a 10.56 percentage-point improvement, with a positive adjusted lower bound."
 
-A creator can commit a test reward, recipients can be registered, the selected winner can be paid by the program, and an unpaid bounty has an on-chain timeout refund. Models and private evaluation data stay off-chain.”
+On screen: recorded proof and candidate table.
 
-## 2:08–2:30 | Business and vision
+"The third worker is intentionally trained on shuffled labels and correctly fails."
 
-“Our first customer hypothesis is a small model-owning team with a narrow, measurable failure and properly licensed data. We plan to test outcome-priced competitions against ordinary contracted fine-tuning, including the cost of losing experiments and evaluation.
+## 1:45-2:10 — Why Solana
 
-Today we have engineering evidence, not customer traction.
+"Model quality stays off-chain with a named evaluator. Solana handles the part a blockchain is good at: escrow, registered payout recipients, authorized settlement and timeout refunds.
 
-Compute markets sell GPU time. GradientMine buys assured capability improvement.”
+That lets a company and an unknown engineer or agent coordinate globally without inventing a token."
 
-## Recording notes
+On screen: Bounty → Escrow → Submitted → Evaluated → Winner → Paid.
 
-Use https://gradientmine.pages.dev for the public evidence surface, plus terminal/source footage where useful. Keep the public mode banner visible when discussing recorded evidence. If a real Devnet payout has not been finalized before recording, say so clearly and do not show a synthetic Explorer transaction. Natural narration is preferred over a silent caption-only pitch.
+## 2:10-2:35 — Safety and evidence
+
+"Untrusted workers do not hand the evaluator arbitrary executable code in the current task format. GradientMine admits bounded numeric adapters, checks hashes, signatures, architecture and shape, then creates a machine-readable Fix Passport for the accepted result."
+
+On screen: Safe Submission Boundary and Fix Passport.
+
+## 2:35-2:55 — Business
+
+"Our initial wedge is small AI teams with narrow measurable model failures. The planned business model is a success fee on settled bounties plus private higher-assurance evaluation.
+
+Compute markets sell compute. Freelance platforms sell time.
+
+GradientMine sells the outcome: measurable AI improvement."
+
+## Final line
+
+"Put a bounty on the model bug. Pay for the fix that actually works."
+
+## Claims to avoid
+
+Do not say decentralized model verification, proof of training, trustless ML evaluation, live customer marketplace, live Devnet payout unless finalized evidence exists, three independent machines, production anti-cheating benchmark, existing revenue, or willingness to pay.
