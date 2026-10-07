@@ -1,66 +1,127 @@
-# Crypto World's Fair submission checklist
+# Crypto World's Fair final submission checklist
 
-**Status: prepared documents; not submitted.** No owner registration, signed-in portal entry, successful video upload or portal confirmation has been performed in this pass. Actual captioned recordings exist; [MEDIA_DELIVERY.md](MEDIA_DELIVERY.md) documents the HTTP 403 upload attempt and retained draft.
+**Status: product and submission package prepared on the model-bug-bounty branch. Portal submission is not yet claimed.**
 
-## Official source status
+Official event: https://colosseum.com/worldsfair  
+Official hackathon FAQ: https://colosseum.com/hackathon
 
-Official entry: https://colosseum.com/worldsfair
+Current public Colosseum guidance verified October 6, 2026:
 
-Portal and FAQ: https://colosseum.com/hackathon
+- hackathon dates: September 14 to October 12, 2026
+- submissions due October 12, 2026
+- one product submission per team / individual
+- pre-existing development is allowed but must be disclosed
+- GitHub repository required
+- presentation video: 2 to 3 minutes
+- product demo: no more than 3 minutes
+- portal asks for product/business context, team, blockchain/tools, logo, GitHub, videos, GTM, demand validation and distribution
+- judging includes founder-market fit, insight, product/execution, market size, communication, viability and traction
 
-Rules: https://colosseum.com/legal/Crypto%20World%27s%20Fair%20Hackathon%20Rules.pdf
+## Final positioning
 
-On October 5, 2026, after the earlier proxy block, bounded read-only requests with TLS verification retrieved all three official sources with **HTTP 200**. The event page, FAQ and extracted rules PDF were read. The earlier proxy CONNECT 403 is superseded by this successful verification. Source bodies, headers, extracted text and a SHA-256 capture manifest are retained outside Git at `/workspace/.gradientmine-setup/final/research/`; that path is machine-local provenance, not a public link. No signed-in dashboard or entrant account was accessed. Current public FAQ fields are verified; signed-in character limits and declarations remain an owner check.
+### Category
 
-## Verified rules and remaining entrant checks
+**AI model bug bounties**
 
-| Topic | Current official source and requirement | Remaining check / product boundary |
+### Tagline
+
+**Put a bounty on your AI's worst problem.**
+
+### One-line pitch
+
+**GradientMine is a bug bounty marketplace for AI models: companies post measurable model failures, engineers and AI agents compete to fix them, and the best verified improvement can settle through Solana.**
+
+### Strategic framing
+
+Do not lead with "assurance market."
+
+Lead with:
+
+1. model has a measurable problem
+2. owner posts a bounty
+3. workers compete on fixes
+4. hidden evaluation verifies the best result
+5. Solana settles the economic outcome
+
+Then show the assurance machinery as the reason the simple bounty idea can be trusted.
+
+## Prepared materials
+
+| Material | Source | Status |
 |---|---|---|
-| Deadline | Rules §5: October 12, 2026, 11:59 PM Pacific; event page also lists October 12 | October 13, 06:59 UTC / 2:59 AM America/New_York (Philadelphia). Organizer computer is official timekeeper; check for later changes |
-| Event window and prior work | Rules §5: September 14, 2026, 6:00 AM PT through deadline. FAQ permits earlier development/pre-existing code with disclosure; judging covers work within the event | Disclose relevant earlier idea, ZIP/source and development accurately. FAQ distinguishes third-party open-source composition from the team's own prior development |
-| Eligibility | Rules §3: majority age or 18, whichever is older at start; exclusions/sanctions and employer/entity permissions apply. FAQ: new startups without significant outside capital. Rules §12: all content in English | Owner must check exact jurisdiction, age, sanctions, funding and IP facts; no numeric funding threshold is supplied by the FAQ |
-| Team | Rules §§6–7 and FAQ: every member registers; leader adds members/submits; one team per person, one product per team/person. FAQ allows solo founders | No maximum team size was found in these sources; check any signed-in portal limit without inventing one |
-| Repository | FAQ requires GitHub link; open source encouraged; private repos allowed if review access is granted to `hackathon@colosseum.com` | GradientMine uses its public MIT repository. FAQ assesses significant event work, authorship and strategic priorities, rather than a specific language/framework |
-| Presentation | FAQ: two-to-three-minute presentation | Prepared target 2:30; exported duration must be 120–180 seconds |
-| Product demo | FAQ: no more than three minutes explaining product operation | Prepared target 2:45; exported duration ≤180 seconds |
-| Fields | FAQ lists product name/brief description, blockchains/tools, all teammate backgrounds, team location, logo/graphic, GitHub, both videos, go-to-market/demand validation/distribution | These public field categories are verified. Exact signed-in field labels, character limits and declarations were not inspected |
-| Judging | FAQ: founder/market fit, insight, product/execution, market size, communication, viability, traction. Rules §8: functionality, potential impact, novelty, UX, open-source/composability, business plan | No scoring weights or guaranteed prize outcome asserted; explain the startup and evidence honestly |
-| Solana | Event page offers Solana track; rules §14(e) awards that track to products integrating Solana. FAQ permits all blockchain ecosystems | Native Rust/Devnet implementation is the proposed integration. No Anchor, LoRA, LLM, mainnet, token or three-GPU requirement was found |
-| AI assistance | FAQ acknowledges backed founders who built MVPs entirely with AI coding tools | No specific mandatory AI-disclosure clause found in the retrieved event page/FAQ/rules. Voluntary truthful disclosure is prepared; complete any actual portal declaration |
-| Procedure | FAQ: register, join current competition, access dashboard submission portal; leader completes submission before deadline. Rules §6 requires member registration/profile/consent before deadline | Actual entrant must sign in, verify team/profile facts, review declarations and retain final portal confirmation |
+| Product name / tagline / description | FINAL_FORM_COPY.md | Ready |
+| Problem / insight / market / business | PRODUCT.md | Ready |
+| Use cases and initial wedge | USE_CASES.md | Ready |
+| 2–3 minute pitch | PITCH.md | Ready for recording |
+| ≤3 minute product demo | DEMO.md | Ready for recording |
+| Exact shot plan | RECORDING.md | Ready |
+| 60-second judge brief | JUDGE_BRIEF.md | Ready |
+| Repository | https://github.com/kapasainitishreddy/Gradientmine | Public |
+| Public evidence viewer | https://gradientmine.pages.dev | Existing viewer; update only after merge/deploy |
+| Logo | logo.svg | Ready |
+| Team facts | TEAM.md | Owner review still required |
+| Prior work / AI disclosure | DISCLOSURE.md | Owner review still required |
 
-Submit ahead of the deadline. The official PDF is the authority for entrant exclusions and terms; this summary does not establish the owner's personal eligibility. Winning does not require accepting accelerator admission (FAQ), and no accelerator or funding commitment is invented here.
+## Current engineering evidence
 
-## Paste-ready portal material
+The checked-in proof-of-function remains:
 
-Use [FINAL_FORM_COPY.md](FINAL_FORM_COPY.md) as the single paste-ready source for product, problem, insight, Solana, market, GTM, validation, business-model and trust-disclosure fields. TEAM.md and DISCLOSURE.md still require owner review because identity, team, funding, IP and pre-event history cannot be inferred safely.
+- 84.72% frozen parent held-out accuracy
+- 95.28% selected candidate
+- +10.56 percentage-point improvement
+- +6.11 percentage-point adjusted lower bound
+- 360 held-out examples
+- three real worker OS processes on one host
+- one shuffled-label negative control
+- content-addressed bounded model artifacts
+- signed worker manifests and evaluator receipts
+- native Rust Solana escrow program
+- compiled-program local LiteSVM integration
 
-## Materials to enter
+## What judges should understand in 30 seconds
 
-| Material | Prepared source | Remaining action |
-|---|---|---|
-| Product name, one line, description, chain/tools, why blockchain | [FINAL_FORM_COPY.md](FINAL_FORM_COPY.md), [PRODUCT.md](PRODUCT.md) | Fit actual field lengths; review latest implementation/evidence |
-| Founder background, location and actual team | [TEAM.md](TEAM.md) | Confirm name/location, real members, funding and rights |
-| Original logo | [logo.svg](logo.svg) | File exists; upload SVG if accepted, otherwise export PNG as described in RECORDING.md |
-| Repository | https://github.com/kapasainitishreddy/Gradientmine | Verify judge access to final source commit |
-| Presentation video | [150-second captioned fallback recording](PRESENTATION_VIDEO.md), updated [PITCH.md](PITCH.md) | Existing recording predates the Assurance/Arena redesign. Prefer a new narrated 2–3 minute recording using the updated public viewer; otherwise disclose that the older video shows the prior interface. Verify signed-out playback. |
-| Product-demo video | [165-second captioned fallback recording](DEMO_VIDEO.md), updated [DEMO.md](DEMO.md) | Existing recording predates the Assurance/Arena redesign. Prefer re-recording the current public viewer from the updated ≤3-minute script. Never splice a fake Devnet payout; verify judge-accessible signed-out playback. |
-| Optional short launch film | [Rendered 22-second landscape / 20-second portrait films](tour/README.md) | A separate marketing artifact; it replaces neither required video |
-| Market, business model, validation and distribution | [PRODUCT.md](PRODUCT.md), [VALIDATION.md](VALIDATION.md) | Keep hypotheses separate from completed customer research |
-| Prior work and AI assistance | [DISCLOSURE.md](DISCLOSURE.md) | Add factual pre-event history and required portal declarations |
-| Live URL / chain evidence | https://gradientmine.pages.dev and [docs/BUILD_LEDGER.md](../docs/BUILD_LEDGER.md) | Public URL is verified signed-out as a read-only recorded evidence viewer. It is not the live API/validator and does not prove a Devnet payout. Only enter chain addresses/signatures after finalized verification. |
+**Problem:** AI teams pay for people and compute when what they actually want is a model metric to improve.
 
-## Assurance-market release
+**Product:** Put a bounty on a measurable model failure.
 
-The research-driven interface is now merged and verified on the public viewer. The latest product surfaces are Assurance Contract, GradientMine Arena, Artifact Firewall and downloadable Model Passport. GitHub Actions run 37402699747 passed against product commit `87200f39f25eeead7551461fd878c47845374089`, and the public Cloudflare viewer was independently rendered signed out. The previous long-form videos are still valid historical recordings of the local evidence, but they do not show this redesigned interface.
+**Supply:** ML engineers and AI agents compete to fix it.
 
-## Final submission steps
+**Verification:** Public progress is separated from hidden final evaluation.
 
-1. From an authorized browser, check for official changes since October 5 and inspect the signed-in fields; update this checklist for any differences.
-2. Register actual entrant(s), join the event and verify the team's leader and eligibility facts. Complete TEAM.md and pre-event history in DISCLOSURE.md.
-3. Fill the real dashboard fields from PRODUCT.md. Upload the original logo and enter the public repository; include a live URL only if it really works.
-4. Review the actual 150-second presentation and 165-second demo, including their silent-caption format. Confirm current portal requirements, optionally add natural narration, and upload to a permitted judge-accessible playback host. Test signed-out playback; a downloadable release asset alone does not establish portal acceptance.
-5. Disclose named-validator trust, public benchmark leakage, budget-limited baseline, AI assistance, pre-event work, Devnet-only funds and any unavailable live feature. State separately whether extension-wallet QA and integrated Devnet payout were completed.
-6. Review declarations using your own identity and authority. Submit through the portal and retain its confirmation/submission URL. Without portal confirmation status remains **not submitted**.
+**Crypto reason:** Solana locks the reward and settlement rules between counterparties who do not need to trust one another.
 
-Do not claim mainnet revenue, customers, independently owned nodes, GPU ownership, hidden-data security, royalties, payment without finalized evidence, a Phantom test based only on a harness, or a video based only on its script.
+**Business:** planned 10% success fee on settled bounties, with private/higher-assurance evaluation as an enterprise extension.
+
+## Submission order
+
+1. Re-run automated tests on the final branch.
+2. Merge the branch only after CI passes.
+3. Verify the deployed public viewer signed out.
+4. Record a fresh 2–3 minute pitch using PITCH.md.
+5. Record a fresh ≤3 minute demo using DEMO.md.
+6. Use natural narration if possible. The older silent-caption videos predate this positioning and should be fallback only.
+7. Upload videos to a judge-accessible host and verify signed-out playback.
+8. Fill portal fields from FINAL_FORM_COPY.md.
+9. Review TEAM.md and DISCLOSURE.md against actual founder/team/prior-work facts.
+10. Submit before the official deadline and retain portal confirmation.
+
+## Claims to avoid
+
+Do not claim:
+
+- customers or revenue that do not exist
+- validated willingness to pay before interviews
+- trustless or decentralized model-quality verification
+- proof of training
+- private benchmark security from the public Digits split
+- three independent machines
+- a finalized Devnet payout without exact chain evidence
+- mainnet funds
+- arbitrary LLM fine-tuning in the current recorded proof
+- USDC support in the current implementation unless it is actually added and tested
+
+## Strong next engineering proof
+
+The single highest-value remaining proof is an integrated Devnet run where the same trained winning artifact is registered, selected and paid to the matching worker, with finalized Explorer evidence.
+
+Do not delay the submission if free Devnet funding remains unavailable. The product can still be submitted honestly with the local proof and compiled program evidence.
