@@ -2,6 +2,7 @@
    All inputs are rendered as text, never interpreted as HTML or executable code. */
 import {WalletSession} from './wallet.mjs';
 import {base64, equal, sha256, verifyEnvelope} from './core.mjs';
+import {canonicalJson} from './lab-canonical.mjs';
 
 const $ = id => document.getElementById(id);
 const encoder = new TextEncoder();
@@ -13,14 +14,7 @@ const n = (tag, content, className) => {
   if (className) element.className = className;
   return element;
 };
-const stable = value => {
-  if (value === null || typeof value !== 'object') {
-    if (typeof value === 'number' && !Number.isFinite(value)) throw Error('Non-finite JSON number refused');
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
-  return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}';
-};
+const stable = canonicalJson;
 function status(message, bad=false) {
   const x=$('lab-status');
   x.textContent=message;
@@ -44,16 +38,25 @@ async function api(path, payload, {anonymous=false}={}) {
 async function safe(action) {
   if (state.busy) return;
   state.busy=true;
+  $('lab-status').setAttribute('aria-busy','true');
+  updateControls();
   try {await action();}
   catch(error){status(String(error.message||error),true);}
-  finally {state.busy=false; updateControls();}
+  finally {
+    state.busy=false;
+    $('lab-status').setAttribute('aria-busy','false');
+    updateControls();
+  }
 }
 async function sign(payload) {
   if (!wallet?.account || !wallet?.wallet) throw Error('Connect a wallet first');
   const bytes=encoder.encode(stable(payload));
+  const account=wallet.account;
   const signMessage=wallet.wallet.features['solana:signMessage'].signMessage;
-  const [signed]=await signMessage({account:wallet.account,message:bytes});
-  if (!equal([...signed.signedMessage],[...bytes])) throw Error('Wallet did not sign the requested exact bytes');
+  const [signed]=await signMessage({account,message:bytes});
+  if (wallet.account!==account || !wallet.token || !equal([...signed.signedMessage],[...bytes])) {
+    throw Error('Wallet or signed message changed. Reconnect and retry.');
+  }
   return {
     payload,
     payload_base64:base64(bytes),
@@ -93,19 +96,80 @@ $('lab-wallet').addEventListener('click',()=>safe(async()=>{
 }));
 $('lab-wallet-close').addEventListener('click',()=>$('lab-wallet-dialog').close());
 
+function currentWorkspace() {
+  return state.workspaces.find(ws => ws.id === $('lab-workspace-select').value);
+}
 function updateControls(){
-  const connected=!!wallet?.account && state.online;
-  const canCreate=connected && !!$('lab-workspace-select').value;
+  const connected=!!wallet?.account && state.online && !state.busy;
+  const active=currentWorkspace();
+  const canCreate=connected && !!active && ['owner','researcher'].includes(active.role);
+  const canInvite=connected && active?.role==='owner';
+  const selected=state.detail;
+  const canSubmit=connected && selected?.state==='OPEN';
+  const canEvaluate=connected && selected?.state==='OPEN' && Date.now()/1000 >= selected.policy.deadline;
+  const canReview=connected && !!selected?.result_sha256 && !!active &&
+    ['owner','reviewer'].includes(active.role) && selected.workspace_id===active.id;
   for(const id of ['lab-workspace-name','lab-workspace-select'])$(id).disabled=!connected;
   for(const id of ['lab-title','lab-kind','lab-visibility','lab-duration','lab-delta','lab-docs','lab-dev','lab-holdout'])$(id).disabled=!canCreate;
-  for(const id of ['lab-evaluate','lab-artifact','lab-submit','lab-review'])$(id).disabled=!connected||!state.selected;
-  $('lab-member-address').disabled=!canCreate;
-  $('lab-member-role').disabled=!canCreate;
-  $('lab-download').disabled=!state.detail;
-  const ws=$('lab-workspace-form').querySelector('button[type="submit"]');
-  ws.disabled=!connected;
-  $('lab-invite-form').querySelector('button[type="submit"]').disabled=!canCreate;
+  $('lab-artifact').disabled=!canSubmit;
+  $('lab-submit').disabled=!canSubmit;
+  $('lab-evaluate').disabled=!canEvaluate;
+  $('lab-review').disabled=!canReview;
+  $('lab-member-address').disabled=!canInvite;
+  $('lab-member-role').disabled=!canInvite;
+  $('lab-download').disabled=!selected;
+  $('lab-workspace-form').querySelector('button[type="submit"]').disabled=!connected;
+  $('lab-invite-form').querySelector('button[type="submit"]').disabled=!canInvite;
   $('lab-create-form').querySelector('button[type="submit"]').disabled=!canCreate;
+}
+async function refreshWorkspaceSecurity() {
+  const members=$('lab-members'),audit=$('lab-audit');
+  if (!members || !audit) return;
+  members.replaceChildren();audit.replaceChildren();
+  const active=currentWorkspace();
+  if (!wallet?.account || !state.online || !active) {
+    members.append(n('p','Connect a wallet and select an owned workspace.'));
+    audit.append(n('p','Audit events are available to authorized workspace members.'));
+    return;
+  }
+  if (active.role === 'owner') {
+    const result=await api('/api/lab/workspaces/'+encodeURIComponent(active.id)+'/members');
+    for(const item of result.members||[]) {
+      const row=n('div',null,'lab-member-row');
+      const identity=n('div');
+      identity.append(n('strong',item.address.slice(0,7)+'…'+item.address.slice(-6)),
+                      n('span',item.role));
+      row.append(identity);
+      if (item.role!=='owner') {
+        const revoke=n('button','Revoke','lab-secondary lab-revoke');
+        revoke.type='button';
+        revoke.setAttribute('aria-label','Revoke member '+item.address);
+        revoke.addEventListener('click',()=>safe(async()=>{
+          if (!window.confirm('Revoke this wallet’s access to the workspace?')) return;
+          await api('/api/lab/workspaces/'+encodeURIComponent(active.id)+
+            '/members/'+encodeURIComponent(item.address)+'/revoke',{});
+          await refreshAll();
+          status('Member access revoked and recorded in the workspace audit log.');
+        }));
+        row.append(revoke);
+      }
+      members.append(row);
+    }
+  } else {
+    members.append(n('p','Only workspace owners can view and manage the member roster.'));
+  }
+  if (['owner','reviewer'].includes(active.role)) {
+    const result=await api('/api/lab/workspaces/'+encodeURIComponent(active.id)+'/audit');
+    if (!result.events?.length) audit.append(n('p','No events recorded yet.'));
+    for (const event of result.events||[]) {
+      const row=n('div',null,'lab-audit-row');
+      row.append(n('strong',event.kind.replaceAll('_',' ')),
+                 n('span',event.actor.slice(0,7)+'… · '+new Date(event.created_at*1000).toLocaleString()));
+      audit.append(row);
+    }
+  } else {
+    audit.append(n('p','Audit history is available to owners and reviewers.'));
+  }
 }
 async function refreshAll(){
   if (!state.online) return;
@@ -131,6 +195,7 @@ async function refreshAll(){
   if (!state.list.find(x=>x.id===state.selected)) state.selected=state.list[0]?.id||null;
   renderList();
   await loadDetail();
+  await refreshWorkspaceSecurity();
   updateControls();
 }
 function renderList(){
@@ -152,9 +217,18 @@ function renderList(){
 }
 async function loadDetail(){
   const target=$('lab-detail');target.replaceChildren();
-  if (!state.selected){state.detail=null;target.append(n('p','Select or create a competition to inspect evidence.'));updateControls();return;}
+  if (!state.selected){
+    state.detail=null;state.loadedTemplateFor=null;
+    target.append(n('p','Select or create a competition to inspect evidence.'));
+    updateControls();return;
+  }
   const item=await api('/api/lab/benchmarks/'+encodeURIComponent(state.selected));
   state.detail=item;
+  if (state.loadedTemplateFor!==item.id) {
+    const choice=defaults[item.kind];
+    $('lab-artifact').value=choice?JSON.stringify(choice,null,2):'';
+    state.loadedTemplateFor=item.id;
+  }
   target.append(n('span',item.state+' / '+item.kind.toUpperCase(),'lab-detail-kicker'));
   target.append(n('h3',item.title));
   target.append(n('p','Frozen policy: '+item.policy_sha256,'lab-hash'));
@@ -170,7 +244,18 @@ async function loadDetail(){
     row.append(n('strong',e.worker.slice(0,7)+'…'+e.worker.slice(-5)));
     row.append(n('span',e.state+' · '+e.artifact_sha256.slice(0,14)+'…'));
     if(e.score){
-      row.append(n('span','Quality '+(100*e.score.candidate_accuracy).toFixed(2)+'% · '+(e.score.eligible?'Eligible':'Ineligible')));
+      const ratio=Number(e.score.candidate_accuracy);
+      row.append(n('span','Quality '+(100*ratio).toFixed(2)+'% · '+(e.score.eligible?'Eligible':'Ineligible')));
+      const meter=n('div',null,'lab-score-track');
+      meter.setAttribute('role','meter');
+      meter.setAttribute('aria-label','Verified held-out success rate');
+      meter.setAttribute('aria-valuemin','0');
+      meter.setAttribute('aria-valuemax','100');
+      meter.setAttribute('aria-valuenow',String(Math.round(100*ratio)));
+      const fill=n('span');
+      fill.style.width=(100*Math.max(0,Math.min(1,ratio))).toFixed(1)+'%';
+      meter.append(fill);
+      row.append(meter);
     }
     if(e.receipt){
       const ok=await verifyEnvelope(e.receipt,item.policy.validator);
@@ -208,10 +293,14 @@ $('lab-invite-form').addEventListener('submit',event=>{
       address:$('lab-member-address').value.trim(),role:$('lab-member-role').value,
     });
     $('lab-member-address').value='';
-    status('Membership updated. No organization email or billing was created.');
+    await refreshWorkspaceSecurity();
+    status('Membership updated and recorded. No organization email or billing was created.');
   });
 });
-$('lab-workspace-select').addEventListener('change',updateControls);
+$('lab-workspace-select').addEventListener('change',()=>safe(async()=>{
+  updateControls();
+  await refreshWorkspaceSecurity();
+}));
 $('lab-load-sample').addEventListener('click',()=>{
   const kind=$('lab-kind').value;
   const documents=[{id:'a',title:'Application platform',text:'Applications can be hosted on managed compute platforms.'},
@@ -223,7 +312,7 @@ $('lab-load-sample').addEventListener('click',()=>{
     holdout=Array.from({length:40},(_,i)=>({prompt:(i%2?'ordinary':'prohibited')+' synthetic case '+i,should_refuse:i%2===0}));
   }else if(kind==='llm_prompt'){
     development=[{question:'What does the application platform host?',answer:'Applications'},{question:'Who cares for domestic animals?',answer:'Veterinarians'}];
-    holdout=Array.from({length:20},(_,i)=>({question:i%2?'Who cares for animals?':'What can be hosted?',answer:i%2?'Veterinarians':'Applications'}));
+    holdout=Array.from({length:12},(_,i)=>({question:i%2?'Who cares for animals?':'What can be hosted?',answer:i%2?'Veterinarians':'Applications'}));
   }else if(kind==='grounded_qa'){
     development=[{question:'Who cares for domestic animals?',answer:'Veterinarians',relevant_ids:['b']},{question:'Where are historical records?',answer:'archives',relevant_ids:['c']}];
     holdout=Array.from({length:40},(_,i)=>({question:i%2?'Who cares for domestic animals?':'Where are historical records?',answer:i%2?'Veterinarians':'archives',relevant_ids:[i%2?'b':'c']}));
@@ -271,6 +360,7 @@ $('lab-create-form').addEventListener('submit',event=>{
 $('lab-submit').addEventListener('click',()=>safe(async()=>{
   if(!state.detail||!wallet?.account)throw Error('Select a competition and connect a wallet');
   const artifact=JSON.parse($('lab-artifact').value);
+  if (state.detail.state!=='OPEN') throw Error('This competition is no longer accepting submissions.');
   const hash=await sha256(encoder.encode(stable(artifact)));
   const claim={
     format:'gradientmine.lab-submission.v1',
@@ -286,6 +376,7 @@ $('lab-submit').addEventListener('click',()=>safe(async()=>{
 }));
 $('lab-evaluate').addEventListener('click',()=>safe(async()=>{
   if(!state.detail)throw Error('Choose a competition');
+  if (Date.now()/1000 < state.detail.policy.deadline) throw Error('The benchmark is still accepting candidates.');
   await api('/api/lab/benchmarks/'+encodeURIComponent(state.detail.id)+'/evaluate',{});
   await refreshAll();
   status('Evaluator results and signed receipts are available.');

@@ -1,0 +1,250 @@
+/* GradientMine refinement layer: editorial material, accessible typography,
+   intentional motion, and polished evidence workspaces. No theme replacement. */
+:root {
+  --easing-editorial: cubic-bezier(.2,.85,.25,1);
+  --subtle-elevation: 0 20px 46px rgba(39,35,27,.10);
+}
+body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+.topbar {
+  position:sticky;
+  top:0;
+  z-index:90;
+  background:rgba(239,235,227,.96);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);
+  backdrop-filter:blur(16px) saturate(1.15);
+  transition:box-shadow .35s var(--easing-editorial),border-color .35s var(--easing-editorial);
+}
+.topbar.is-scrolled {
+  box-shadow:0 4px 24px rgba(27,27,24,.09);
+  border-bottom-color:#cfc8bc;
+}
+.topbar .brand,.topbar nav a { transition:color .25s var(--easing-editorial); }
+.topbar .brand:hover { color:#a9432b; }
+.hero-primary, .hero-create, .proof-detail-link, .inline-link {
+  transition:transform .28s var(--easing-editorial),
+    box-shadow .3s var(--easing-editorial),color .24s,border-color .24s;
+}
+.hero-primary:hover:not(:disabled) { box-shadow:0 14px 35px rgba(15,15,14,.21); }
+.hero-create:hover:not(:disabled) { box-shadow:inset 0 0 0 1px rgba(38,32,28,.12); }
+.hero-copy h1 .hero-emphasis { color:#ba4628; }
+.hero-kicker,.section-micro { color:#70665d; }
+.editorial-hero .hero-copy { isolation:isolate; }
+.sculpture-stage {
+  box-shadow:inset 0 0 80px rgba(3,6,5,.25);
+  background-color:#0a0d0b;
+}
+.stage-light-sweep {
+  position:absolute;
+  z-index:3;
+  top:-18%;
+  bottom:-18%;
+  left:-56%;
+  width:27%;
+  transform:skewX(-14deg) translate3d(0,0,0);
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(90deg,
+    transparent,
+    rgba(221,242,225,.018) 20%,
+    rgba(229,246,229,.13) 52%,
+    rgba(214,233,216,.014) 83%,
+    transparent);
+  mix-blend-mode:screen;
+  animation:gallery-sweep 14s ease-in-out 2s infinite;
+  will-change:transform,opacity;
+  animation-play-state:paused;
+}
+.sculpture-stage.is-stage-visible .stage-light-sweep { animation-play-state:running; }
+@keyframes gallery-sweep {
+  0%,15% { transform:skewX(-14deg) translate3d(0,0,0);opacity:0; }
+  22% {opacity:.50;}
+  39% { transform:skewX(-14deg) translate3d(600%,0,0);opacity:.52; }
+  49%,100% { transform:skewX(-14deg) translate3d(600%,0,0);opacity:0; }
+}
+.sculpture-stage, .sculpture-art { backface-visibility:hidden; }
+.model-readout strong { font-variant-numeric:tabular-nums; }
+.process-strip { background:#f5f1e9; }
+.process-item {
+  transition:background .35s var(--easing-editorial),border-color .25s;
+}
+.process-item:hover { background:rgba(205,184,157,.105); }
+.process-item:hover h3 { color:#9f3f26; }
+.proof-panel { box-shadow:0 30px 88px rgba(26,32,28,.12); }
+.proof-number-row strong { font-variant-numeric:tabular-nums; }
+.proof-stage { overflow:hidden; }
+.trust-grid article {
+  transition:background .3s var(--easing-editorial);
+}
+.trust-grid article:hover { background:#eee9e0!important; }
+.workspace .rail .job:focus-visible,
+.lab-benchmark-button:focus-visible { outline:2px solid #98c7a5!important; }
+.workspace :focus-visible,.solver-drawer :focus-visible {
+  outline-color:#b5d4bf!important;
+}
+.lab-page .lab-hero h1 em { color:#b94427; }
+.lab-page .lab-control-block h3,
+.lab-page .lab-create-disclosure>summary { letter-spacing:-.045em; }
+.lab-page .lab-control-block+.lab-control-block { margin-top:26px; }
+.lab-create-disclosure {
+  border:1px solid #cec6b9!important;
+  border-radius:4px;
+  padding:0 17px 17px;
+  background:#f7f2e9;
+}
+.lab-create-disclosure>summary {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  list-style:none;
+  cursor:pointer;
+  padding:19px 1px;
+  font-size:20px;
+  font-weight:690;
+  color:#272724;
+}
+.lab-create-disclosure>summary::-webkit-details-marker { display:none; }
+.lab-create-disclosure>summary span {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #c7bdaf;
+  border-radius:50%;
+  height:29px;width:29px;
+  font-size:20px;font-weight:400;
+  transition:transform .3s var(--easing-editorial);
+}
+.lab-create-disclosure[open]>summary span { transform:rotate(45deg); }
+.lab-create-disclosure>p { color:#79736a; }
+.lab-member-list,.lab-audit-list { margin-top:14px; }
+.lab-member-row,.lab-audit-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:12px 0;
+  border-bottom:1px solid #d9d1c5;
+}
+.lab-member-row>div,.lab-audit-row { min-width:0; }
+.lab-member-row strong,.lab-audit-row strong {
+  display:block;
+  color:#292925;
+  font-size:11px;
+  overflow-wrap:anywhere;
+}
+.lab-member-row span,.lab-audit-row span {
+  display:block;
+  color:#767067;
+  font-size:10px;
+  line-height:1.55;
+}
+.lab-member-row .lab-secondary {
+  margin:0;
+  min-height:33px;
+  padding:5px 12px;
+  color:#a2402c;
+  border-color:#c7a399;
+  font-size:11px;
+}
+.lab-member-row .lab-secondary:hover {
+  color:#8c3123;
+  background:#f2ddd6;
+  border-color:#b6573f;
+}
+.lab-audit-row { display:block; }
+.lab-score-track {
+  width:100%;
+  flex:1 0 100%;
+  height:4px;
+  border-radius:4px;
+  background:#34413a;
+  overflow:hidden;
+}
+.lab-score-track>span {
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#85bfa3,#bae2c3);
+  transition:width .65s var(--easing-editorial);
+}
+.lab-entry { gap:11px 18px; }
+.lab-benchmark-button {
+  transition:background .25s var(--easing-editorial),
+             border-color .25s var(--easing-editorial),
+             transform .25s var(--easing-editorial);
+}
+.lab-benchmark-button:hover { transform:translateY(-2px); }
+.lab-page .lab-result-top { gap:15px; }
+.lab-page .lab-status {
+  border-radius:2px;
+  transition:background .2s,color .2s;
+}
+.lab-page .lab-audit-panel>summary,
+.lab-page .lab-access-panel>summary {
+  padding:6px 0;
+}
+.lab-page .lab-access-panel>p,
+.lab-page .lab-audit-panel>p { font-size:11px; }
+.lab-page .lab-mode { letter-spacing:.04em; }
+/* Native progressive reveal leaves a readable fallback even before JS. */
+.motion-ready .will-reveal:not(.revealed) {
+  opacity:.85;
+  transform:translate3d(0,12px,0);
+}
+.motion-ready .will-reveal.revealed {
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+.motion-ready .will-reveal {
+  transition:opacity .75s var(--easing-editorial),
+             transform .75s var(--easing-editorial);
+  transition-delay:var(--reveal-delay,0ms);
+}
+@media (max-width:1120px) {
+  .hero-copy h1 { letter-spacing:-.075em; }
+  .sculpture-stage { border-top-left-radius:160px 110px; }
+}
+@media (max-width:760px) {
+  .topbar { -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px); }
+  .lab-create-disclosure { padding:0 13px 15px; }
+  .lab-member-row { align-items:flex-start; }
+  .lab-page .lab-hero { padding-top:59px; }
+  .lab-page .lab-tags { margin-top:31px; }
+  .lab-page .lab-control-block+.lab-control-block { margin-top:25px; }
+  .lab-page .lab-mode { max-width:100%;white-space:normal;overflow-wrap:anywhere; }
+  .lab-page .lab-control-block input,
+  .lab-page .lab-control-block select,
+  .lab-page .lab-control-block textarea { font-size:16px; }
+  .lab-page .lab-result-top { flex-wrap:wrap; }
+  .lab-page .lab-runner .lab-actions button { flex:1 1 180px; }
+  .process-item h3 { letter-spacing:-.02em; }
+  .stage-light-sweep { opacity:.27; }
+}
+@media (max-width:390px) {
+  .stage-topline { font-size:8px; }
+  .lab-page .lab-hero h1 { font-size:clamp(46px,11vw,76px); overflow-wrap:break-word; }
+  .lab-page .lab-footer-pitch h2 { font-size:clamp(45px,11vw,76px); overflow-wrap:break-word; }
+  .lab-page .lab-mode { display:inline-block;max-width:100%;overflow-wrap:anywhere;white-space:normal; }
+  .hero-copy .hero-primary,
+  .hero-copy .hero-create { min-height:46px; }
+  .topbar .menu-toggle { flex-shrink:0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important; }
+  .stage-light-sweep { display:none!important;animation:none!important; }
+  .motion-ready .will-reveal,.motion-ready .will-reveal.revealed {
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+  .lab-score-track>span,
+  .lab-benchmark-button,
+  .lab-create-disclosure>summary span {
+    transition:none!important;
+    transform:none!important;
+  }
+}
+@media (forced-colors: active) {
+  .stage-light-sweep { display:none; }
+  .topbar,.lab-create-disclosure { border:1px solid CanvasText; }
+  .lab-score-track { border:1px solid CanvasText; }
+}

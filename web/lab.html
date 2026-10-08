@@ -10,14 +10,16 @@
 <link rel="stylesheet" href="./assets/style.css">
 <link rel="stylesheet" href="./assets/editorial.css">
 <link rel="stylesheet" href="./assets/lab.css">
+<link rel="stylesheet" href="./assets/polish.css">
 <script type="module" src="./assets/lab.mjs"></script>
+<script type="module" src="./assets/editorial.mjs"></script>
 </head>
 <body class="lab-page">
 <a class="skip" href="#lab-content">Skip to lab content</a>
 <header class="topbar">
 <a href="./" class="brand" aria-label="GradientMine home"><span class="brand-mark"><img src="./assets/mark.svg" alt="" width="38" height="38"></span><span>GradientMine</span></a>
-<nav aria-label="Main"><a href="./">Home</a><a href="./#the-proof">The proof</a><a href="./#arena">The arena</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
-<div class="topbar-actions"><button id="lab-wallet" type="button" class="button secondary">Connect wallet</button></div>
+<nav id="site-nav" aria-label="Main navigation"><a href="./">Home</a><a href="./#the-proof">The proof</a><a href="./#arena">The arena</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
+<div class="topbar-actions"><button id="lab-wallet" type="button" class="button secondary">Connect wallet</button><button id="menu-button" type="button" class="menu-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button></div>
 </header>
 <main id="lab-content">
 <section class="lab-hero">
@@ -58,9 +60,19 @@
      <button type="submit" class="lab-button">Add member</button>
     </form>
    </details>
+   <details class="lab-subpanel lab-access-panel" id="lab-access-panel">
+    <summary>Manage member access</summary>
+    <p>Owners can review roles and revoke access. Membership changes take effect on the next request.</p>
+    <div id="lab-members" class="lab-member-list" aria-live="polite"><p>Connect a wallet to manage access.</p></div>
+   </details>
+   <details class="lab-subpanel lab-audit-panel" id="lab-audit-panel">
+    <summary>Workspace activity log</summary>
+    <p>Authorized audit records identify actors and actions, without storing private test examples.</p>
+    <div id="lab-audit" class="lab-audit-list"><p>Only owners and reviewers may view this log.</p></div>
+   </details>
   </div>
-  <div class="lab-control-block">
-   <h3>New benchmark</h3>
+  <details class="lab-control-block lab-create-disclosure">
+   <summary>New benchmark <span aria-hidden="true">+</span></summary>
    <p>Private cases stay on your own backend. Use non-sensitive examples when experimenting.</p>
    <form id="lab-create-form">
     <label for="lab-title">Challenge title</label>
@@ -79,7 +91,7 @@
     <button type="button" id="lab-load-sample" class="lab-secondary">Load synthetic example</button>
     <button type="submit" class="lab-button">Create sealed benchmark ↗</button>
    </form>
-  </div>
+  </details>
  </aside>
  <section class="lab-results">
   <div class="lab-result-top"><h3>Competition evidence</h3><button id="lab-refresh" type="button" class="lab-secondary">Refresh ↻</button></div>
@@ -87,7 +99,7 @@
   <div class="lab-benchmark-detail" id="lab-detail"><p>Select a competition to inspect its immutable policy, public development examples and signed results.</p></div>
   <div class="lab-runner">
    <h3>Submit a bounded candidate</h3>
-   <p>Submission requires a Solana Wallet Standard message signature. No funds are transferred. Only declarative JSON artifacts are accepted.</p>
+   <p>Submission requires a Solana Wallet Standard message signature. No funds are transferred. Only declarative JSON artifacts are accepted. Candidate adapters remain sealed until evaluation.</p>
    <label for="lab-artifact">Candidate adapter JSON</label>
    <textarea id="lab-artifact" rows="6" spellcheck="false"></textarea>
    <div class="lab-actions"><button id="lab-submit" class="lab-button" type="button">Sign &amp; submit candidate</button><button id="lab-evaluate" class="lab-secondary" type="button">Evaluate after cutoff</button><button id="lab-review" class="lab-secondary" type="button">Sign result attestation</button><button id="lab-download" class="lab-secondary" type="button">Download evidence JSON</button></div>

@@ -16,7 +16,7 @@ import time
 import uuid
 from pathlib import Path
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
 from .crypto import canonical, digest, validate_address, verify_signed
 from .lab_evaluation import BASE, KINDS, compare, validate_artifact, validate_dataset
@@ -67,6 +67,13 @@ class LabService:
                   signer TEXT NOT NULL, envelope TEXT NOT NULL,
                   PRIMARY KEY(benchmark_id,signer)
                 );
+                CREATE TABLE IF NOT EXISTS audit_events (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+                  actor TEXT NOT NULL, kind TEXT NOT NULL,
+                  subject_id TEXT NOT NULL, created_at INTEGER NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS lab_audit_ws ON audit_events(workspace_id,id);
                 CREATE INDEX IF NOT EXISTS lab_workspace_idx ON benchmarks(workspace_id);
                 CREATE INDEX IF NOT EXISTS lab_entry_idx ON entries(benchmark_id);
                 """
@@ -105,6 +112,56 @@ class LabService:
             raise LabError(403, "Workspace membership or role is insufficient")
         return role
 
+    def _audit(self, db, workspace_id, actor, kind, subject_id):
+        # No private cases, session tokens, or unsigned arbitrary messages.
+        db.execute(
+            "INSERT INTO audit_events(workspace_id,actor,kind,subject_id,created_at) "
+            "VALUES(?,?,?,?,?)",
+            (workspace_id, actor, kind, subject_id, int(self.clock())),
+        )
+
+    def members(self, workspace_id, actor):
+        with self._connect() as db:
+            self._workspace(db, workspace_id)
+            self._access(db, workspace_id, actor, {"owner"})
+            rows = db.execute(
+                "SELECT address,role FROM members WHERE workspace_id=? ORDER BY role,address",
+                (workspace_id,),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def audit(self, workspace_id, actor):
+        with self._connect() as db:
+            self._workspace(db, workspace_id)
+            self._access(db, workspace_id, actor, {"owner", "reviewer"})
+            rows = db.execute(
+                "SELECT actor,kind,subject_id,created_at FROM audit_events "
+                "WHERE workspace_id=? ORDER BY id DESC LIMIT 100",
+                (workspace_id,),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def revoke_member(self, workspace_id, owner, address):
+        address = validate_address(address)
+        with self.lock, self._connect() as db:
+            workspace = self._workspace(db, workspace_id)
+            self._access(db, workspace_id, owner, {"owner"})
+            if address == workspace["owner"]:
+                raise LabError(409, "The workspace owner cannot be revoked")
+            row = db.execute(
+                "SELECT role FROM members WHERE workspace_id=? AND address=?",
+                (workspace_id, address),
+            ).fetchone()
+            if row is None:
+                raise LabError(404, "Member not found")
+            db.execute(
+                "DELETE FROM members WHERE workspace_id=? AND address=?",
+                (workspace_id, address),
+            )
+            self._audit(db, workspace_id, owner, "MEMBER_REVOKED", address)
+            db.commit()
+        return {"revoked": True, "workspace_id": workspace_id, "address": address}
+
     def create_workspace(self, owner, name, kind="team"):
         if not isinstance(name, str) or not 3 <= len(name.strip()) <= 70 or any(ord(x) < 32 for x in name):
             raise LabError(422, "Workspace name must be 3-70 readable characters")
@@ -126,6 +183,7 @@ class LabService:
             db.execute(
                 "INSERT INTO members VALUES(?,?,?)", (workspace["id"], owner, "owner")
             )
+            self._audit(db, workspace["id"], owner, "WORKSPACE_CREATED", workspace["id"])
             db.commit()
         return workspace
 
@@ -142,18 +200,31 @@ class LabService:
         if role not in ("researcher", "reviewer"):
             raise LabError(422, "Invite role must be researcher or reviewer")
         with self.lock, self._connect() as db:
-            self._workspace(db, workspace_id)
+            ws = self._workspace(db, workspace_id)
             self._access(db, workspace_id, owner, {"owner"})
-            existing = db.execute(
-                "SELECT count(*) FROM members WHERE workspace_id=?", (workspace_id,)
-            ).fetchone()[0]
-            if existing >= 30:
-                raise LabError(429, "Workspace member limit reached")
-            db.execute(
-                "INSERT INTO members VALUES(?,?,?) ON CONFLICT(workspace_id,address) DO UPDATE SET role=excluded.role "
-                "WHERE members.role!='owner'",
-                (workspace_id, address, role),
-            )
+            if address == ws["owner"]:
+                raise LabError(409, "The owner role is immutable")
+            old_role = self._role(db, workspace_id, address)
+            if old_role is None:
+                existing = db.execute(
+                    "SELECT count(*) FROM members WHERE workspace_id=?", (workspace_id,)
+                ).fetchone()[0]
+                if existing >= 30:
+                    raise LabError(429, "Workspace member limit reached")
+                db.execute(
+                    "INSERT INTO members VALUES(?,?,?)", (workspace_id, address, role)
+                )
+                event = "MEMBER_ADDED"
+            elif old_role != role:
+                db.execute(
+                    "UPDATE members SET role=? WHERE workspace_id=? AND address=?",
+                    (role, workspace_id, address),
+                )
+                event = "MEMBER_ROLE_CHANGED"
+            else:
+                event = None
+            if event:
+                self._audit(db, workspace_id, owner, event, address)
             db.commit()
         return {"workspace_id": workspace_id, "address": address, "role": role}
 
@@ -174,6 +245,8 @@ class LabService:
             raise LabError(422, "Minimum improvement must be between 0 and 1")
         if values["visibility"] not in ("public", "private"):
             raise LabError(422, "Visibility must be public or private")
+        if kind == "llm_prompt" and (len(development) > 12 or len(holdout) > 16):
+            raise LabError(422, "Offline LLM evaluation is capped at 12 development and 16 held-out examples")
         try:
             validate_dataset(kind, docs, development, holdout)
         except ValueError as exc:
@@ -188,7 +261,8 @@ class LabService:
             "baseline_adapter_sha256": digest(BASE[kind]),
             "deadline": now + values["duration_seconds"],
             "minimum_delta": values["minimum_delta"],
-            "max_candidates": 8, "validator": self.validator.address,
+            "max_candidates": 2 if kind == "llm_prompt" else 8,
+            "validator": self.validator.address,
             "settlement": "local-no-money-no-chain",
             "evaluation": "named-trusted-validator-hidden-set",
             "model_runtime": "offline-cached-local" if kind == "llm_prompt" else "bounded-declarative",
@@ -215,6 +289,7 @@ class LabService:
                 "INSERT INTO benchmarks VALUES(?,?,?,?)",
                 (item["id"], workspace_id, canonical(item).decode(), sealed),
             )
+            self._audit(db, workspace_id, address, "BENCHMARK_CREATED", item["id"])
             db.commit()
         return item
 
@@ -251,6 +326,13 @@ class LabService:
         # No secret holdout, key, signed-in owner contact, or model tokens.
         return item
 
+    @staticmethod
+    def _sealed_entry(entry):
+        # During OPEN, no other contestant sees an adapter or signed manifest.
+        return {key: entry[key] for key in (
+            "id", "benchmark_id", "worker", "artifact_sha256", "submitted_at", "state"
+        )}
+
     def detail(self, benchmark_id, address=None):
         with self._connect() as db:
             item, _ = self._get_benchmark(db, benchmark_id, address)
@@ -261,7 +343,7 @@ class LabService:
                 )
             ]
         if item["state"] == "OPEN":
-            entries = [{k: v for k, v in entry.items() if k not in ("score", "receipt")} for entry in entries]
+            entries = [self._sealed_entry(entry) for entry in entries]
         return {**self._public(item), "entries": entries, "reviews": reviews}
 
     def development(self, benchmark_id, address=None):
@@ -306,8 +388,9 @@ class LabService:
                 "INSERT INTO entries VALUES(?,?,?,?)",
                 (sub["id"], benchmark_id, worker, canonical(sub).decode()),
             )
+            self._audit(db, item["workspace_id"], worker, "CANDIDATE_SEALED", sub["id"])
             db.commit()
-        return {k: v for k, v in sub.items() if k not in ("score", "receipt")}
+        return self._sealed_entry(sub)
 
     def evaluate(self, benchmark_id, actor):
         with self.lock, self._connect() as db:
@@ -318,14 +401,26 @@ class LabService:
             if self.clock() < item["policy"]["deadline"]:
                 raise LabError(409, "Private evaluation is only available after cutoff")
             # The sealed bytes never leave the private server-side volume.
-            private = json.loads(self.cipher.decrypt(row["sealed"]))
-            holdout = private["holdout"]
+            try:
+                private = json.loads(self.cipher.decrypt(row["sealed"]))
+                holdout = private["holdout"]
+            except (InvalidToken, ValueError, TypeError, KeyError) as exc:
+                raise LabError(503, "Private evaluation evidence is unavailable or corrupt") from exc
             if digest(private) != item["policy"]["evaluation_sha256"]:
                 raise LabError(503, "Private evaluation commitment does not match stored examples")
             original = self._entries(db, benchmark_id)
             results = []
             for entry in original:
-                if not verify_signed(entry["manifest"]) or digest(entry["artifact"]) != entry["artifact_sha256"]:
+                claim = entry.get("manifest", {}).get("payload", {})
+                if (
+                    not verify_signed(entry.get("manifest", {}))
+                    or entry["manifest"].get("signer") != entry["worker"]
+                    or claim.get("format") != "gradientmine.lab-submission.v1"
+                    or claim.get("benchmark_id") != benchmark_id
+                    or claim.get("policy_sha256") != item["policy_sha256"]
+                    or claim.get("artifact_sha256") != entry["artifact_sha256"]
+                    or digest(entry["artifact"]) != entry["artifact_sha256"]
+                ):
                     raise LabError(503, "Submitted candidate commitment was corrupted")
                 try:
                     score = compare(
@@ -376,6 +471,7 @@ class LabService:
                            (canonical(entry).decode(), entry["id"]))
             db.execute("UPDATE benchmarks SET document=? WHERE id=?",
                        (canonical(item).decode(), benchmark_id))
+            self._audit(db, item["workspace_id"], actor, "BENCHMARK_EVALUATED", benchmark_id)
             db.commit()
         return self.detail(benchmark_id, actor)
 
@@ -398,6 +494,7 @@ class LabService:
                 "INSERT OR REPLACE INTO reviews VALUES(?,?,?)",
                 (benchmark_id, actor, canonical(envelope).decode()),
             )
+            self._audit(db, item["workspace_id"], actor, "REVIEW_ATTESTED", benchmark_id)
             db.commit()
         return {"signed": True, "reviewer": actor, "scope": "result-hash attestation only, not independently rerun evaluation"}
 

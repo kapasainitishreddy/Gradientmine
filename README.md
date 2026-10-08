@@ -20,6 +20,8 @@ The project now includes a **separate local research-competition prototype** wit
 
 The premium editorial homepage has not been replaced or reverted. Research Lab is a separate page linked from the homepage.
 
+The [hardening and motion polish release](docs/HARDENING_2026-10-08.md) adds sealed candidate visibility, workspace revocation and audit events, stricter evaluator validation, browser signing correctness, and lightweight responsive motion.
+
 ## What is verified, and what is not
 
 The local training/API loop and compiled Solana program have been exercised. The browser interface, wallet intent checks, receipt inspector, and recovery tools are implemented. Read [the build ledger](docs/BUILD_LEDGER.md) for commands and actual results. A simulated Solana VM is **not Devnet**. An interface implementation is **not a completed Phantom browser test**.

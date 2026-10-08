@@ -237,8 +237,72 @@ def main():
                 page.get_by_text("No matching bounties.").wait_for()
                 page.get_by_label("Filter bounties").select_option("all")
                 checks.append("Bounty filter and accessible native dialogs function")
+
+                # Exercise the *live* Research Lab, not the read-only Cloudflare viewer.
+                lab = ctx.new_page()
+                lab_errors = []
+                lab.on("pageerror", lambda error: lab_errors.append(str(error)))
+                lab.add_init_script(TEST_WALLET)
+                lab.goto(origin + "/lab")
+                lab.get_by_text("PRIVATE OPERATOR CONNECTED", exact=False).wait_for()
+                lab.locator("#lab-wallet").click()
+                lab.get_by_role("button", name="QA ephemeral wallet", exact=True).click()
+                lab.get_by_text("Wallet authenticated", exact=False).wait_for()
+                lab.get_by_label("Create a workspace").fill("Browser Research Lab")
+                lab.locator("#lab-workspace-form button[type=submit]").click()
+                lab.get_by_text("Workspace created", exact=False).wait_for()
+                lab.locator("#lab-access-panel summary").click()
+                assert lab.locator("#lab-members .lab-member-row").count() == 1
+                lab.locator(".lab-create-disclosure summary").click()
+                lab.get_by_label("Challenge title").fill("Browser research verification")
+                lab.locator("#lab-duration").fill("5")
+                lab.locator("#lab-load-sample").click()
+                lab.locator("#lab-create-form button[type=submit]").click()
+                lab.locator("#lab-detail").get_by_role(
+                    "heading", name="Browser research verification"
+                ).wait_for()
+                assert lab.locator("#lab-artifact").input_value().startswith("{")
+                lab.locator("#lab-submit").click()
+                lab.get_by_text("Candidate signed and registered", exact=False).wait_for()
+                lab.locator("#lab-detail").get_by_text("SEALED", exact=False).wait_for()
+                assert lab.locator("#lab-detail .lab-score-track").count() == 0
+                checks.append(
+                    "Research Lab: ephemeral wallet auth, workspace creation, sealed benchmark and signed submission"
+                )
+                # Five-second local bounty expires while the browser remains responsive.
+                lab.wait_for_timeout(6500)
+                lab.locator("#lab-refresh").click()
+                lab.get_by_text("Competition evidence refreshed", exact=False).wait_for()
+                lab.locator("#lab-evaluate").click(timeout=10000)
+                lab.get_by_text("Evaluator results and signed receipts", exact=False).wait_for()
+                assert lab.locator("#lab-detail .lab-evidence-verify").count() == 1
+                assert "signature verified" in lab.locator(
+                    "#lab-detail .lab-evidence-verify"
+                ).inner_text()
+                lab.locator("#lab-audit-panel summary").click()
+                assert lab.locator("#lab-audit .lab-audit-row").count() >= 3
+                assert "BENCHMARK EVALUATED" in lab.locator("#lab-audit").inner_text()
+                checks.append(
+                    "Research Lab: cutoff evaluation, signed result verification and workspace audit events"
+                )
+                lab.screenshot(path=str(args.out / "research-desktop.png"), full_page=True)
+                for width, height in [(390, 844), (360, 800)]:
+                    lab.set_viewport_size({"width": width, "height": height})
+                    assert lab.evaluate("document.documentElement.scrollWidth <= innerWidth"), (
+                        f"Research Lab horizontal page overflow at {width}px"
+                    )
+                    lab.locator("#menu-button").click()
+                    assert lab.locator("#menu-button").get_attribute("aria-expanded") == "true"
+                    lab.keyboard.press("Escape")
+                    assert lab.locator("#menu-button").get_attribute("aria-expanded") == "false"
+                lab.screenshot(path=str(args.out / "research-mobile.png"), full_page=True)
+                checks.append(
+                    "Research Lab: 360/390px overflow-free layout, mobile navigation and reduced motion"
+                )
+                assert not lab_errors, lab_errors
+                lab.close()
                 assert not errors, errors
-                checks.append("No browser JavaScript exceptions")
+                checks.append("No browser JavaScript exceptions in marketplace and Research Lab")
                 browser.close()
             result = {
                 "status": "passed",
@@ -250,6 +314,8 @@ def main():
                     "live-mobile.png",
                     "recorded-desktop.png",
                     "recorded-mobile.png",
+                    "research-desktop.png",
+                    "research-mobile.png",
                 ],
             }
             (args.out / "report.json").write_text(json.dumps(result, indent=2) + "\n")

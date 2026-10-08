@@ -57,7 +57,20 @@ export function createShowcase(doc=globalThis.document){
   const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
   let model=showcaseModel({});
   let raf=0,start=performance.now(),width=1,height=1,dpr=1,pointer={x:.5,y:.5};
-  let observer=null;
+  let observer=null,intersection=null,lastFrame=0,visible=!globalThis.IntersectionObserver,destroyed=false;
+  const eligible=()=>!destroyed&&!reduced&&visible&&!doc.hidden;
+  function schedule(){
+    if(eligible()&&!raf)raf=requestAnimationFrame(tick);
+  }
+  function pause(){
+    if(raf){cancelAnimationFrame(raf);raf=0;}
+  }
+  function tick(now){
+    raf=0;
+    if(!eligible())return;
+    if(now-lastFrame>=30){render(now);lastFrame=now;}
+    schedule();
+  }
 
   function resize(){
     const rect=canvas.getBoundingClientRect();
@@ -135,7 +148,6 @@ export function createShowcase(doc=globalThis.document){
     node(final,26,'WINNER',formatScore(model.winner),p.accent,14);
     if(model.delta!=null)text(`Δ +${formatScore(model.delta)} pp`,final.x,final.y+40,10,p.good,'center',700);
 
-    if(!reduced)raf=requestAnimationFrame(render);
   }
   function update(job){
     model=showcaseModel(job||{});
@@ -144,17 +156,39 @@ export function createShowcase(doc=globalThis.document){
       const winner=model.winner==null?'No winner yet':`${formatScore(model.parent)} → ${formatScore(model.winner)} · +${formatScore(model.delta)} pp`;
       summary.textContent=`${winner} · ${model.examples??'—'} held-out · ${model.networkLabel} · ${model.paid?'finalized payout':'no payout claimed'}`;
     }
-    if(reduced)render(performance.now());
+    // Even offscreen, keep the static proof up to date for full-page screenshots.
+    render(performance.now());
+    schedule();
   }
   function onPointer(e){
     const r=stage?.getBoundingClientRect?.();if(!r)return;
     pointer.x=clamp((e.clientX-r.left)/Math.max(1,r.width),0,1);
     pointer.y=clamp((e.clientY-r.top)/Math.max(1,r.height),0,1);
   }
+  function onResize(){resize();render(performance.now());schedule();}
+  function onVisibility(){if(doc.hidden)pause();else schedule();}
   resize();
-  globalThis.addEventListener?.('resize',resize,{passive:true});
+  render(performance.now());
+  globalThis.addEventListener?.('resize',onResize,{passive:true});
   stage?.addEventListener?.('pointermove',onPointer,{passive:true});
-  if(globalThis.ResizeObserver){observer=new ResizeObserver(resize);observer.observe(canvas);}
-  if(reduced)render(performance.now());else raf=requestAnimationFrame(render);
-  return {update,destroy(){cancelAnimationFrame(raf);observer?.disconnect();globalThis.removeEventListener?.('resize',resize);stage?.removeEventListener?.('pointermove',onPointer);}};
+  doc.addEventListener?.('visibilitychange',onVisibility);
+  if(globalThis.ResizeObserver){
+    observer=new ResizeObserver(onResize);
+    observer.observe(canvas);
+  }
+  if(globalThis.IntersectionObserver&&!reduced){
+    intersection=new IntersectionObserver(entries=>{
+      visible=entries.some(entry=>entry.isIntersecting);
+      if(visible)schedule();else pause();
+    },{rootMargin:'100px'});
+    intersection.observe(canvas);
+  }
+  schedule();
+  return {update,destroy(){
+    destroyed=true;pause();
+    observer?.disconnect();intersection?.disconnect();
+    doc.removeEventListener?.('visibilitychange',onVisibility);
+    globalThis.removeEventListener?.('resize',onResize);
+    stage?.removeEventListener?.('pointermove',onPointer);
+  }};
 }

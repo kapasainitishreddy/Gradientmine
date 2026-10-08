@@ -15,6 +15,9 @@ This adds a separate, backward-compatible family of research competitions alongs
 | llm_prompt | Optional offline cached HF causal/seq2seq model inference; compare prompt templates on hidden QA | Production LLM fine-tune uploads or distributed evaluator jobs |
 
 Other implemented capabilities:
+- The hardening pass seals competing artifacts until evaluation, adds workspace member revocation, owner/reviewer audit history, and signed evidence revalidation. Audit events are ordinary SQLite rows, not tamper-evident consensus.
+- Native editorial animations respect reduced-motion preferences. Proof Canvas pauses continuous offscreen animation. See [hardening notes](HARDENING_2026-10-08.md).
+
 - Wallet-authenticated team/enterprise workspaces with owner, researcher, reviewer roles and member limits; no emails are invented.
 - Workspaces can host public or private competitions. Only workspace members may inspect a private competition. Public development examples, corpus and challenge policy are distinct from the held-out evaluation split.
 - Server-side Fernet encryption of the private held-out cases with an owner-only key on the persistent volume. Public evaluation commitment is SALTED before hashing to reduce low-entropy data guessing. Data is decrypted locally by one named validator at cutoff. Public corpora/development splits are not encrypted.
@@ -42,6 +45,9 @@ On the static Cloudflare Pages site, /lab.html is an explanatory/read-only UI; /
 - GET /api/lab/types (always public, reports LLM runtime availability)
 - POST /api/lab/workspaces (wallet auth)
 - GET /api/lab/workspaces (wallet auth)
+- GET /api/lab/workspaces/{id}/members (owner only)
+- GET /api/lab/workspaces/{id}/audit (owner and reviewer)
+- POST /api/lab/workspaces/{id}/members/{address}/revoke (owner only, cannot revoke owner)
 - POST /api/lab/workspaces/{id}/members (owner only; wallet address + researcher/reviewer role)
 - POST /api/lab/benchmarks (researcher/owner; documents, public development, encrypted holdout, kind, visibility, duration and threshold)
 - GET /api/lab/benchmarks (public list plus joined workspaces, if authenticated)
@@ -114,6 +120,8 @@ Do not deposit mainnet assets. The new lab has zero monetary rewards, even when 
     node --test tests/web/*.test.mjs
     npm run check
     python -m scripts.browser_qa --out evidence/browser
+
+Offline LLM prompt evaluation is limited to 12 development examples, 16 held-out examples and two candidates. No strict CPU runtime limit, independent consensus or live payments are claimed.
 
 The full verification workflow still compiles the original Rust/SBF program and runs it in local LiteSVM. It does NOT verify a real Devnet payout or a paid billing event.
 

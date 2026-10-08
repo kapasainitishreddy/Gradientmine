@@ -324,7 +324,8 @@ def create_app(settings=None, clock=time.time, scheduler=False):
             "types": list(KINDS),
             "mode": "local-research",
             "enabled": True,
-            "limits": {"max_candidates": 8, "max_holdout": 200},
+            "limits": {"max_candidates": 8, "max_holdout": 200,
+                       "llm_max_candidates": 2, "llm_max_holdout": 16},
             "live_payments": False,
             "llm_available": bool(settings.local_llm_dir),
             "billing": "not_configured",
@@ -347,6 +348,20 @@ def create_app(settings=None, clock=time.time, scheduler=False):
         market.rate(("lab-members", actor), 15)
         data = await body(request, LabMember)
         return market.lab.add_member(workspace_id, actor, data.address, data.role)
+
+    @app.get("/api/lab/workspaces/{workspace_id}/members")
+    def lab_members(workspace_id: str, request: Request):
+        return {"members": market.lab.members(workspace_id, auth(request))}
+
+    @app.get("/api/lab/workspaces/{workspace_id}/audit")
+    def lab_audit(workspace_id: str, request: Request):
+        return {"events": market.lab.audit(workspace_id, auth(request))}
+
+    @app.post("/api/lab/workspaces/{workspace_id}/members/{address}/revoke")
+    def lab_revoke_member(workspace_id: str, address: str, request: Request):
+        actor = auth(request)
+        market.rate(("lab-revoke", actor), 10)
+        return market.lab.revoke_member(workspace_id, actor, address)
 
     @app.get("/api/lab/benchmarks")
     def lab_benchmarks(request: Request):
