@@ -1,7 +1,7 @@
 export const THEMES = Object.freeze({
-  void: Object.freeze({label:'Void', meta:'#050505', hint:'Fixed black + signal red'}),
-  aurora: Object.freeze({label:'Aurora', meta:'#050505', hint:'Fixed black + signal red'}),
-  paper: Object.freeze({label:'Paper', meta:'#050505', hint:'Fixed black + signal red'}),
+  void: Object.freeze({label:'Void', meta:'#efebe3', hint:'Editorial mineral stone and evidence gallery'}),
+  aurora: Object.freeze({label:'Aurora', meta:'#efebe3', hint:'Editorial mineral stone and evidence gallery'}),
+  paper: Object.freeze({label:'Paper', meta:'#efebe3', hint:'Editorial mineral stone and evidence gallery'}),
 });
 export const THEME_ORDER = Object.freeze(['void','aurora','paper']);
 

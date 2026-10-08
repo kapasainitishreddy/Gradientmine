@@ -16,7 +16,7 @@ export async function animateBoot(root=globalThis.document){
   if(!motionAllowed()){if(root.documentElement)root.documentElement.dataset.motion='reduced';return false;}
   const m=await runtime();if(!m){if(root.documentElement)root.documentElement.dataset.motion='fallback';return false;}
   if(root.documentElement)root.documentElement.dataset.motion='active';
-  const hero=root.querySelectorAll('.hero-kicker,.hero-compact h1,.hero-lede,.hero-actions>*,.hero-proofline>*,.hero-stage-wrap,.mode-banner');
+  const hero=root.querySelectorAll('.hero-kicker,.hero-copy h1 span,.hero-lede,.hero-actions>*,.sculpture-stage,.mode-banner');
   if(hero.length)m.animate(hero,{opacity:[0,1],y:[16,0],filter:['blur(5px)','blur(0px)']},{duration:.65,delay:m.stagger(.055),ease});
   const nav=root.querySelectorAll('.topbar .brand,.topbar nav a,.topbar-actions>*');
   if(nav.length)m.animate(nav,{opacity:[0,1],y:[-7,0]},{duration:.45,delay:m.stagger(.035),ease});
@@ -32,7 +32,7 @@ export async function animateDetail(root){
     m.animate(bar,{width:['0%',width]},{duration:.75,ease});
   }
   const winner=root.querySelector('.arena-winner');
-  if(winner)m.animate(winner,{boxShadow:['0 0 0 rgba(139,124,246,0)','0 0 34px rgba(139,124,246,.12)','0 0 0 rgba(139,124,246,0)']},{duration:1.2,ease});
+  if(winner)m.animate(winner,{boxShadow:['0 0 0 rgba(123,176,143,0)','0 0 34px rgba(123,176,143,.12)','0 0 0 rgba(123,176,143,0)']},{duration:1.2,ease});
   return true;
 }
 export async function animateThemeChange(target){
@@ -44,7 +44,7 @@ export async function animateThemeChange(target){
 }
 export async function installRevealMotion(root=globalThis.document){
   const m=await runtime();if(!m||!root)return false;
-  const targets=root.querySelectorAll('.compact-flow,.workspace,.solver-drawer,.trust');
+  const targets=root.querySelectorAll('.process-strip,.proof-section,.arena-section,.workspace,.solver-drawer,.trust');
   for(const el of targets){
     m.inView(el,()=>{m.animate(el,{opacity:[.55,1],y:[18,0]},{duration:.6,ease});},{amount:.18});
   }

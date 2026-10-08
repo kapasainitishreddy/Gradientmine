@@ -83,9 +83,9 @@ def main():
                 checks.append("Reduced-motion preference disables Motion enhancement without disabling the product")
                 assert page.get_by_role("button", name="Change color theme", exact=True).count() == 0
                 accent = page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--accent-bg').trim()")
-                assert accent == "#ff2d2d"
-                assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#050505"
-                checks.append("Fixed black/red visual identity is active with no alternate theme control")
+                assert accent == "#c64d2b"
+                assert page.locator('meta[name="theme-color"]').get_attribute("content") == "#efebe3"
+                checks.append("Warm editorial identity and no obsolete theme switcher")
                 page.get_by_role("button", name="Connect wallet", exact=True).click()
                 page.get_by_role("button", name="QA ephemeral wallet", exact=True).click()
                 page.get_by_role("button", name="Disconnect", exact=False).wait_for()
@@ -175,13 +175,16 @@ def main():
                 page.get_by_text("FIX ARENA", exact=True).wait_for()
                 page.get_by_text("SAFE SUBMISSION BOUNDARY", exact=True).wait_for()
                 page.get_by_text("FIX PASSPORT", exact=True).wait_for()
-                page.get_by_role("heading", name="Fix the model. Win the bounty.", exact=True).wait_for()
-                page.get_by_text("84.72 → 95.28 · +10.56 pp", exact=False).wait_for()
+                page.locator("#hero-title").wait_for()
+                assert "PROVE IT." in page.locator("#hero-title").inner_text()
+                assert "84.72" in page.locator(".model-before").inner_text()
+                assert "95.28" in page.locator(".model-after").inner_text()
+                assert page.locator(".sculpture-art").get_attribute("src") == "./assets/transformation.svg"
                 assert "LOCAL EVIDENCE" in page.locator("#proof-summary").inner_text()
                 assert "no payout claimed" in page.locator("#proof-summary").inner_text()
                 box = page.locator("#proof-canvas").bounding_box()
                 assert box and box["width"] > 250 and box["height"] > 250
-                checks.append("Compact black/red hero renders recorded evidence and preserves the local/unpaid boundary")
+                checks.append("Editorial sculpture, live evidence graph and local/unpaid boundary are correctly rendered")
                 assert page.get_by_text("95.28%", exact=True).count() >= 1
                 assert page.get_by_text("+10.56 pp", exact=True).count() >= 1
                 assert page.get_by_role("button", name="Download JSON", exact=True).count() == 1
