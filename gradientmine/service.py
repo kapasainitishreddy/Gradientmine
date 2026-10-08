@@ -50,6 +50,9 @@ class Marketplace:
             raise ValueError("Configured validator identity does not exist; generate it locally first")
         self.validator = Identity.load(key) if key.exists() else Identity.create(key)
         self.store = Store(self.root / "state.sqlite3")
+        from .lab_service import LabService
+
+        self.lab = LabService(self.root, self.validator, clock=clock, model_dir=settings.local_llm_dir)
         self.lock = threading.RLock()
         self.rates = OrderedDict()
         self.task = self._task()

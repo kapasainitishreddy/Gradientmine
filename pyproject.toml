@@ -16,6 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 chain = ["solders==0.29.0"]
+llm = ["transformers>=4.57,<6", "peft>=0.18,<1", "safetensors>=0.7,<1", "accelerate>=1.10,<3"]
 dev = ["pytest==9.0.3", "playwright==1.57.0", "ruff==0.14.10", "pip-audit==2.10.0", "setuptools==83.0.0", "pip==26.2.1"]
 
 [project.scripts]

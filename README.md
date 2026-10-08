@@ -8,6 +8,18 @@ GradientMine turns model improvement into an outcome market. A task owner freeze
 
 The current release runs actual PyTorch low-rank-adapter experiments, compares submitted models with a fixed baseline, signs evaluation receipts, and integrates a native Solana escrow program. It does not mine a blockchain, mint an investment token, or claim trustless verification.
 
+## Research Lab extension (October 2026)
+
+The project now includes a **separate local research-competition prototype** with five bounded task types: lexical retrieval, extractive grounded QA, keyword-based safety-refusal testing, deterministic retrieval-work optimization, and optional offline, locally cached causal/seq2seq LLM prompt evaluation. This does not expand the original Digits-only *Solana escrow program* into a production multi-model marketplace.
+
+- [Research Lab web interface](web/lab.html) (public Pages viewers can browse the interface but cannot run the backend)
+- [Research Lab backend architecture, API, capabilities and honest limits](docs/RESEARCH_LAB.md)
+- [Research Lab local bounded agent](gradientmine/lab_worker.py) (searches public development data, never private holdout)
+- [Optional local LoRA trainer](gradientmine/local_tuning.py) (real offline safe-tensors training, not an integrated remote bounty submission)
+- Team/enterprise-labelled workspace access control, encrypted salted private holdout, signed evaluator results, reviewer result-hash attestations, and a **simulation-only** fee quote. **No live fee billing, true distributed consensus, public research backend or real Devnet payout** is claimed.
+
+The premium editorial homepage has not been replaced or reverted. Research Lab is a separate page linked from the homepage.
+
 ## What is verified, and what is not
 
 The local training/API loop and compiled Solana program have been exercised. The browser interface, wallet intent checks, receipt inspector, and recovery tools are implemented. Read [the build ledger](docs/BUILD_LEDGER.md) for commands and actual results. A simulated Solana VM is **not Devnet**. An interface implementation is **not a completed Phantom browser test**.

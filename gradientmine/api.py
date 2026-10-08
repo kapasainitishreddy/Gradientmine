@@ -16,6 +16,8 @@ from starlette.middleware.cors import CORSMiddleware
 from .config import Settings
 from .crypto import safe_json, validate_address
 from .service import Marketplace, Problem
+from .lab_service import LabError
+from .lab_evaluation import KINDS
 
 
 class StrictModel(BaseModel):
@@ -49,6 +51,38 @@ class JobInput(StrictModel):
         if len(value.strip()) < 3 or any(ord(char) < 32 for char in value):
             raise ValueError("Use a readable title with at least three nonblank characters")
         return value.strip()
+
+
+
+class LabWorkspace(StrictModel):
+    name: str = Field(min_length=3, max_length=70)
+    kind: str = Field(default="team", pattern="^(team|enterprise)$")
+
+
+class LabMember(StrictModel):
+    address: str = Field(min_length=32, max_length=44)
+    role: str = Field(pattern="^(researcher|reviewer)$")
+
+
+class LabBenchmark(StrictModel):
+    workspace_id: str = Field(min_length=36, max_length=36)
+    title: str = Field(min_length=3, max_length=100)
+    kind: str = Field(pattern="^(retrieval|grounded_qa|safety_refusal|efficiency|llm_prompt)$")
+    visibility: str = Field(default="private", pattern="^(public|private)$")
+    duration_seconds: int = Field(default=600, ge=5, le=86400)
+    minimum_delta: float = Field(default=0.01, ge=0, le=1)
+    documents: list[dict] = Field(max_length=120)
+    development: list[dict] = Field(min_length=2, max_length=80)
+    holdout: list[dict] = Field(min_length=4, max_length=200)
+
+
+class LabSubmission(StrictModel):
+    artifact: dict
+    manifest: dict
+
+
+class LabReview(StrictModel):
+    envelope: dict
 
 
 class SubmissionInput(StrictModel):
@@ -168,6 +202,10 @@ def create_app(settings=None, clock=time.time, scheduler=False):
     async def problem_handler(request, exc):
         return JSONResponse({"error": exc.message}, status_code=exc.status)
 
+    @app.exception_handler(LabError)
+    async def lab_error_handler(request, exc):
+        return JSONResponse({"error": exc.message}, status_code=exc.status)
+
     @app.exception_handler(ValueError)
     async def value_handler(request, exc):
         return JSONResponse({"error": str(exc)}, status_code=422)
@@ -277,12 +315,97 @@ def create_app(settings=None, clock=time.time, scheduler=False):
             market.artifact_bytes(sha), media_type="application/json", headers={"ETag": f'"{sha}"'}
         )
 
+
+    # Research Lab V1 is an explicitly local/zero-reward mode. It never forges
+    # Solana transaction evidence and does not replace the fixed Digits escrow.
+    @app.get("/api/lab/types")
+    def lab_types():
+        return {
+            "types": list(KINDS),
+            "mode": "local-research",
+            "enabled": True,
+            "limits": {"max_candidates": 8, "max_holdout": 200},
+            "live_payments": False,
+            "llm_available": bool(settings.local_llm_dir),
+            "billing": "not_configured",
+        }
+
+    @app.get("/api/lab/workspaces")
+    def lab_workspaces(request: Request):
+        return {"workspaces": market.lab.list_workspaces(auth(request))}
+
+    @app.post("/api/lab/workspaces")
+    async def lab_create_workspace(request: Request):
+        actor = auth(request)
+        market.rate(("lab-workspace", actor), 10)
+        data = await body(request, LabWorkspace)
+        return market.lab.create_workspace(actor, data.name, data.kind)
+
+    @app.post("/api/lab/workspaces/{workspace_id}/members")
+    async def lab_add_member(workspace_id: str, request: Request):
+        actor = auth(request)
+        market.rate(("lab-members", actor), 15)
+        data = await body(request, LabMember)
+        return market.lab.add_member(workspace_id, actor, data.address, data.role)
+
+    @app.get("/api/lab/benchmarks")
+    def lab_benchmarks(request: Request):
+        actor = auth(request) if request.headers.get("authorization") else None
+        return {"benchmarks": market.lab.list_benchmarks(actor)}
+
+    @app.post("/api/lab/benchmarks")
+    async def lab_create_benchmark(request: Request):
+        actor = auth(request)
+        market.rate(("lab-create", actor), 10)
+        values = await body(request, LabBenchmark)
+        return market.lab.create_benchmark(actor, values.model_dump())
+
+    @app.get("/api/lab/benchmarks/{benchmark_id}")
+    def lab_detail(benchmark_id: str, request: Request):
+        actor = auth(request) if request.headers.get("authorization") else None
+        return market.lab.detail(benchmark_id, actor)
+
+    @app.get("/api/lab/benchmarks/{benchmark_id}/development")
+    def lab_development(benchmark_id: str, request: Request):
+        actor = auth(request) if request.headers.get("authorization") else None
+        return market.lab.development(benchmark_id, actor)
+
+    @app.post("/api/lab/benchmarks/{benchmark_id}/submissions")
+    async def lab_submit(benchmark_id: str, request: Request):
+        actor = auth(request)
+        market.rate(("lab-submit", actor), 12)
+        data = await body(request, LabSubmission)
+        return market.lab.submit(benchmark_id, actor, data.artifact, data.manifest)
+
+    @app.post("/api/lab/benchmarks/{benchmark_id}/evaluate")
+    def lab_evaluate(benchmark_id: str, request: Request):
+        actor = auth(request)
+        market.rate(("lab-evaluate", actor), 8)
+        return market.lab.evaluate(benchmark_id, actor)
+
+    @app.post("/api/lab/benchmarks/{benchmark_id}/reviews")
+    async def lab_attest(benchmark_id: str, request: Request):
+        actor = auth(request)
+        market.rate(("lab-review", actor), 10)
+        data = await body(request, LabReview)
+        return market.lab.attest(benchmark_id, actor, data.envelope)
+
+    @app.get("/api/lab/fee-quote")
+    def lab_fee_quote(reward_lamports: int = 0):
+        return market.lab.fee_quote(reward_lamports)
+
     # Only explicitly public, packaged web assets are served. No catch-all path to the data directory.
     web = Path(__file__).parent / "web"
     if not web.is_dir():
         web = Path(__file__).resolve().parent.parent / "web"
     if web.is_dir():
         app.mount("/assets", StaticFiles(directory=web / "assets"), name="assets")
+
+        @app.get("/lab")
+        def lab_page():
+            if not (web / "lab.html").is_file():
+                raise Problem(404, "Research Lab frontend is not installed")
+            return FileResponse(web / "lab.html")
 
         @app.get("/")
         def index():

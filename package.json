@@ -1,1 +1,13 @@
-{"name":"gradientmine-web","version":"0.2.0","private":true,"type":"module","scripts":{"test":"node --test tests/web/*.test.mjs","check":"node --check web/assets/main.mjs && node --check web/assets/core.mjs && node --check web/assets/assurance.mjs && node --check web/assets/theme.mjs && node --check web/assets/motion-layer.mjs && node --check web/assets/showcase.mjs && node --check web/assets/wire.mjs && node --check web/assets/wallet.mjs && node --check web/assets/pending.mjs"},"engines":{"node":">=22"}}
+{
+  "name": "gradientmine-web",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/web/*.test.mjs",
+    "check": "node --check web/assets/main.mjs && node --check web/assets/core.mjs && node --check web/assets/assurance.mjs && node --check web/assets/theme.mjs && node --check web/assets/motion-layer.mjs && node --check web/assets/showcase.mjs && node --check web/assets/wire.mjs && node --check web/assets/wallet.mjs && node --check web/assets/pending.mjs && node --check web/assets/editorial.mjs && node --check web/assets/lab.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

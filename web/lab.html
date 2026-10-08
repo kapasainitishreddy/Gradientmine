@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#efebe3">
+<meta name="description" content="GradientMine Research Lab: private, evaluator-owned RAG, safety, quality, cost and offline LLM improvement competitions.">
+<title>Research Lab | GradientMine</title>
+<link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="stylesheet" href="./assets/editorial.css">
+<link rel="stylesheet" href="./assets/lab.css">
+<script type="module" src="./assets/lab.mjs"></script>
+</head>
+<body class="lab-page">
+<a class="skip" href="#lab-content">Skip to lab content</a>
+<header class="topbar">
+<a href="./" class="brand" aria-label="GradientMine home"><span class="brand-mark"><img src="./assets/mark.svg" alt="" width="38" height="38"></span><span>GradientMine</span></a>
+<nav aria-label="Main"><a href="./">Home</a><a href="./#the-proof">The proof</a><a href="./#arena">The arena</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
+<div class="topbar-actions"><button id="lab-wallet" type="button" class="button secondary">Connect wallet</button></div>
+</header>
+<main id="lab-content">
+<section class="lab-hero">
+  <div class="lab-eyebrow">005 / PRIVATE RESEARCH COMPETITIONS</div>
+  <h1>The Research <em>Lab.</em></h1>
+  <p>Define a measurable failure. Invite researchers. Seal the holdout. Compare improvements on equal terms.</p>
+  <div class="lab-mode" id="lab-mode" role="status">Checking research service…</div>
+  <div class="lab-tags"><span>RETRIEVAL</span><span>GROUNDED QA</span><span>SAFETY RULES</span><span>EFFICIENCY</span><span>OFFLINE LLM PROMPTS</span></div>
+</section>
+<section class="lab-explainer">
+  <div><span class="section-micro">01 / OWNERSHIP</span><h2>Team workspaces.</h2><p>Wallet-authenticated researchers and reviewers. Owner-controlled invites. Private benchmarks are visible to workspace members only.</p></div>
+  <div><span class="section-micro">02 / INTEGRITY</span><h2>Sealed evidence.</h2><p>Held-out inputs are encrypted by the operator and committed before submissions. Only the named evaluator can score them after cutoff.</p></div>
+  <div><span class="section-micro">03 / HONEST LIMITS</span><h2>Zero money.</h2><p>Research competitions have no rewards, billing or on-chain settlement. Reviewer signatures authenticate claims but do not establish independent consensus.</p></div>
+</section>
+<section class="lab-workspace" aria-label="Research Lab workspace">
+<div class="lab-workspace-header">
+ <div><span class="section-micro">WORKSPACE / OPERATOR</span><h2>Run a competition.</h2></div>
+ <div class="lab-status" id="lab-status" role="status" aria-live="polite">Loading…</div>
+</div>
+<div class="lab-columns">
+ <aside class="lab-controls">
+  <div class="lab-control-block">
+   <h3>Workspaces</h3>
+   <label for="lab-workspace-select">Active workspace</label>
+   <select id="lab-workspace-select"><option value="">Connect wallet to view workspaces</option></select>
+   <form id="lab-workspace-form">
+    <label for="lab-workspace-name">Create a workspace</label>
+    <input id="lab-workspace-name" type="text" minlength="3" maxlength="70" required placeholder="Your research team">
+    <button type="submit" class="lab-button">Create workspace ↗</button>
+   </form>
+   <details class="lab-subpanel">
+    <summary>Invite a researcher or reviewer</summary>
+    <form id="lab-invite-form">
+     <label for="lab-member-address">Wallet address</label>
+     <input id="lab-member-address" required placeholder="Solana address">
+     <label for="lab-member-role">Role</label>
+     <select id="lab-member-role"><option value="researcher">Researcher</option><option value="reviewer">Reviewer</option></select>
+     <button type="submit" class="lab-button">Add member</button>
+    </form>
+   </details>
+  </div>
+  <div class="lab-control-block">
+   <h3>New benchmark</h3>
+   <p>Private cases stay on your own backend. Use non-sensitive examples when experimenting.</p>
+   <form id="lab-create-form">
+    <label for="lab-title">Challenge title</label>
+    <input id="lab-title" minlength="3" maxlength="100" required placeholder="Improve retrieval quality">
+    <label for="lab-kind">Problem type</label>
+    <select id="lab-kind"><option value="retrieval">Retrieval quality</option><option value="grounded_qa">Grounded answers</option><option value="safety_refusal">Safety refusal rules</option><option value="efficiency">Inference-work efficiency</option><option value="llm_prompt">Offline LLM prompting</option></select>
+    <div class="lab-two-inputs"><div><label for="lab-visibility">Visibility</label><select id="lab-visibility"><option value="private">Private</option><option value="public">Public</option></select></div><div><label for="lab-duration">Duration (seconds)</label><input id="lab-duration" type="number" min="5" max="86400" value="600" required></div></div>
+    <label for="lab-delta">Minimum improvement (0–1)</label>
+    <input id="lab-delta" type="number" min="0" max="1" step=".01" value=".05" required>
+    <label for="lab-docs">Documents JSON</label>
+    <textarea id="lab-docs" rows="3" spellcheck="false" placeholder='[{"id":"doc1","title":"Guide","text":"Evidence..."}]'></textarea>
+    <label for="lab-dev">Public development examples JSON</label>
+    <textarea id="lab-dev" rows="3" spellcheck="false" placeholder='[{"query":"example","relevant_ids":["doc1"]}]'></textarea>
+    <label for="lab-holdout">Private held-out examples JSON</label>
+    <textarea id="lab-holdout" rows="3" spellcheck="false" placeholder="Never paste personal secrets. Examples are encrypted server-side."></textarea>
+    <button type="button" id="lab-load-sample" class="lab-secondary">Load synthetic example</button>
+    <button type="submit" class="lab-button">Create sealed benchmark ↗</button>
+   </form>
+  </div>
+ </aside>
+ <section class="lab-results">
+  <div class="lab-result-top"><h3>Competition evidence</h3><button id="lab-refresh" type="button" class="lab-secondary">Refresh ↻</button></div>
+  <div class="lab-benchmark-list" id="lab-benchmarks" aria-live="polite"><p>No competitions loaded.</p></div>
+  <div class="lab-benchmark-detail" id="lab-detail"><p>Select a competition to inspect its immutable policy, public development examples and signed results.</p></div>
+  <div class="lab-runner">
+   <h3>Submit a bounded candidate</h3>
+   <p>Submission requires a Solana Wallet Standard message signature. No funds are transferred. Only declarative JSON artifacts are accepted.</p>
+   <label for="lab-artifact">Candidate adapter JSON</label>
+   <textarea id="lab-artifact" rows="6" spellcheck="false"></textarea>
+   <div class="lab-actions"><button id="lab-submit" class="lab-button" type="button">Sign &amp; submit candidate</button><button id="lab-evaluate" class="lab-secondary" type="button">Evaluate after cutoff</button><button id="lab-review" class="lab-secondary" type="button">Sign result attestation</button><button id="lab-download" class="lab-secondary" type="button">Download evidence JSON</button></div>
+  </div>
+ </section>
+</div>
+</section>
+<section class="lab-footer-pitch"><span class="section-micro">RUN LOCALLY</span><h2>Open source.<br><em>Inspectable by design.</em></h2><p>The research lab uses the same FastAPI server and wallet authentication as the original model-bounty prototype. The static Cloudflare Pages showcase cannot create or evaluate competitions until a private backend is deployed.</p><a href="https://github.com/kapasainitishreddy/Gradientmine/blob/main/docs/RESEARCH_LAB.md" target="_blank" rel="noopener noreferrer" class="button primary">Read the setup guide ↗</a></section>
+</main>
+<dialog id="lab-wallet-dialog" aria-labelledby="lab-wallet-title"><h2 id="lab-wallet-title">Connect a Solana wallet</h2><p>Sign a short authentication message. This does not authorize a transaction.</p><div id="lab-wallet-list"></div><button id="lab-wallet-close" type="button" class="lab-secondary">Close</button></dialog>
+<footer class="site-footer"><div class="footer-brand"><img src="./assets/mark.svg" width="38" height="38" alt="">GradientMine</div><div class="footer-copy">Don't guess. Prove it.<small>Measured improvements. Explicit limitations.</small></div><nav aria-label="Footer"><a href="./">Home</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></footer>
+</body></html>

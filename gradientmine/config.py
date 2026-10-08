@@ -16,6 +16,7 @@ class Settings:
     task_seed: int = 42
     validator_key: str = ""
     max_jobs: int = 1000
+    local_llm_dir: str = ""
 
     def __post_init__(self):
         if self.mode not in {"local", "devnet"}:
@@ -48,4 +49,5 @@ class Settings:
             program_id=os.getenv("GM_PROGRAM_ID", ""),
             validator_key=os.getenv("GM_VALIDATOR_KEY", ""),
             task_seed=int(os.getenv("GM_TASK_SEED", "42")),
+            local_llm_dir=os.getenv("GM_LOCAL_LLM_DIR", ""),
         )
