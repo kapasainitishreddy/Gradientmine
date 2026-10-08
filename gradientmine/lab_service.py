@@ -363,7 +363,7 @@ class LabService:
                      "receipt_sha256": winner["receipt_sha256"], "score": winner["score"]}
                     if winner else None
                 ),
-                evaluated_at=int(self.clock()), "settlement_signature": None,
+                evaluated_at=int(self.clock()), settlement_signature=None,
             )
             # A second immutable digest supports independent, signed reviewer statements.
             item["result_sha256"] = digest({

@@ -28,6 +28,12 @@ jobs:
       program_ready: ${{ steps.ready.outputs.program_ready }}
     steps:
       - uses: actions/checkout@v4
+      - name: Fast syntax gate before expensive CPU, Docker or Rust jobs
+        run: |
+          python3 -m compileall -q gradientmine scripts tests
+          node --check web/assets/main.mjs
+          node --check web/assets/lab.mjs
+          node --check web/assets/editorial.mjs
       - id: ready
         run: |
           if [ -f tests/test_security.py ] && [ -f gradientmine/chain.py ] && [ -f scripts/publish_demo.py ]; then echo 'python_ready=true' >> "$GITHUB_OUTPUT"; fi
@@ -123,6 +129,7 @@ jobs:
             ci-evidence/sbf/gradientmine_escrow.so
             program/Cargo.lock
   container:
+    needs: source
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
