@@ -19,7 +19,7 @@ if(menu&&nav){
     if(event.target.closest('a'))setOpen(false);
   });
   doc.addEventListener('keydown',event=>{
-    if(event.key==='Escape'&&menu.getAttribute('aria-expanded')==='true'){
+    if(event.key === 'Escape' && menu.getAttribute('aria-expanded')==='true'){
       setOpen(false);menu.focus();
     }
   });

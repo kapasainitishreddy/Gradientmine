@@ -28,16 +28,30 @@ jobs:
       program_ready: ${{ steps.ready.outputs.program_ready }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - name: Fast syntax gate before expensive CPU, Docker or Rust jobs
         run: |
           python3 -m compileall -q gradientmine scripts tests
           node --check web/assets/main.mjs
           node --check web/assets/lab.mjs
           node --check web/assets/editorial.mjs
+          node --check web/assets/lab-canonical.mjs
       - id: ready
         run: |
           if [ -f tests/test_security.py ] && [ -f gradientmine/chain.py ] && [ -f scripts/publish_demo.py ]; then echo 'python_ready=true' >> "$GITHUB_OUTPUT"; fi
-          if [ -f program/src/lib.rs ]; then echo 'program_ready=true' >> "$GITHUB_OUTPUT"; fi
+          if [ -f program/src/lib.rs ]; then
+            # Manual runs always recheck the complete Solana program.
+            # Changes outside the escrow/client protocol retain the prior
+            # verified SBF and skip an unnecessary expensive rebuild.
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ] || ! git rev-parse HEAD^ >/dev/null 2>&1; then
+              echo 'program_ready=true' >> "$GITHUB_OUTPUT"
+            elif git diff --name-only HEAD^ HEAD | grep -Eq '^(program/|gradientmine/(chain|rpc|wire|recovery|service|cli)\.py$|tests/test_(chain|deployment|devnet_product|confirmation_recovery|worker_recovery)\.py$|pyproject\.toml$|\.github/workflows/devnet-smoke\.yml$)'; then
+              echo 'program_ready=true' >> "$GITHUB_OUTPUT"
+            else
+              echo 'No Solana protocol changes: reusing prior successful SBF verification.'
+            fi
+          fi
   python:
     needs: source
     if: needs.source.outputs.python_ready == 'true'
