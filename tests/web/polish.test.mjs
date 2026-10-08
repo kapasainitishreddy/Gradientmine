@@ -50,3 +50,11 @@ test('lab UI supports accessible workspace access controls and truthful audit la
   assert.match(labCode, /from '\.\/lab-canonical\.mjs'/);
   assert.doesNotMatch(labCode, /innerHTML|document\.write\(|\beval\(/);
 });
+
+test('hero first paint never depends on an animation hiding content', () => {
+  const motionLibrary=read('../../web/assets/motion-layer.mjs');
+  assert.match(motionLibrary, /Never hide the main headline or sculpture/);
+  assert.doesNotMatch(motionLibrary, /opacity:\[0,1\]/);
+  assert.doesNotMatch(motionLibrary, /filter:\['blur/);
+  assert.match(motionLibrary, /Native IntersectionObserver in editorial\.mjs/);
+});

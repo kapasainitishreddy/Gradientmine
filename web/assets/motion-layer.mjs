@@ -16,16 +16,18 @@ export async function animateBoot(root=globalThis.document){
   if(!motionAllowed()){if(root.documentElement)root.documentElement.dataset.motion='reduced';return false;}
   const m=await runtime();if(!m){if(root.documentElement)root.documentElement.dataset.motion='fallback';return false;}
   if(root.documentElement)root.documentElement.dataset.motion='active';
-  const hero=root.querySelectorAll('.hero-kicker,.hero-copy h1 span,.hero-lede,.hero-actions>*,.sculpture-stage,.mode-banner');
-  if(hero.length)m.animate(hero,{opacity:[0,1],y:[16,0],filter:['blur(5px)','blur(0px)']},{duration:.65,delay:m.stagger(.055),ease});
+  // Never hide the main headline or sculpture while a remote motion runtime
+  // loads. The first contentful paint is always complete and readable.
+  const hero=root.querySelectorAll('.hero-kicker,.hero-copy h1 span,.hero-lede,.hero-actions>*');
+  if(hero.length)m.animate(hero,{y:[7,0]},{duration:.44,delay:m.stagger(.025),ease});
   const nav=root.querySelectorAll('.topbar .brand,.topbar nav a,.topbar-actions>*');
-  if(nav.length)m.animate(nav,{opacity:[0,1],y:[-7,0]},{duration:.45,delay:m.stagger(.035),ease});
+  if(nav.length)m.animate(nav,{y:[-3,0]},{duration:.3,delay:m.stagger(.02),ease});
   return true;
 }
 export async function animateDetail(root){
   const m=await runtime();if(!m||!root)return false;
   const sections=root.querySelectorAll('.assurance-panel,.arena,.outcome,.metric-band,.firewall,.passport,.lineage,.audit');
-  if(sections.length)m.animate(sections,{opacity:[.35,1],y:[12,0],scale:[.993,1]},{duration:.5,delay:m.stagger(.035),ease});
+  if(sections.length)m.animate(sections,{opacity:[.94,1],y:[6,0]},{duration:.38,delay:m.stagger(.02),ease});
   const bars=root.querySelectorAll('.arena-bar span');
   for(const bar of bars){
     const width=bar.style.width||'0%';
@@ -43,10 +45,7 @@ export async function animateThemeChange(target){
   return true;
 }
 export async function installRevealMotion(root=globalThis.document){
-  const m=await runtime();if(!m||!root)return false;
-  const targets=root.querySelectorAll('.process-strip,.proof-section,.arena-section,.workspace,.solver-drawer,.trust');
-  for(const el of targets){
-    m.inView(el,()=>{m.animate(el,{opacity:[.55,1],y:[18,0]},{duration:.6,ease});},{amount:.18});
-  }
-  return true;
+  // Native IntersectionObserver in editorial.mjs handles section reveals
+  // without hiding the large evidence console during first paint or print.
+  return !!root;
 }

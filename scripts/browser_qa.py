@@ -250,7 +250,7 @@ def main():
                 lab.get_by_text("Wallet authenticated", exact=False).wait_for()
                 lab.get_by_label("Create a workspace").fill("Browser Research Lab")
                 lab.locator("#lab-workspace-form button[type=submit]").click()
-                lab.get_by_text("Workspace created", exact=False).wait_for()
+                lab.locator("#lab-status").filter(has_text="Workspace created").wait_for()
                 lab.locator("#lab-access-panel summary").click()
                 assert lab.locator("#lab-members .lab-member-row").count() == 1
                 lab.locator(".lab-create-disclosure summary").click()
@@ -263,7 +263,7 @@ def main():
                 ).wait_for()
                 assert lab.locator("#lab-artifact").input_value().startswith("{")
                 lab.locator("#lab-submit").click()
-                lab.get_by_text("Candidate signed and registered", exact=False).wait_for()
+                lab.locator("#lab-status").filter(has_text="Candidate signed and registered").wait_for()
                 lab.locator("#lab-detail").get_by_text("SEALED", exact=False).wait_for()
                 assert lab.locator("#lab-detail .lab-score-track").count() == 0
                 checks.append(
@@ -272,9 +272,9 @@ def main():
                 # Five-second local bounty expires while the browser remains responsive.
                 lab.wait_for_timeout(6500)
                 lab.locator("#lab-refresh").click()
-                lab.get_by_text("Competition evidence refreshed", exact=False).wait_for()
+                lab.locator("#lab-status").filter(has_text="Competition evidence refreshed").wait_for()
                 lab.locator("#lab-evaluate").click(timeout=10000)
-                lab.get_by_text("Evaluator results and signed receipts", exact=False).wait_for()
+                lab.locator("#lab-status").filter(has_text="Evaluator results and signed receipts").wait_for()
                 assert lab.locator("#lab-detail .lab-evidence-verify").count() == 1
                 assert "signature verified" in lab.locator(
                     "#lab-detail .lab-evidence-verify"
