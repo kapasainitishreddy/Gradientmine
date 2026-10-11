@@ -1,0 +1,28 @@
+name: Fast Judge Studio QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'tests/web/**'
+      - 'package.json'
+      - '.github/workflows/studio-fast.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: studio-fast-judge-main
+  cancel-in-progress: true
+jobs:
+  fast-web:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and web unit checks (no Rust/PyTorch/GPU build)
+        run: |
+          npm run check
+          npm test
