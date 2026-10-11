@@ -1,3 +1,4 @@
+import {auditLocalEvidence} from './proof-audit.mjs';
 /**
  * An evidence-first judge walkthrough. Performance figures are fetched from
  * the same recorded-run JSON used by the read-only public application.
@@ -8,6 +9,8 @@ const steps=[...document.querySelectorAll('[data-step]')];
 const panels=[...document.querySelectorAll('[data-panel]')];
 const $=id=>document.getElementById(id);
 let current=0;
+let loadedEvidence=null;
+
 const text=(id,value)=>{ $(id).textContent=String(value); };
 const pct=v=>Number.isFinite(v) ? (v*100).toFixed(2)+'%' : '—';
 const points=v=>Number.isFinite(v) ? (v>=0?'+':'')+(v*100).toFixed(2)+' pp' : '—';
@@ -88,8 +91,39 @@ fetch('./assets/recorded-run.json',{cache:'no-store'})
     if(!r.ok)throw new Error('HTTP '+r.status);
     return r.json();
   })
-  .then(data=>populate(ensureRun(data)))
+  .then(data=>{const job=ensureRun(data);loadedEvidence=data;populate(job);$('run-evidence-audit').disabled=false;})
   .catch(()=>{
     $('evidence-status').textContent='Recorded evidence could not be loaded. No numbers are claimed on this page; inspect the signed evidence from the homepage or repository.';
     $('tour-evidence-source').textContent='SOURCE UNAVAILABLE — NO VERIFIED RESULT SHOWN HERE';
   });
+
+
+/* Read-only public browser audit: no custom validator API, no wallet, no SOL. */
+$('run-evidence-audit').addEventListener('click',async()=>{
+  if(!loadedEvidence)return;
+  const button=$('run-evidence-audit'),display=$('evidence-audit-result');
+  button.disabled=true;
+  display.dataset.result='running';
+  display.textContent='Checking actual downloaded public evidence bytes…';
+  try {
+    const result=await auditLocalEvidence(loadedEvidence,async hash=>{
+      const response=await fetch('./assets/artifacts/'+hash+'.json',{
+        cache:'no-store',signal:AbortSignal.timeout(15000),
+      });
+      if(!response.ok)throw Error('Artifact fetch failed with HTTP '+response.status+'.');
+      return new Uint8Array(await response.arrayBuffer());
+    },progress=>{
+      display.textContent='Verified '+progress.completed+'/'+progress.total+' artifact hashes…';
+    });
+    display.dataset.result='pass';
+    display.textContent='CHECKED: '+result.artifactsVerified+' artifact hashes, '+
+      result.signaturesVerified+' Ed25519 signatures, policy and winner references. '+
+      'This does not prove training, model accuracy or a live Devnet payout.';
+  }catch(error){
+    display.dataset.result='fail';
+    display.textContent='AUDIT INCOMPLETE / FAILED: '+error.message+
+      ' No verification pass is claimed.';
+  }finally{
+    button.disabled=false;
+  }
+});
