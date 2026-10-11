@@ -91,6 +91,19 @@ def main():
             assert "No finalized funded Devnet" in page.locator('[data-panel="4"]').inner_text()
             page.screenshot(path=str(target/"judge-desktop.png"),full_page=True)
             cases.append("six-step judge evidence comes from recorded-run.json, no payout invented")
+            audit_button=page.locator("#run-evidence-audit")
+            assert audit_button.is_enabled()
+            audit_button.click()
+            page.wait_for_function(
+                "() => document.querySelector('#evidence-audit-result').dataset.result === 'pass'",
+                timeout=25000,
+            )
+            checked=page.locator("#evidence-audit-result").inner_text()
+            assert "14 artifact hashes" in checked and "6 Ed25519 signatures" in checked
+            assert "does not prove training" in checked
+            page.screenshot(path=str(target/"judge-audit-verified.png"),full_page=True)
+            cases.append("independent public artifact SHA-256 and expected Ed25519 browser verification")
+
 
             page.route("**/assets/recorded-run.json",lambda route:route.fulfill(status=503,body="not available"))
             page.goto(origin+"/judge.html",wait_until="domcontentloaded")
