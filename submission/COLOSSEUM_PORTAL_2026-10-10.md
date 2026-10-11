@@ -20,11 +20,11 @@ Portal-ready draft prepared October 10, 2026. **Owner review required before sub
 
 **Primary team location:** Pennsylvania, United States (founder to confirm exact field response).
 
-**Graphic:** Existing submission/logo.svg is SVG; portal reportedly accepts JPG/PNG/WEBP/GIF. Convert to PNG or use the existing submission/tour/poster.jpg if accepted. Visually review before upload.
+**Graphic (public JPEG):** https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-colosseum-graphic.jpg . Visually review in the portal.
 
-**Pitch upload:** PENDING. Existing 150-second MP4 is not publicly hosted and may exceed a reported 2-minute live-form limit. See PITCH_120S_2026-10-10.md.
+**Pitch recording:** https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-pitch-colosseum-2026.mp4 . It is a newly recorded 120-second caption-led actual-UI video. Verify the version in the current public release after the final subtitle-QA run, anonymous playback, and portal support. Founder narration would strengthen it.
 
-**Product-demo upload:** PENDING. Existing 165-second MP4 is not publicly hosted and predates later UI changes.
+**Demo recording:** https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-demo-colosseum-2026.mp4 . Newly recorded 165-second actual-UI walkthrough; verify subtitle-QA, anonymous playback, and the form's accepted host. Static viewer is recorded local evidence, not live backend.
 
 **X profile / Telegram contact:** Founder must provide real, current account/contact details. Do not invent.
 
@@ -86,14 +86,14 @@ Python 3.11+ and PyTorch for bounded model training/evaluation; native Rust Sola
 - **Start date, weekly hours and pre-existing work:** Must be verified by founder. Pre-September 14 source/idea/datasets are disclosed, not hidden.
 - **Entity legally formed? Outside investment? Fundraising? Token?** Founder must answer each yes/no according to actual facts. There is no custom token in the current product.
 - **AI/non-team human contributions:** Confirm before reusing the draft above.
-- **Pitch / demo URLs and access instructions:** Paste only final publicly playable links after signed-out verification.
+- **Pitch / demo links:** Public MP4s are linked above. Replace with YouTube/Loom/Vimeo streams if required by logged-in portal; do not paste an untested link into the final form.
 - **Final owner survey and member profiles:** Complete on Colosseum after reviewing the product fields.
 
 ## Verified versus unverified
 
 - Verified in repo: October 8 latest GitHub CI success at commit dcd659be76e6ebc22cca487b25806b09e74b0a44; local model benchmark; compiled local escrow tests; published read-only web source.
-- Previously verified deployment: Cloudflare Pages signed-out browser access recorded for an earlier release in docs/BUILD_LEDGER.md. Current live revision must be checked again signed out.
-- Unverified: current published frontend matches latest main, funded Devnet payout, Phantom real-extension flow, customer interviews, revenue, hosted backend, video uploads, completed portal survey/submission.
+- Site: Cloudflare API verified production deployed head `dcd659b` on October 8; independent signed-out desktop and 390px mobile browser checks returned HTTP 200 and showed the recorded model scores and no-payout disclosure on October 10.
+- Verified: the latest product code matched production at the start of submission preparation and the new public release has MP4/JPEG/SRT assets. Unverified: live funded Devnet payout, Phantom real-extension flow, customer interviews, revenue, hosted backend, organizer acceptance of video hosts/caption-only pitch, completed portal survey and final product submission.
 
 ## Official sources
 
