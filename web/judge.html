@@ -44,6 +44,11 @@
 <div id="tour-stage" class="tour-stage" tabindex="-1" aria-label="Evidence walkthrough content">
   <div class="stage-top"><span class="section-kicker">ACTUAL IMPLEMENTATION / NO THEATER</span><span class="stage-num" id="tour-number">01 / 06</span></div>
   <div id="evidence-status" class="micro-notice" role="status">Loading recorded evidence. The page will not invent data if it cannot be loaded.</div>
+  <div class="evidence-audit-control" aria-label="Independently check signed recorded evidence">
+    <div><strong>Don't take our word for it.</strong><p>Verify the exact public artifact bytes, the expected worker/evaluator signatures and cross-linked winner metadata in your own browser. This does not certify model quality or a Devnet payout.</p></div>
+    <button type="button" id="run-evidence-audit" class="action-primary" disabled>Verify recorded evidence ↗</button>
+    <p id="evidence-audit-result" role="status" aria-live="polite">Load the recorded run to enable independent browser verification.</p>
+  </div>
   <article data-panel="0">
     <h2>The problem isn't<br>GPU access. It's risk.</h2>
     <p class="stage-lede">An applied-AI team knows its model is failing a business metric. Paying for more labor or compute does not promise the metric improves. GradientMine makes the desired outcome the unit of purchase.</p>
