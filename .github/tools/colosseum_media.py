@@ -57,9 +57,12 @@ def subtitles(paragraphs,times,path):
 
 def ass_timestamp(timecode):
     hh,mm,rest=timecode.replace(",",".").split(":")
-    # ASS wants centiseconds, not SRT milliseconds.
     sec,ms=rest.split(".")
-    return f"{int(hh)}:{mm}:{sec}.{round(int(ms)/10):02}"
+    centis=round(((int(hh)*60+int(mm))*60+int(sec))*100+int(ms)/10)
+    hour,centis=divmod(centis,360000)
+    minute,centis=divmod(centis,6000)
+    second,cs=divmod(centis,100)
+    return f"{hour}:{minute:02}:{second:02}.{cs:02}"
 
 def subtitle_ass(srt_path,ass_path):
     # Explicit PlayRes prevents SRT's implicit 384x288 canvas from
