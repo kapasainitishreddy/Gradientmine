@@ -55,6 +55,38 @@ def subtitles(paragraphs,times,path):
             lines.append(f"{len(lines)+1}\n{stamp(start)} --> {stamp(end)}\n"+"\n".join(wrap)+"\n")
     path.write_text("\n".join(lines),encoding="utf8")
 
+def ass_timestamp(timecode):
+    hh,mm,rest=timecode.replace(",",".").split(":")
+    # ASS wants centiseconds, not SRT milliseconds.
+    sec,ms=rest.split(".")
+    return f"{int(hh)}:{mm}:{sec}.{round(int(ms)/10):02}"
+
+def subtitle_ass(srt_path,ass_path):
+    # Explicit PlayRes prevents SRT's implicit 384x288 canvas from
+    # scaling subtitles to enormous text over the actual interface.
+    head="""[Script Info]
+Title: GradientMine Colosseum Captions
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,DejaVu Sans,36,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1.5,0,2,60,60,46,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+"""
+    events=[]
+    for cue in srt_path.read_text(encoding="utf8").strip().split("\n\n"):
+        parts=cue.splitlines()
+        if len(parts)<3:raise ValueError("Malformed subtitle cue")
+        a,b=parts[1].split(" --> ")
+        content="\\N".join(parts[2:]).replace("{","\\{").replace("}","\\}")
+        events.append(f"Dialogue: 0,{ass_timestamp(a)},{ass_timestamp(b)},Default,,0,0,0,,{content}")
+    ass_path.write_text(head+"\n".join(events)+"\n",encoding="utf8")
+
 def scroll(page,selector):
     item=page.locator(selector).first
     if not item.count():raise ValueError("Actual UI section missing: "+selector)
@@ -65,6 +97,8 @@ def capture(name,url,duration,scenes,paragraphs,times):
     dest=OUT/name;dest.mkdir(parents=True,exist_ok=True)
     captions=dest/(name+".srt")
     subtitles(paragraphs,times,captions)
+    ass_captions=dest/(name+".ass")
+    subtitle_ass(captions,ass_captions)
     timeline=[];errors=[];writes=[]
     with sync_playwright() as api:
         browser=api.chromium.launch(headless=True)
@@ -121,9 +155,9 @@ def capture(name,url,duration,scenes,paragraphs,times):
     if errors:raise ValueError("Browser JS errors: "+repr(errors[:3]))
     if writes:raise ValueError("Read-only browser sent writes: "+repr(writes[:3]))
     target=OUT/f"gradientmine-{name}-colosseum-2026.mp4"
+    # Burn captions in the dedicated black 180px footer, not over the product UI.
     filt=("fps=30,pad=1920:1080:0:0:color=0x171719,"
-       f"subtitles={captions}:force_style='FontName=DejaVu Sans,FontSize=26,"
-       "PrimaryColour=&H00FFFFFF,OutlineColour=&H000F1011,BorderStyle=1,Outline=1,Shadow=0,MarginV=38,Alignment=2'")
+          f"ass={ass_captions}")
     subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(original),
        "-f","lavfi","-i","anullsrc=channel_layout=stereo:sample_rate=48000",
        "-t",str(duration),"-vf",filt,
