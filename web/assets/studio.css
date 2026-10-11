@@ -165,3 +165,13 @@ button:disabled{cursor:not-allowed;opacity:.48}
 .market-context{border-top:1px solid #d4c7b3;margin-top:21px;padding-top:18px;font-size:12px!important}
 .market-context a{display:inline!important;font-size:12px!important;text-decoration:underline!important;font-weight:700!important}
 @media(max-width:540px){.tour-hero-actions{flex-direction:column;align-items:stretch}}
+
+/* Independent audit: a real check, not a decorative success badge. */
+.evidence-audit-control{border:1px solid #d0c5b3;background:#eee8dd;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 20px;margin-bottom:27px}
+.evidence-audit-control strong{font-size:15px;letter-spacing:-.025em}
+.evidence-audit-control p{margin:6px 0 0;color:#625c53;font-size:12px;line-height:1.5}
+.evidence-audit-control .action-primary{max-width:270px;font-size:12px;white-space:normal}
+#evidence-audit-result{grid-column:1/-1;color:#6b5d4a;font-family:"Courier New",monospace;font-size:11px;line-height:1.6;margin:8px 0 0}
+#evidence-audit-result[data-result="pass"]{color:#24734d;border-left:3px solid #24734d;padding-left:11px}
+#evidence-audit-result[data-result="fail"]{color:#a23c2b;border-left:3px solid #a23c2b;padding-left:11px}
+@media(max-width:600px){.evidence-audit-control{grid-template-columns:1fr}.evidence-audit-control .action-primary{max-width:none;width:100%}}
