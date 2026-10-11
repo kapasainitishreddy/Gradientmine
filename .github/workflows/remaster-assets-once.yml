@@ -1,0 +1,46 @@
+name: Remaster media assets once
+on:
+  push:
+    branches: [media/narrated-remaster-20261011]
+    paths: [.github/workflows/remaster-assets-once.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gradientmine-remaster-assets-20261011
+  cancel-in-progress: false
+jobs:
+  media-assets:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      OMP_NUM_THREADS: '4'
+      OPENBLAS_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install public open-source recording and narration dependencies
+        run: |
+          python -m pip install 'playwright==1.57.0' 'kokoro-onnx==0.6.1' soundfile
+          python -m playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m py_compile .github/tools/remaster_assets.py
+      - name: Actual public browser recordings and disclosed stock AI narration
+        run: python .github/tools/remaster_assets.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gradientmine-remaster-assets
+          path: |
+            remaster-assets/assets.json
+            remaster-assets/audio/
+            remaster-assets/clips/
+            remaster-assets/shots/
+          retention-days: 1
+          if-no-files-found: warn
