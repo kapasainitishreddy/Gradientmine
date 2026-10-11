@@ -1,24 +1,30 @@
-# Actual media delivery and remaining upload
+# Colosseum 2026 public submission media (October 10, 2026)
 
-All four MP4s exist and were decoded and reviewed end to end. Their original footage and provenance remain preserved. Large files are ignored, rather than committed to Git history. [media-delivery.json](../evidence/2026-10-05/media-delivery.json) records exact delivery filenames, byte sizes, SHA-256 hashes and the upload boundary.
+## Public judge assets
 
-| Actual file in the repository workspace | Duration | Evidence notes |
-|---|---|---|
-| `.local/submission-videos/presentation/final/presentation.mp4` | 150.000s | [Presentation notes](PRESENTATION_VIDEO.md); genuine continuous browser/source capture, complete English captions, silent AAC |
-| `.local/submission-videos/product-demo/demo.mp4` | 165.000s | [Demo notes](DEMO_VIDEO.md); genuine continuous recorded-viewer interaction, complete English captions, no audio |
-| `.local/tour/landscape/brag.mp4` | 22.000s | [Launch provenance](tour/PROVENANCE.md); original synthesized ambient sound, no voice |
-| `.local/tour/vertical/brag.mp4` | 20.000s | Deliberate portrait reframe; original synthesized ambient sound, no voice |
+A **new, public, non-draft GitHub release** now hosts caption-led recordings captured from the actual deployed read-only local-evidence viewer.
 
-## Actual GitHub attempt
+- Release: https://github.com/kapasainitishreddy/Gradientmine/releases/tag/colosseum-submission-2026
+- 120-second presentation: https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-pitch-colosseum-2026.mp4
+- 165-second product walkthrough: https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-demo-colosseum-2026.mp4
+- 2026 product graphic: https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-colosseum-graphic.jpg
+- Recording provenance, file sizes and SHA-256: https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/media-manifest.json
+- Standalone English subtitle files: `pitch.srt` and `demo.srt` from the same release.
 
-GitHub release creation succeeded at source `dfa77c7a9a793c1ffb91ac07fef39b32baa0c7be`. The subsequent upload to `uploads.github.com` returned **HTTP 403 Forbidden**. The GitHub release API confirmed **zero uploaded assets**. No downloadable video URL or public playback is claimed. The release was converted to a **draft**, with its description corrected to identify the blocked upload. Its owner-accessible URL is https://github.com/kapasainitishreddy/Gradientmine/releases/tag/untagged-18d0a9ece37c19820507 (release ID `404167730`); this is not a judge-accessible media URL.
+The GitHub Action [Publish Colosseum submission media](https://github.com/kapasainitishreddy/Gradientmine/actions/workflows/colosseum-media.yml) captures genuine page navigation and actual policy/receipt inspectors against `https://gradientmine.pages.dev`, not synthesized app activity. It produces H.264/1080p/30fps recordings, metadata, independent SRT captions and burned-on captions. The video producer uses **an explicit 1920x1080 ASS resolution and a reserved black footer for subtitles** to prevent covering the app. Run outputs and GitHub release assets must be verified again after any future render.
 
-The exact public-only upload bundle is `.local/release-2026-10-05/`: four MP4s, two posters, two caption files, four provenance/render manifests, one strictly checked read-only viewer ZIP, a delivery manifest and SHA256SUMS. Private identities, database, authenticated checkpoints and browser originals were never included. The viewer ZIP is downloadable local evidence, not a hosted API or Devnet payment.
+**The public viewer remains read-only recorded evidence.** The videos are not live training or a real Devnet payout, do not show paying users and do not prove the hosted API. The recordings are caption-led, with no human voice or founder face. They are review candidates for the actual portal, not proof of organizer acceptance. A founder-narrated pitch may be stronger and the portal may ask for YouTube, Loom or another supported video URL. Test anonymous playback in a supported host before entering a final link.
 
-`uploads.github.com` was added to the saved environment network draft while preserving existing rules. Saving a draft does not publish it, apply runtime permissions or prove upload access. The observed 403 alone does not distinguish network policy from integration/account permissions. There was no unchanged retry loop.
+## What is left for the founder
 
-## Owner action
+1. Watch both current release videos end-to-end and confirm legible captions, correct sequence, no private information, and acceptable audio/narration requirements.
+2. Confirm the logged-in Colosseum form accepts the links. If it specifically requires streamed playback from YouTube/Loom/Vimeo, upload the MP4s to a supported host, verify anonymously and enter those links.
+3. Confirm real registered team members, name/location, prior work, entity/funding and IP/eligibility declarations, and any contact details required by the owner profile and final survey.
+4. Enter the final video and demo links and graphic in the signed-in dashboard; click final Submit and retain receipt before October 12, 2026, 11:59 PM Pacific.
+5. A real funded Solana Devnet payout would strengthen the evidence but is not claimed and must not be fabricated.
 
-From an authorized environment, check hashes with `sha256sum -c SHA256SUMS` inside the prepared public bundle, then upload the selected files to an authorized free host or the retained GitHub draft. For GitHub, locate the exact draft by ID with `gh api repos/kapasainitishreddy/Gradientmine/releases/404167730`; use that draft's actual tag when uploading, and review its corrected notes before publishing. Confirm that any judge video URL plays signed out and is accepted by the actual portal. A release-download URL alone does not establish that.
+## Historical October 5 delivery
 
-Review both longer recordings in full. Their measured durations meet the retrieved FAQ bounds, but organizer acceptance of silent English captions is not established; natural narration can be added if appropriate. All visible model scores refer only to the disclosed local job. No live Devnet payout, Phantom interaction, hosting URL, customer validation or official submission is implied.
+Previous silent-captioned local video exports, original screen footage and hashes remain documented at [presentation](PRESENTATION_VIDEO.md) and [demo](DEMO_VIDEO.md). An **earlier** release creation and upload attempt failed with HTTP 403 and was kept as a draft with zero uploaded assets. That historical failure does **not** describe the new public `colosseum-submission-2026` release, which has hosted assets.
+
+Previous local-source recording files remain under ignored `.local/` and are not committed to Git history. The new Actions-recorded footage is stored in an expiring run artifact and released separately; no private keys or evaluator databases are uploaded.
