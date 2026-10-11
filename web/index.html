@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#efebe3">
-<meta name="description" content="GradientMine: a proof-first AI model bug bounty platform. Define a measurable failure, compete to fix it, and independently evaluate the results.">
+<meta name="description" content="GradientMine turns measurable AI model failures into outcome-based bounties. Explore real PyTorch evidence, propose an unfunded bounty blueprint and inspect local Solana escrow verification.">
 <meta property="og:title" content="GradientMine | Don't guess. Prove it.">
 <meta property="og:description" content="Proof-first model improvement through open competition. Real local experiments and inspectable evidence.">
 <title>GradientMine | Don't guess. Prove it.</title>
@@ -20,9 +20,9 @@
 <header class="topbar" id="site-header">
   <a class="brand" href="#top" aria-label="GradientMine home"><span class="brand-mark"><img src="./assets/mark.svg" width="38" height="38" alt=""></span><span>GradientMine</span></a>
   <nav id="site-nav" aria-label="Main navigation">
-    <a href="#arena">The arena</a>
+    <a href="./bounty.html">Bounty Studio</a>
     <a href="#the-proof">The proof</a>
-    <a href="#how-it-works">How it works</a><a href="./lab.html">Research Lab</a>
+    <a href="./judge.html">Judge tour</a><a href="./lab.html">Research Lab</a>
     <a href="https://github.com/kapasainitishreddy/Gradientmine" rel="noopener noreferrer" target="_blank">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
   <div class="topbar-actions">
@@ -34,12 +34,12 @@
 <main>
 <section class="editorial-hero" id="top" aria-labelledby="hero-title">
   <div class="hero-copy">
-    <div class="hero-kicker"><span class="kicker-line"></span>A MORE HONEST AI FUTURE<span class="kicker-line"></span></div>
+    <div class="hero-kicker"><span class="kicker-line"></span>AI MODEL BUG BOUNTIES<span class="kicker-line"></span></div>
     <h1 id="hero-title" aria-label="Don't guess. Prove it."><span>DON'T</span><span>GUESS.</span><span class="hero-emphasis">PROVE IT.</span></h1>
     <p class="hero-lede">Post a measurable model failure.<br>Compete to fix it. <strong>Verify the improvement.</strong></p>
     <div class="hero-actions">
-      <a class="button primary hero-primary" href="#the-proof">Explore the proof <span aria-hidden="true">↗</span></a>
-      <button class="button hero-create" type="button" id="create-button">Post a model bug</button>
+      <a class="button primary hero-primary" href="./bounty.html">Design a bounty <span aria-hidden="true">↗</span></a>
+      <a class="button hero-create" href="./judge.html">Judge walkthrough <span aria-hidden="true">↗</span></a>
     </div>
     <div class="hero-bottomline">
       <span>BETTER MODELS<br>THROUGH OPEN<br>COMPETITION</span>
@@ -100,6 +100,7 @@
 <section id="workspace" class="workspace" aria-label="Interactive bounty and verification evidence">
   <aside class="rail">
     <div class="section-heading"><h2>Bounty archive</h2><button id="refresh-button" type="button" class="text-button">Refresh</button></div>
+    <button id="create-button" type="button" class="button secondary" title="Live bounty creation requires a running backend and a connected wallet">Post a live bounty</button>
     <label class="sr-only" for="job-filter">Filter bounties</label>
     <select id="job-filter"><option value="all">All experiments</option><option value="open">Accepting workers</option><option value="evaluated">Evaluated</option></select>
     <div id="jobs" class="job-list" aria-live="polite"></div>

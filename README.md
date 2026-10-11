@@ -8,6 +8,14 @@ GradientMine turns model improvement into an outcome market. A task owner freeze
 
 The current release runs actual PyTorch low-rank-adapter experiments, compares submitted models with a fixed baseline, signs evaluation receipts, and integrates a native Solana escrow program. It does not mine a blockchain, mint an investment token, or claim trustless verification.
 
+
+## Colosseum judge quickstart (October 2026)
+
+**[Guided, real-evidence judge walkthrough](https://gradientmine.pages.dev/judge.html)** · **[Interactive Bounty Studio](https://gradientmine.pages.dev/bounty.html)** · **[Read-only proof](https://gradientmine.pages.dev/#workspace)** · **[Current captioned pitch and demo](https://github.com/kapasainitishreddy/Gradientmine/releases/tag/colosseum-submission-2026)**
+
+For the shortest path, read **[JUDGE_START_HERE.md](docs/JUDGE_START_HERE.md)**. The interactive buyer-side studio validates a measurable target and exports a **local, unfunded design draft**. It does not post bounties, lock SOL, evaluate arbitrary production models or charge the proposed 10% fee. The guided tour loads results from the real recorded Digits run, including disclosed limitations. These experiences sit alongside the existing live-API and research prototypes; neither pretends the static Cloudflare site is a production marketplace.
+
+
 ## Research Lab extension (October 2026)
 
 The project now includes a **separate local research-competition prototype** with five bounded task types: lexical retrieval, extractive grounded QA, keyword-based safety-refusal testing, deterministic retrieval-work optimization, and optional offline, locally cached causal/seq2seq LLM prompt evaluation. This does not expand the original Digits-only *Solana escrow program* into a production multi-model marketplace.
