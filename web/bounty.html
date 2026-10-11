@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#efebe3">
+<meta name="description" content="Design a measurable AI model improvement bounty locally, inspect the proposed evaluation contract and export an unfunded policy blueprint.">
+<meta property="og:title" content="GradientMine | Bounty Studio">
+<meta property="og:description" content="From an AI failure to a measurable improvement contract. An interactive design-only preview, no wallet or funds involved.">
+<title>Bounty Studio | GradientMine</title>
+<link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./assets/studio.css">
+<script type="module" src="./assets/bounty-ui.mjs"></script>
+</head>
+<body class="studio-body">
+<a class="skip-link" href="#builder">Skip to bounty builder</a>
+<header class="studio-header">
+  <a class="studio-brand" href="./index.html" aria-label="GradientMine home"><img src="./assets/mark.svg" width="32" height="32" alt="">GradientMine<span class="brand-dot">.</span></a>
+  <nav aria-label="Main navigation"><a href="./index.html#the-proof">Recorded evidence</a><a href="./judge.html">Judge walkthrough</a><a href="./lab.html">Research Lab</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
+  <span class="header-state">DESIGN-ONLY · NO WALLET</span>
+</header>
+<main>
+  <section class="studio-hero">
+    <div class="hero-eyebrow"><span class="eyebrow-rule"></span> 001 / THE BUYER EXPERIENCE</div>
+    <h1>Don't hire a hope.<br><em>Define the win.</em></h1>
+    <p class="lede">Take a failing model and write a measurable improvement contract. No sign-up, no wallet, no empty marketplace pretending to be live.</p>
+    <div class="hero-points"><span>01 / Define a measurable failure</span><span>02 / Freeze success criteria</span><span>03 / Export a reviewable draft</span></div>
+  </section>
+  <div class="studio-disclosure" role="note"><strong>Interactive planning prototype, not a funded bounty.</strong> This builder validates user-entered numbers and exports a local JSON blueprint. It never sends data to a server, trains a model, guarantees that a metric can be met, locks SOL, or charges a fee. Only the <a href="./index.html#the-proof">recorded Digits experiment</a> has verified training results.</div>
+  <section id="builder" class="studio-layout" aria-label="Draft bounty contract">
+    <div class="studio-form-panel">
+      <div class="section-heading"><span class="section-kicker">POLICY DRAFT / 01</span><button class="quiet-button" type="button" id="sample">Load illustrative example ↗</button></div>
+      <h2>What is broken?</h2>
+      <p class="subhead">State the metric. Make improvement measurable. Hide the final evaluation set from competitors.</p>
+      <form id="bounty-form" novalidate>
+        <div class="field"><label for="name">Bounty title</label><input id="name" name="name" maxlength="100" required placeholder="Example: Fix support-routing classification errors"><small>Specific failure, not a generic consulting task.</small></div>
+        <div class="field"><label for="model">Frozen parent model</label><input id="model" name="model" maxlength="160" required placeholder="Example: support-router-v7 / model checkpoint SHA"><small>Describe a model version you are allowed to evaluate. No model is uploaded here.</small></div>
+        <div class="field"><label for="metric">Primary objective</label><select id="metric" name="metric" required>
+          <option value="accuracy">Classification accuracy (verified Digits proof)</option>
+          <option value="retrieval">Retrieval recall@k (Research Lab prototype)</option>
+          <option value="latency">P95 latency (planned task type)</option>
+          <option value="cost">Inference cost per 1,000 requests (planned)</option>
+        </select><small id="metric-support">Verified Digits prototype. Metrics beyond classification are not live escrow products.</small></div>
+        <div class="two-fields">
+          <div class="field"><label for="baseline">Frozen baseline <span class="metric-unit">%</span></label><input id="baseline" name="baseline" inputmode="decimal" type="number" step="any" required placeholder="84"></div>
+          <div class="field"><label for="target">Target to beat <span class="metric-unit">%</span></label><input id="target" name="target" inputmode="decimal" type="number" step="any" required placeholder="92"></div>
+        </div>
+        <div class="micro-notice">Numerical threshold alone does not verify model quality. The real evaluator also requires an independent holdout, statistical eligibility and accepted bounded artifacts.</div>
+        <div class="section-heading section-divider"><span class="section-kicker">CONTEST RULES / 02</span></div>
+        <h2>What's the contract?</h2>
+        <div class="two-fields">
+          <div class="field"><label for="reward">Illustrative reward (SOL)</label><input id="reward" name="reward" type="number" min="0.001" max="1000" step="0.001" inputmode="decimal" required placeholder="2"></div>
+          <div class="field"><label for="durationDays">Contest window (days)</label><input id="durationDays" name="durationDays" type="number" min="1" max="90" step="1" required placeholder="14"></div>
+        </div>
+        <div class="two-fields">
+          <div class="field"><label for="candidates">Candidate budget</label><input id="candidates" name="candidates" type="number" min="1" max="32" step="1" required placeholder="8"></div>
+          <div class="field"><label for="evaluator">Proposed evaluator</label><input id="evaluator" name="evaluator" maxlength="100" required placeholder="Who will independently score the fixes?"></div>
+        </div>
+        <label class="check-field" for="rights"><input id="rights" name="rights" type="checkbox"><span>I confirm I have rights to use the proposed model and evaluation data. This is only a draft, not an IP review.</span></label>
+        <div class="section-heading section-divider"><span class="section-kicker">ELIGIBILITY SANITY CHECK / 03</span></div>
+        <h2>Does a hypothetical fix qualify?</h2>
+        <div class="field"><label for="candidateResult">Hypothetical candidate score <span class="metric-unit">%</span></label><input id="candidateResult" name="candidateResult" type="number" step="any" inputmode="decimal" placeholder="95"></div>
+        <div id="candidate-feedback" class="micro-notice" aria-live="polite">Enter a candidate score to test the numeric target, not hidden verification.</div>
+        <div class="form-actions"><button id="download" class="action-primary" type="button" disabled>Download unfunded blueprint ↓</button><button id="copy" class="action-secondary" type="button" disabled>Copy JSON</button></div>
+        <p id="form-feedback" class="form-feedback" aria-live="polite">No data leaves this browser.</p>
+      </form>
+    </div>
+    <aside class="studio-preview" aria-label="Live bounty policy analysis">
+      <div class="preview-card">
+        <div class="preview-head"><span class="section-kicker">LIVE POLICY PREVIEW</span><span id="validation-chip" class="validation-chip">INCOMPLETE</span></div>
+        <div class="preview-title"><span>BOUNTY / UNFUNDED DESIGN DRAFT</span><h2 id="preview-title">A measurable model problem</h2><p id="preview-model">Describe the frozen parent model.</p></div>
+        <div class="metric-preview">
+          <div><small>BASELINE</small><strong id="preview-baseline">—</strong></div>
+          <span class="direction-arrow" id="direction-arrow">→</span>
+          <div><small>TARGET</small><strong id="preview-target">—</strong></div>
+        </div>
+        <div class="preview-delta"><span>REQUIRED NUMERIC CHANGE</span><strong id="preview-delta">—</strong></div>
+        <dl class="policy-fields">
+          <div><dt>Metric and stage</dt><dd id="preview-metric">Classification accuracy</dd></div>
+          <div><dt>Candidate budget</dt><dd id="preview-candidates">—</dd></div>
+          <div><dt>Contest window</dt><dd id="preview-duration">—</dd></div>
+          <div><dt>Evaluation authority</dt><dd id="preview-evaluator">—</dd></div>
+        </dl>
+        <div class="economics"><div class="section-heading"><span class="section-kicker">PLANNED UNIT ECONOMICS</span><span>NOT COLLECTED</span></div>
+          <dl>
+            <div><dt>Solver reward (illustrative)</dt><dd id="preview-reward">—</dd></div>
+            <div><dt>Planned 10% fee, on top</dt><dd id="preview-fee">—</dd></div>
+            <div class="total"><dt>Illustrative owner budget</dt><dd id="preview-total">—</dd></div>
+          </dl>
+          <p>The 10% success fee is a proposed business model, not a live protocol charge. SOL is used as an illustrative unit, with no conversion to USD.</p>
+        </div>
+        <div class="validation-box"><h3>Draft readiness</h3><ul id="issues"><li>Fill the required fields.</li></ul></div>
+      </div>
+      <div class="preview-footer"><span>NO WALLETS · NO PAYMENTS · NO MODEL UPLOAD</span><a href="./judge.html">See the actual technical evidence ↗</a></div>
+    </aside>
+  </section>
+  <section class="cta-strip"><div><span class="section-kicker">VERIFIED WORK / NOT A MOCK TRANSACTION</span><h2>See what actually worked.</h2><p>The Digits experiment has real CPU training, signed receipts, a bounded artifact and a local Solana escrow-program test. No funded Devnet transaction is claimed.</p></div><a href="./judge.html" class="action-primary">Walk through the proof ↗</a></section>
+</main>
+<footer class="studio-footer"><span>GradientMine · Outcome-based model improvement</span><span>OPEN SOURCE · NO CUSTOM TOKEN · LOCAL PROOF</span><a href="./index.html">← Back to homepage</a></footer>
+</body>
+</html>
