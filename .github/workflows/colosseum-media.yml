@@ -1,11 +1,11 @@
 name: Publish Colosseum submission media
+# Manual publishing only: don't spend GitHub Actions credits on every edit.
+# Keep exactly one release upload active to avoid GitHub asset-name races.
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/colosseum-media.yml'
-      - '.github/tools/colosseum_media.py'
   workflow_dispatch:
+concurrency:
+  group: gradientmine-colosseum-media
+  cancel-in-progress: false
 permissions:
   contents: write
 jobs:
