@@ -16,7 +16,7 @@ concurrency:
 jobs:
   fast-web:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,3 +26,18 @@ jobs:
         run: |
           npm run check
           npm test
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Real Chromium navigation, draft export and mobile QA
+        run: |
+          python -m pip install 'playwright==1.57.0'
+          python -m playwright install chromium
+          python -m scripts.studio_browser_qa --out evidence/studio-browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: studio-browser-qa
+          path: evidence/studio-browser/
+          if-no-files-found: ignore
+          retention-days: 7
