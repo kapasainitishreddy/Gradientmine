@@ -147,3 +147,15 @@ button:disabled{cursor:not-allowed;opacity:.48}
 @media(max-width:880px){.studio-header{flex-wrap:wrap;gap:14px}.studio-header nav{width:100%;margin:0;flex-wrap:wrap}.studio-layout{display:flex;flex-direction:column}.studio-form-panel,.studio-preview{width:100%}.studio-preview{position:static}.tour-shell{grid-template-columns:1fr}.tour-rail{position:static;padding:0}.tour-steps{grid-template-columns:repeat(3,1fr)}.tour-detail{grid-template-columns:1fr}.tour-stage{min-height:0}}
 @media(max-width:540px){.studio-hero{padding-top:50px}.studio-hero h1{font-size:clamp(43px,11vw,65px)}.two-fields{grid-template-columns:1fr}.studio-form-panel{padding:23px}.studio-layout{padding:0 15px;gap:13px}.studio-disclosure{margin:0 15px 22px}.metric-preview strong{font-size:32px}.section-heading{align-items:flex-start;flex-wrap:wrap}.studio-footer,.cta-strip{flex-direction:column;align-items:flex-start}.tour-steps{grid-template-columns:repeat(2,1fr)}.tour-step{font-size:11px;padding:10px}.judge-hero{padding-top:48px}.tour-stage{padding:26px 19px}.tour-stage h2{font-size:40px}.tour-actions button{padding:14px;min-width:100px}.source-row{flex-direction:column;align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* Real recorded candidate comparison, never a fake ranking. */
+.evidence-workers{display:grid;gap:0;margin-top:15px}
+.evidence-worker{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 13px;padding:14px 0;border-bottom:1px solid #344238;align-items:baseline}
+.evidence-worker span{font-size:12px;line-height:1.5;color:#e0e8de;overflow-wrap:anywhere}
+.evidence-worker strong{font-size:23px;color:#a3deb4;white-space:nowrap}
+.evidence-worker small{grid-column:1/-1;font:10px "Courier New",monospace;letter-spacing:.05em;color:#b8c0b7}
+.on-dark-link{display:inline-flex;margin-top:22px;font-size:12px;color:#b5e4c4!important;font-weight:700}
+.on-dark-link:hover{color:#fff!important}
+#tour-policy-hash{font-size:12px;overflow-wrap:anywhere;word-break:break-word;color:#b4d5c0}
+#evidence-status.loaded{border-left-color:#3b9970}
+[hidden]{display:none!important}
