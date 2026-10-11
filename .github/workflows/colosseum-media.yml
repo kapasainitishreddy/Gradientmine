@@ -1,0 +1,61 @@
+name: Publish Colosseum submission media
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/colosseum-media.yml'
+      - '.github/tools/colosseum_media.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  record-and-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser media dependencies, no PyTorch retraining
+        run: |
+          python -m pip install 'playwright==1.57.0'
+          python -m playwright install chromium
+          command -v ffmpeg
+          ffmpeg -hide_banner -filters | grep ' subtitles '
+          python -m py_compile .github/tools/colosseum_media.py
+      - name: Record real public read-only viewer
+        run: python .github/tools/colosseum_media.py
+      - name: Package existing public product graphic
+        run: cp submission/tour/poster.jpg _submission_media/gradientmine-colosseum-graphic.jpg
+      - name: Store outputs as retrievable Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradientmine-colosseum-media
+          path: |
+            _submission_media/*.mp4
+            _submission_media/*.jpg
+            _submission_media/media-manifest.json
+            _submission_media/pitch/pitch.srt
+            _submission_media/demo/demo.srt
+          retention-days: 30
+          if-no-files-found: error
+      - name: Publish judge-accessible release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="colosseum-submission-2026"
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target "$GITHUB_SHA" \
+              --title "GradientMine | Colosseum 2026 Submission Media" \
+              --notes "Actual public read-only recorded-local-evidence viewer. No production validator, paying customers, narrator, or live Devnet payout claimed. Captions are burned in. Project owner must complete the Colosseum portal."
+          fi
+          gh release upload "$tag" \
+            _submission_media/gradientmine-pitch-colosseum-2026.mp4 \
+            _submission_media/gradientmine-demo-colosseum-2026.mp4 \
+            _submission_media/gradientmine-colosseum-graphic.jpg \
+            _submission_media/media-manifest.json \
+            _submission_media/pitch/pitch.srt \
+            _submission_media/demo/demo.srt --clobber
+          gh release view "$tag" --json url,assets -q '{url:.url,assets:[.assets[].name]}'
