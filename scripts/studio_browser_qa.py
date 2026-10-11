@@ -112,7 +112,8 @@ def main():
                 ctx.close()
                 mobile.close()
             cases.append("390px and 360px mobile layouts without page-level overflow")
-            if errors:raise AssertionError("Browser JS errors: "+repr(errors))
+            if errors:
+                raise AssertionError("Browser JS errors: "+repr(errors))
     finally:
         server.shutdown()
         server.server_close()
