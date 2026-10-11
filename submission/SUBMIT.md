@@ -1,6 +1,6 @@
 # Crypto World's Fair final submission checklist
 
-**Status: product and submission package prepared on the model-bug-bounty branch. Portal submission is not yet claimed.**
+**Status (October 10, 2026): prototype, CI, public read-only viewer, portal copy, presentation and demo render pipeline are implemented. Public release videos exist; portal submission and owner declarations are not yet verified.**
 
 Official event: https://colosseum.com/worldsfair  
 Official hackathon FAQ: https://colosseum.com/hackathon
@@ -52,13 +52,13 @@ Then show the assurance machinery as the reason the simple bounty idea can be tr
 | Product name / tagline / description | FINAL_FORM_COPY.md | Ready |
 | Problem / insight / market / business | PRODUCT.md | Ready |
 | Use cases and initial wedge | USE_CASES.md | Ready |
-| 2–3 minute pitch | PITCH.md | Ready for recording |
-| ≤3 minute product demo | DEMO.md | Ready for recording |
+| 120-second captioned pitch | [Public release](https://github.com/kapasainitishreddy/Gradientmine/releases/tag/colosseum-submission-2026) | Published; owner must watch and verify portal playback |
+| 165-second captioned product demo | [Public release](https://github.com/kapasainitishreddy/Gradientmine/releases/tag/colosseum-submission-2026) | Published; owner must watch and verify portal playback |
 | Exact shot plan | RECORDING.md | Ready |
 | 60-second judge brief | JUDGE_BRIEF.md | Ready |
 | Repository | https://github.com/kapasainitishreddy/Gradientmine | Public |
 | Public evidence viewer | https://gradientmine.pages.dev | Existing viewer; update only after merge/deploy |
-| Logo | logo.svg | Ready |
+| Logo / submission graphic | [Public JPEG](https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-submission-2026/gradientmine-colosseum-graphic.jpg) | Public, owner review and upload needed |
 | Team facts | TEAM.md | Owner review still required |
 | Prior work / AI disclosure | DISCLOSURE.md | Owner review still required |
 
@@ -96,11 +96,11 @@ The checked-in proof-of-function remains:
 
 1. Re-run automated tests on the final branch.
 2. Merge the branch only after CI passes.
-3. Verify the deployed public viewer signed out.
-4. Record a fresh 2–3 minute pitch using PITCH.md.
-5. Record a fresh ≤3 minute demo using DEMO.md.
-6. Use natural narration if possible. The older silent-caption videos predate this positioning and should be fallback only.
-7. Upload videos to a judge-accessible host and verify signed-out playback.
+3. The deployed public viewer was checked signed out (HTTP 200, scores and trust disclosure) October 10; recheck if deploying new code.
+4. Review the new 120-second presentation video linked in MEDIA_DELIVERY.md, or record a better founder-narrated pitch using PITCH_120S_2026-10-10.md.
+5. Review the new 165-second actual-viewer demo linked in MEDIA_DELIVERY.md and confirm all disclosures are readable.
+6. The current October 10 videos use English captions but no narration; add real founder narration if available and verify what the actual portal accepts.
+7. Release MP4 downloads are public on GitHub; check signed-out browser playback. If the portal requires YouTube/Loom/Vimeo streaming URLs, upload there and verify anonymous viewing.
 8. Fill portal fields from FINAL_FORM_COPY.md.
 9. Review TEAM.md and DISCLOSURE.md against actual founder/team/prior-work facts.
 10. Submit before the official deadline and retain portal confirmation.
