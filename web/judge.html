@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#efeae1">
+<meta name="description" content="A guided evidence-first walkthrough of GradientMine's actual local PyTorch model improvement and Solana escrow integration.">
+<meta property="og:title" content="GradientMine | The 90-Second Judge Walkthrough">
+<meta property="og:description" content="One measurable model failure, three real worker processes, an independently scored fix, signed evidence, and explicit Solana trust boundaries.">
+<title>The Proof, Step by Step | GradientMine</title>
+<link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./assets/studio.css">
+<script type="module" src="./assets/judge-tour.mjs"></script>
+</head>
+<body class="judge-body">
+<a href="#tour-stage" class="skip-link">Skip to evidence walkthrough</a>
+<header class="studio-header">
+  <a href="./index.html" class="studio-brand" aria-label="GradientMine home"><img src="./assets/mark.svg" width="32" height="32" alt="">GradientMine<span class="brand-dot">.</span></a>
+  <nav aria-label="Main navigation"><a href="./index.html#the-proof">Recorded evidence</a><a href="./bounty.html">Bounty Studio</a><a href="./lab.html">Research Lab</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
+  <span class="header-state">JUDGE VIEW · NO FAKE PAYOUT</span>
+</header>
+<main>
+<section class="judge-hero">
+  <div class="intro-row"><span class="section-kicker">THE GRADIENTMINE EVIDENCE TRACK</span><span class="eyebrow-rule"></span><span class="tour-small">SIX SHORT STEPS</span></div>
+  <h1>A fix should<br><em>prove itself.</em></h1>
+  <p>See what works, how the winner is selected, what Solana really does, and what remains unproven. Every performance result is loaded from the repository's actual recorded run, not typed into this page.</p>
+</section>
+<div class="judge-boundary" role="note"><strong>Precisely scoped:</strong> This page explores one reproducible local PyTorch/Digits run. The public Digits set is reconstructible and the baseline was budget-limited. Model scoring has a trusted evaluator; the native Solana program was tested locally through LiteSVM. No paid customer, live validator service, production anti-cheating benchmark or funded Devnet payout is claimed.</div>
+<div class="tour-shell">
+<aside class="tour-rail">
+  <span class="section-kicker">HOW IT WORKS / REAL PROOF</span>
+  <nav class="tour-steps" aria-label="Evidence walkthrough steps" id="tour-steps">
+    <button type="button" class="tour-step" data-step="0" aria-current="step"><span>01</span>The problem</button>
+    <button type="button" class="tour-step" data-step="1"><span>02</span>Frozen rules</button>
+    <button type="button" class="tour-step" data-step="2"><span>03</span>Real competition</button>
+    <button type="button" class="tour-step" data-step="3"><span>04</span>Measured result</button>
+    <button type="button" class="tour-step" data-step="4"><span>05</span>Why Solana</button>
+    <button type="button" class="tour-step" data-step="5"><span>06</span>The business</button>
+  </nav>
+  <div class="tour-progress" id="tour-progress">STEP 1 OF 6</div>
+  <div class="tour-progress-track" aria-hidden="true"><div class="tour-progress-bar" id="tour-progress-bar"></div></div>
+</aside>
+<div id="tour-stage" class="tour-stage" tabindex="-1" aria-label="Evidence walkthrough content">
+  <div class="stage-top"><span class="section-kicker">ACTUAL IMPLEMENTATION / NO THEATER</span><span class="stage-num" id="tour-number">01 / 06</span></div>
+  <div id="evidence-status" class="micro-notice" role="status">Loading recorded evidence. The page will not invent data if it cannot be loaded.</div>
+  <article data-panel="0">
+    <h2>The problem isn't<br>GPU access. It's risk.</h2>
+    <p class="stage-lede">An applied-AI team knows its model is failing a business metric. Paying for more labor or compute does not promise the metric improves. GradientMine makes the desired outcome the unit of purchase.</p>
+    <div class="tour-detail">
+      <div class="evidence-card"><span class="section-kicker">THE PRODUCT CATEGORY</span><h3>Model bug bounties.</h3><p>Define a narrow metric, invite independent fixes, verify them on a held-out set and reward an eligible outcome. This is outcome procurement, not a new token or a GPU rental market.</p></div>
+      <div class="why-card"><span class="section-kicker">THE FIRST WEDGE</span><h3>Start narrow. Prove one fix.</h3><p>Classification and retrieval issues with usable metrics are the starting point. Enterprise-grade large-model bounties and arbitrary remote fine-tuning still need stronger privacy, isolation and evaluation infrastructure.</p><a href="./bounty.html">Try the buyer-side bounty blueprint ↗</a></div>
+    </div>
+  </article>
+  <article data-panel="1" hidden>
+    <h2>Rules before<br>the race.</h2>
+    <p class="stage-lede">The poster commits the parent and evaluation policy. The named evaluator, hidden-set commitment, metric, candidate budget and statistical threshold must be in place before a worker can know the result.</p>
+    <div class="tour-detail">
+      <div class="evidence-card"><span class="section-kicker">LOADED FROM RECORDED RUN</span><h3 id="tour-metric">—</h3><div class="evidence-stat-grid"><div><small>MINIMUM IMPROVEMENT</small><strong id="tour-minimum">—</strong></div><div><small>MAX CANDIDATES</small><strong id="tour-budget">—</strong></div></div><p>Policy hash: <code id="tour-policy-hash">Loading…</code></p></div>
+      <div class="why-card"><span class="section-kicker">CRITICAL TRUST BOUNDARY</span><h3>Commitment is not consensus.</h3><p>The evaluator is named and trusted. SHA-256 binds exact bytes and Ed25519 verifies expected signers, but signatures do not prove training occurred or prevent bad evaluation design.</p><a href="./index.html#workspace">Inspect the immutable policy in the product ↗</a></div>
+    </div>
+  </article>
+  <article data-panel="2" hidden>
+    <h2>Real fixes. Not<br>self-reported wins.</h2>
+    <p class="stage-lede">Three separate worker processes on one host performed actual CPU training. They delivered bounded numeric adapters and signed manifests; one disclosed shuffled-label negative control tested that obvious noise could not win.</p>
+    <div class="tour-detail">
+      <div class="evidence-card"><span class="section-kicker">ACTUAL CANDIDATES</span><h3 id="tour-worker-count">—</h3><div id="tour-workers" class="evidence-workers" aria-label="Actual recorded worker results"><p>Loading recorded candidates…</p></div></div>
+      <div class="why-card"><span class="section-kicker">THE SAFETY BOUNDARY</span><h3>Admit data, not unknown code.</h3><p>For this specific model, the evaluator validates numeric low-rank artifacts, architecture and shape, hashes and expected signatures rather than executing arbitrary submitted programs. This does not certify general model safety.</p><a href="./index.html#workspace">Inspect worker manifests ↗</a></div>
+    </div>
+  </article>
+  <article data-panel="3" hidden>
+    <h2>Same test set.<br>Measured gain.</h2>
+    <p class="stage-lede">The evaluator scores the frozen parent and admissible candidates on the same held-out set. It selects the highest eligible fix using the declared minimum improvement and a positive adjusted approximate paired-bootstrap lower bound.</p>
+    <div class="tour-detail">
+      <div class="evidence-card"><span class="section-kicker">RECORDED PYTORCH / DIGITS EVIDENCE</span><div class="evidence-stat-grid"><div><small>FROZEN BASELINE</small><strong id="tour-baseline">—</strong></div><div><small>SELECTED CANDIDATE</small><strong id="tour-selected">—</strong></div><div><small>GAIN</small><strong id="tour-delta">—</strong></div><div><small>ADJUSTED LOWER BOUND</small><strong id="tour-lower-bound">—</strong></div></div><p id="tour-examples">Waiting for real evidence…</p></div>
+      <div class="why-card"><span class="section-kicker">SCIENCE BEFORE MARKETING</span><h3>What this does not prove.</h3><p>This small public benchmark and the budget-limited parent are illustrative. The adjusted lower bound is approximate under assumptions. Results are not a guarantee of generalization, commercial value or immunity to data leakage.</p><a href="./index.html#workspace">Inspect exact receipt and Fix Passport ↗</a></div>
+    </div>
+  </article>
+  <article data-panel="4" hidden>
+    <h2>Solana handles<br>the money rules.</h2>
+    <p class="stage-lede">A model evaluator should not pretend a blockchain can judge model quality. Solana is for public escrow state, registered recipients, evaluator-authorized settlement and timeout refunds between unknown counterparties.</p>
+    <div class="tour-detail">
+      <div class="evidence-card"><span class="section-kicker">IMPLEMENTED VS. LIVE</span><h3>Native Rust escrow.</h3><p>The compiled Solana SBF program has passed local LiteSVM tests. The public recorded experiment is unpaid. No finalized funded Devnet training-to-payout transaction is presented, and no custom token exists.</p><a class="on-dark-link" href="https://github.com/kapasainitishreddy/Gradientmine/blob/main/program/src/lib.rs" target="_blank" rel="noopener noreferrer">Read the actual Solana program ↗</a></div>
+      <div class="why-card"><span class="section-kicker">WHY THE BLOCKCHAIN MATTERS</span><h3>Neutral economic enforcement.</h3><p>A future customer and independent engineer can agree to locked rules without a custom token. Model files, hidden evaluation data and expensive training stay off-chain. The named evaluator's trust remains visible.</p><a href="https://github.com/kapasainitishreddy/Gradientmine/blob/main/docs/BUILD_LEDGER.md" target="_blank" rel="noopener noreferrer">Review local build and test ledger ↗</a></div>
+    </div>
+  </article>
+  <article data-panel="5" hidden>
+    <h2>One paid fix<br>before a market.</h2>
+    <p class="stage-lede">The first commercial test is not a thousand imaginary users. It's whether 3–5 small model-owning teams will post narrowly scoped problems and prefer a verified outcome to their current engineering or compute procurement.</p>
+    <div class="tour-detail">
+      <div class="evidence-card"><span class="section-kicker">HYPOTHESIS · NOT REVENUE</span><h3>10% success fee.</h3><p>Planned fee on settled bounties, with optional private evaluators. No fee processing, paying customers, customer interviews, signed design partners or revenue are claimed. Compare the total cost of winners and losing attempts against conventional fine-tuning.</p><a class="on-dark-link" href="./bounty.html">Design a sample bounty and inspect fee math ↗</a></div>
+      <div class="why-card"><span class="section-kicker">NEXT TEST</span><h3>A controlled first pilot.</h3><p>Recruit consenting design partners, validate model/data rights, precommit evaluation, run bounded contests, measure all solver compute and evaluation costs, record failures and settlement, then ask whether customers would repeat. That's the evidence needed for venture viability.</p><a href="https://github.com/kapasainitishreddy/Gradientmine/blob/main/submission/VALIDATION.md" target="_blank" rel="noopener noreferrer">Read the customer-validation protocol ↗</a></div>
+    </div>
+  </article>
+  <div class="source-row"><span class="source-link" id="tour-evidence-source">SOURCE: PUBLIC LOCAL RECORDING, NOT ON-CHAIN SETTLEMENT</span><a href="./index.html#workspace">Open the exact evidence inspector ↗</a></div>
+  <div class="tour-actions"><button id="tour-back" type="button" disabled>← Previous</button><span class="tour-small">USE BUTTONS OR ARROW KEYS</span><button id="tour-next" type="button">Next →</button></div>
+</div>
+</div>
+<section class="cta-strip"><div><span class="section-kicker">GOOD MODEL WORK SHOULD BE VERIFIABLE</span><h2>Now define your first bounty.</h2><p>The design studio is a private-in-browser preview. It cannot create a funded bounty or bypass held-out verification. That boundary is part of the product story.</p></div><a class="action-primary" href="./bounty.html">Open Bounty Studio ↗</a></section>
+</main>
+<footer class="studio-footer"><span>GradientMine · Verified model improvement bounties</span><span>REAL TRAINING · TRUSTED EVALUATION · LOCAL SOLANA TEST</span><a href="./index.html">← Back to homepage</a></footer>
+</body>
+</html>
