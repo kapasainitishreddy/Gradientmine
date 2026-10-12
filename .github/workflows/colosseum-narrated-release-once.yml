@@ -1,0 +1,76 @@
+name: Publish narrated Colosseum submission videos
+on:
+  push:
+    branches: [media/narrated-remaster-20261011]
+    paths:
+      - '.github/workflows/colosseum-narrated-release-once.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gradientmine-narrated-public-release-2026
+  cancel-in-progress: false
+jobs:
+  render-public-videos:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Load previously generated authentic browser and disclosed Kokoro voice assets
+        uses: actions/download-artifact@v4
+        with:
+          name: gradientmine-remaster-assets
+          run-id: 38114305144
+          github-token: ${{ github.token }}
+          path: remaster-assets
+      - name: Verify source inputs exist, install minimal open-source renderer
+        run: |
+          python -m pip install 'Pillow>=11,<13'
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          test -s remaster-assets/assets.json
+          test -s remaster-assets/audio/p01.wav
+          test -s remaster-assets/audio/d11.wav
+          test -s remaster-assets/shots/audit.png
+          python -m py_compile .github/tools/publish_narrated_colosseum.py
+      - name: Build two documented original videos, from real captured footage
+        run: |
+          python .github/tools/publish_narrated_colosseum.py --assets remaster-assets --plan submission/remaster-20261011/plan.json --output narrated-release
+          ffmpeg -v error -i narrated-release/GradientMine_Pitch_Narrated_119s.mp4 -f null -
+          ffmpeg -v error -i narrated-release/GradientMine_Demo_Narrated_165s.mp4 -f null -
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('narrated-release/release-manifest.json').read_text())
+          assert len(d['outputs'])==2
+          assert d['narration'].startswith('Stock AI-generated')
+          assert all(x['bytes']>500000 and x['dimensions']==[1920,1080] for x in d['outputs'])
+          print('Verified files:', [(x['filename'], x['seconds'],x['sha256']) for x in d['outputs']])
+          PY
+      - name: Publish durable links as a public GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='colosseum-narrated-final-2026'
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'GradientMine | Narrated Colosseum Submission Videos' --notes 'Two original English-captioned videos rebuilt entirely from captured real public app screens, existing recorded data and disclosed stock Kokoro AI narration, NOT the founder speaking. The 119-second pitch and 165-second demo are distinct. This is a read-only local training experiment and compiled locally tested Rust/Solana escrow prototype, NOT a funded live Devnet payout, paid marketplace or customer proof. The founder must verify portal host requirements and submit the Colosseum form personally.'
+          fi
+          gh release upload "$tag" narrated-release/GradientMine_Pitch_Narrated_119s.mp4 narrated-release/GradientMine_Demo_Narrated_165s.mp4 narrated-release/release-manifest.json --clobber
+          gh release view "$tag" --json url,assets -q '{url:.url, assets:[.assets[]|{name:.name,size:.size}]}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gradientmine-narrated-submission-backup
+          path: |
+            narrated-release/*.mp4
+            narrated-release/release-manifest.json
+          retention-days: 7
+          if-no-files-found: warn
