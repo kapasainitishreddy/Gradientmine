@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#efebe3">
+<meta name="description" content="GradientMine judge room: watch two public narrated recordings, try the Bounty Studio and independently audit real recorded model evidence.">
+<meta property="og:title" content="GradientMine | Watch. Inspect. Verify.">
+<meta property="og:description" content="A model-improvement bounty prototype with real local PyTorch results, inspectable signed evidence and locally verified Solana escrow.">
+<link rel="canonical" href="https://gradientmine.pages.dev/review.html">
+<link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./assets/studio.css">
+<title>Watch. Inspect. Verify. | GradientMine</title>
+<style>
+.review-body{background:#efebe3}
+.review-main{max-width:1580px;margin:0 auto;padding:0 clamp(20px,4vw,70px) 72px}
+.review-kicker{padding-top:54px;display:flex;align-items:center;gap:15px;color:#b9432b;font:700 11px 'Courier New',monospace;letter-spacing:.15em}
+.review-intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:40px;align-items:end;padding:40px 0 57px}
+.review-intro h1{font-size:clamp(46px,6.5vw,101px);line-height:.98;letter-spacing:-.085em;font-weight:900;margin:0}
+.review-intro h1 em,.review-video-text h2 em,.review-evidence-head h2 em{font-style:normal;color:#b9432b}
+.review-intro-side{padding-bottom:6px}
+.review-intro-side p{font-size:18px;line-height:1.55;color:#504c47;margin:0 0 25px}
+.review-boundary{background:#e4dcca;border-left:4px solid #b9432b;padding:24px 30px;display:grid;grid-template-columns:minmax(170px,.25fr) minmax(0,.75fr);gap:22px;align-items:start;margin-bottom:35px}
+.review-boundary strong{font-size:13px}
+.review-boundary p{font-size:13px;line-height:1.7;color:#5f5951;margin:0}
+.review-chapters{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid #d6cfc3;border-bottom:1px solid #d6cfc3}
+.review-chapters a{flex:1;min-width:195px;padding:22px 15px;text-decoration:none;font-size:12px;font-weight:750;color:#181817;border-right:1px solid #d6cfc3}
+.review-chapters a:last-child{border-right:0}
+.review-chapters a:hover{background:#e5ded2;color:#b9432b}
+.review-chapters span{font:700 12px 'Courier New',monospace;color:#b9432b;margin-right:11px}
+.review-video-section{padding:68px 0;border-bottom:1px solid #d6cfc3;scroll-margin-top:24px}
+.review-video-section .section-heading,.review-evidence .section-heading{margin-bottom:31px}
+.review-duration{font:700 11px 'Courier New',monospace;color:#b9432b;letter-spacing:.13em}
+.review-video-layout{display:grid;grid-template-columns:minmax(260px,.65fr) minmax(0,1.35fr);gap:clamp(20px,4vw,60px);align-items:start}
+.review-video-text h2,.review-evidence-head h2{font-size:clamp(35px,4.4vw,65px);font-weight:820;line-height:1.04;letter-spacing:-.075em;margin:0 0 22px}
+.review-video-text>p{color:#514c46;font-size:15px;line-height:1.7;margin:0 0 25px}
+.review-notice{padding:17px 19px;border-left:3px solid #a76d44;background:#e9e2d6;font-size:12px;line-height:1.7;color:#5f554e;margin:0 0 24px}
+.review-download{display:inline-block;color:#933c26;font-weight:800;font-size:12px;line-height:1.4}
+.review-player{margin:0;min-width:0}
+.review-player video{width:100%;display:block;background:#16251c;border:1px solid #3a443c;aspect-ratio:16/9;object-fit:contain}
+.review-player figcaption{font-size:11px;color:#776f66;line-height:1.6;margin-top:10px}
+.review-playback-status{font-size:12px;color:#a7432b;min-height:1em;margin:6px 0 0}
+.review-evidence{padding:72px 0 55px;scroll-margin-top:24px}
+.review-evidence-head{display:flex;gap:40px;justify-content:space-between;align-items:flex-end;margin-bottom:40px}
+.review-evidence-head h2{margin:0}
+.review-evidence-head>p{max-width:430px;font-size:14px;line-height:1.7;color:#5f5951}
+.review-numbers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#15251c;padding:27px;gap:20px}
+.review-numbers>div{padding:14px 15px;border-right:1px solid #3f5747;min-width:0}
+.review-numbers>div:last-child{border-right:0}
+.review-numbers span{display:block;color:#adbaad;font:700 10px 'Courier New',monospace;letter-spacing:.11em;margin-bottom:16px;line-height:1.4}
+.review-numbers strong{display:block;color:#b0dfb9;font-size:clamp(29px,3.4vw,51px);letter-spacing:-.075em;overflow-wrap:anywhere}
+.review-evidence-status{min-height:24px;font:12px/1.6 'Courier New',monospace;color:#60594f;margin:15px 0 28px}
+.review-links{display:flex;flex-wrap:wrap;gap:11px}
+.review-footnotes{display:grid;grid-template-columns:1fr 1fr;gap:30px;border-top:1px solid #d6cfc3;margin-top:38px;padding-top:25px}
+.review-footnotes p{font-size:12px;line-height:1.8;color:#6a6057}
+.review-final{margin-top:32px;padding:46px;display:flex;align-items:center;justify-content:space-between;gap:25px;background:#dcd3c6}
+.review-final h2{margin:15px 0;font-size:clamp(29px,4.2vw,53px);line-height:1.1;letter-spacing:-.065em}
+.review-final p{font-size:13px;color:#5e594f;max-width:600px;line-height:1.5}
+.review-final .action-primary{flex-shrink:0}
+@media(max-width:960px){.review-intro,.review-video-layout{grid-template-columns:1fr}.review-intro{gap:25px}.review-video-layout{gap:22px}.review-video-text h2{font-size:43px}.review-boundary{grid-template-columns:1fr;gap:6px}.review-evidence-head{display:block}.review-evidence-head>p{max-width:660px}}
+@media(max-width:650px){.review-kicker{padding-top:35px}.review-intro{padding:23px 0 35px}.review-intro h1{font-size:clamp(39px,11vw,60px)}.review-intro-side p{font-size:15px}.review-boundary{padding:19px}.review-chapters a{padding:15px;min-width:100%;border-right:0;border-bottom:1px solid #d6cfc3}.review-chapters a:last-child{border-bottom:0}.review-video-section{padding:42px 0}.review-numbers{grid-template-columns:repeat(2,minmax(0,1fr));padding:13px;gap:0}.review-numbers>div{padding:14px 10px;border-bottom:1px solid #344e3c}.review-numbers>div:nth-child(even){border-right:0}.review-numbers>div:nth-child(n+3){border-bottom:0}.review-numbers strong{font-size:32px}.review-footnotes{grid-template-columns:1fr;gap:10px}.review-final{padding:24px;align-items:flex-start;flex-direction:column}.review-final .action-primary{width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body class="review-body">
+<a class="skip-link" href="#judge-start">Skip to judge materials</a>
+<header class="studio-header">
+  <a class="studio-brand" href="./index.html" aria-label="GradientMine home"><img src="./assets/mark.svg" width="32" height="32" alt="">GradientMine<span class="brand-dot">.</span></a>
+  <nav aria-label="Site navigation"><a href="./bounty.html">Bounty Studio</a><a href="./judge.html">Evidence tour</a><a href="./index.html#workspace">Artifact inspector</a><a href="https://github.com/kapasainitishreddy/Gradientmine" target="_blank" rel="noopener noreferrer">Source ↗</a></nav>
+  <span class="header-state">RECORDED LOCAL PROOF</span>
+</header>
+<main id="judge-start" class="review-main">
+  <div class="review-kicker"><span class="eyebrow-rule"></span>COLOSSEUM 2026 / JUDGE START HERE</div>
+  <section class="review-intro" aria-labelledby="review-title">
+    <h1 id="review-title">BUY THE FIX.<br><em>NOT THE GUESS.</em></h1>
+    <div class="review-intro-side"><p>GradientMine proposes outcome-based bounties for measurable model failures. Builders compete, a named evaluator checks the evidence, and a locally tested Solana program defines escrow and refund rules.</p><a href="./bounty.html" class="action-primary">Design an unfunded bounty ↗</a></div>
+  </section>
+  <section class="review-boundary" aria-label="Prototype boundaries"><strong>What is actually demonstrated</strong><p>Real CPU/PyTorch training, three worker processes on one machine, one shuffled-label negative control, signed artifact and evaluation receipts, plus compiled local LiteSVM tests. This is <strong>not</strong> a production paid marketplace, a private tamper-proof benchmark, or a completed funded Devnet payout.</p></section>
+  <div class="review-chapters" aria-label="Guide to the review"><a href="#pitch"><span>01</span> The presentation</a><a href="#demo"><span>02</span> The product recording</a><a href="#evidence"><span>03</span> Check the proof</a></div>
+  <section id="pitch" class="review-video-section" aria-labelledby="pitch-title">
+    <div class="section-heading"><span class="section-kicker">01 / PRODUCT AND FOUNDER OVERVIEW</span><span class="review-duration">1:59.71</span></div>
+    <div class="review-video-layout">
+      <div class="review-video-text"><h2 id="pitch-title">The case for<br><em>model bounties.</em></h2><p>Why AI teams need verified outcomes, how the bounty contract works, the evidence we can show and why economic settlement belongs on Solana.</p>
+      <div class="review-notice"><strong>Voice disclosure:</strong> This presentation uses a stock AI-generated narrator. It is <strong>not</strong> the founder speaking. Real founder information should be confirmed in the Colosseum entry.</div>
+      <a class="review-download" href="https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-narrated-final-2026/GradientMine_Pitch_Narrated_119s.mp4" target="_blank" rel="noopener noreferrer">Open / download pitch MP4 ↗</a></div>
+      <figure class="review-player" aria-label="Narrated GradientMine pitch video">
+        <video id="pitch-video" controls playsinline preload="none" poster="./assets/transformation.svg" aria-label="Narrated GradientMine product presentation, 1 minute 59 seconds"><source src="https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-narrated-final-2026/GradientMine_Pitch_Narrated_119s.mp4" type="video/mp4">Your browser cannot play this video. Use the MP4 download link.</video>
+        <figcaption>Actual application captures and disclosed AI narration. If embedded playback is unavailable, open the public MP4 using the direct link.</figcaption>
+        <p class="review-playback-status" id="pitch-playback-status" role="status"></p>
+      </figure>
+    </div>
+  </section>
+  <section id="demo" class="review-video-section" aria-labelledby="demo-title">
+    <div class="section-heading"><span class="section-kicker">02 / PRODUCT TECHNICAL WALKTHROUGH</span><span class="review-duration">2:44.82</span></div>
+    <div class="review-video-layout">
+      <div class="review-video-text"><h2 id="demo-title">Show the rules.<br><em>Check the fix.</em></h2><p>See the Bounty Studio reject an invalid target, inspect trained candidates and independently check evidence hashes and signatures. A deliberately altered response fails inside an isolated test browser, without changing production files.</p>
+      <div class="review-notice"><strong>Demonstration disclosure:</strong> The model-training result is a recorded local experiment, not a live hosted multi-user marketplace or a funded Devnet transaction.</div>
+      <a class="review-download" href="https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-narrated-final-2026/GradientMine_Demo_Narrated_165s.mp4" target="_blank" rel="noopener noreferrer">Open / download technical demo MP4 ↗</a></div>
+      <figure class="review-player" aria-label="Narrated GradientMine technical demo video">
+        <video id="demo-video" controls playsinline preload="none" poster="./assets/transformation.svg" aria-label="Narrated GradientMine product demo, 2 minutes 45 seconds"><source src="https://github.com/kapasainitishreddy/Gradientmine/releases/download/colosseum-narrated-final-2026/GradientMine_Demo_Narrated_165s.mp4" type="video/mp4">Your browser cannot play this video. Use the MP4 download link.</video>
+        <figcaption>Actual public UI captured by Playwright; no wallet transaction, customer, or on-chain payout is simulated.</figcaption>
+        <p class="review-playback-status" id="demo-playback-status" role="status"></p>
+      </figure>
+    </div>
+  </section>
+  <section id="evidence" class="review-evidence" aria-labelledby="evidence-title">
+    <div class="section-heading"><span class="section-kicker">03 / TRACE THE ACTUAL EVIDENCE</span><span class="review-duration">READ-ONLY</span></div>
+    <div class="review-evidence-head"><h2 id="evidence-title">A result you can<br><em>investigate.</em></h2><p>Scores below load from the same public recorded-run JSON used by the application. They are illustrative measurements, not cryptographic proof of training or generalization.</p></div>
+    <div class="review-numbers" role="group" aria-label="Recorded local model scores">
+      <div><span>FROZEN BASELINE</span><strong id="review-baseline">—</strong></div>
+      <div><span>SELECTED CANDIDATE</span><strong id="review-winner">—</strong></div>
+      <div><span>MEASURED GAIN</span><strong id="review-gain">—</strong></div>
+      <div><span>HELD-OUT EXAMPLES</span><strong id="review-examples">—</strong></div>
+    </div>
+    <p id="review-evidence-status" class="review-evidence-status" role="status">Loading recorded-run evidence. No results are invented when the source is unavailable.</p>
+    <div class="review-links"><a href="./judge.html" class="action-primary">Independently audit evidence ↗</a><a href="./index.html#workspace" class="action-secondary">Inspect signed receipts ↗</a><a href="https://github.com/kapasainitishreddy/Gradientmine/blob/main/docs/JUDGE_START_HERE.md" target="_blank" rel="noopener noreferrer" class="action-secondary">Read the judge brief ↗</a></div>
+    <div class="review-footnotes"><p><strong>Trust boundary:</strong> SHA-256 proves bytes match a reference and Ed25519 checks named signers, not the truth of evaluation. The evaluator is trusted.</p><p><strong>Solana boundary:</strong> Native Rust escrow passed compiled local LiteSVM tests. No funded end-to-end Devnet transaction is claimed. The proposed 10% fee is not collected and no customers or revenue are claimed.</p></div>
+  </section>
+  <section class="review-final" aria-label="Explore GradientMine"><div><span class="section-kicker">THE PROPOSITION</span><h2>Define the win.<br>Verify the fix.</h2><p>Real local evidence, not a claim that a production marketplace or paying customers already exist.</p></div><a href="./bounty.html" class="action-primary">Explore the bounty prototype ↗</a></section>
+</main>
+<footer class="studio-footer"><span>GradientMine · Outcome-based model improvement bounties</span><span>LOCAL EXPERIMENT · NAMED EVALUATOR · NO PAID DEVNET SETTLEMENT</span><a href="./index.html">← Home</a></footer>
+<script type="module">
+const get=id=>document.getElementById(id);
+const put=(id,value)=>{get(id).textContent=String(value)};
+const pct=n=>Number.isFinite(n)?(n*100).toFixed(2)+'%':'—';
+const delta=n=>Number.isFinite(n)?(n>=0?'+':'')+(n*100).toFixed(2)+' pp':'—';
+async function showProof(){
+  const r=await fetch('./assets/recorded-run.json',{cache:'no-store'});
+  if(!r.ok)throw Error('HTTP '+r.status);
+  const d=await r.json(),j=d?.job,w=j?.winner;
+  if(d?.mode!=='local'||j?.mode!=='local'||j?.state!=='EVALUATED'||
+    j?.funding_signature||j?.settlement_signature||
+    !Number.isFinite(j?.baseline_accuracy)||!Number.isFinite(w?.candidate_accuracy)||
+    !Number.isFinite(w?.delta)||!Number.isInteger(w?.n)||w.n<=0||
+    !Array.isArray(j?.submissions)||j.submissions.length!==3||
+    !j.submissions.some(s=>s?.worker_metrics?.negative_control===true)||
+    w.eligible!==true||!j.submissions.some(s=>s.id===w.submission_id&&s?.score?.eligible===true))
+    throw Error('unexpected recorded evidence');
+  put('review-baseline',pct(j.baseline_accuracy));
+  put('review-winner',pct(w.candidate_accuracy));
+  put('review-gain',delta(w.delta));
+  put('review-examples',w.n);
+  put('review-evidence-status','Loaded recorded local job with three worker processes, including a negative control. Visit the independent audit to check signature and byte commitments.');
+}
+showProof().catch(e=>put('review-evidence-status','Recorded proof unavailable: '+e.message+'. No result is claimed.'));
+for(const name of ['pitch','demo']){
+ const video=get(name+'-video'),status=get(name+'-playback-status');
+ video.addEventListener('error',()=>{
+   status.textContent='Embedded video unavailable in this browser. Open the public MP4 using the adjacent download link.';
+ });
+}
+</script>
+</body>
+</html>
