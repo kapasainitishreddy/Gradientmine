@@ -1,0 +1,64 @@
+{
+  "baseline_sha256": "342c636cf1d84d5d434f0aea72955d884f3ece51f140ca96f74379f00f6577a4",
+  "candidate_evaluation": {
+    "baseline_accuracy": 0.8472222222222222,
+    "baseline_predictions_sha256": "fdc2b7e5572cafa21f7d40a9c0d2d43fb1484a8afbdfc62fa44408df5346ca16",
+    "bootstrap_lower_bound": 0.06111111111111111,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 7301,
+    "candidate_accuracy": 0.9527777777777777,
+    "candidate_predictions_sha256": "abb83f73c7fe994afe2f76c0a11594667b3eb88431608045ae4350b290c3b4de",
+    "delta": 0.10555555555555556,
+    "eligible": true,
+    "maximum_candidates": 8,
+    "minimum_delta": 0.01,
+    "n": 360,
+    "per_candidate_alpha": 0.00625,
+    "reason": "Threshold and positive adjusted lower bound met",
+    "statistical_limit": "Approximate one-sided paired bootstrap under IID assumptions; no anti-leakage or work proof."
+  },
+  "candidate_sha256": "57ea9412d1546cbdaf38f5efd8e8f774baf3be0866f7352a659ef4077bd545a6",
+  "candidate_training": {
+    "first_loss": 0.7084410190582275,
+    "last_loss": 0.12060455232858658,
+    "rank": 8,
+    "steps": 60
+  },
+  "chain_rpc_or_transaction": false,
+  "experiment": "Local public Digits rank-limited head adaptation using repository deterministic test fixture",
+  "held_out_evaluation_sha256": "80e06f47b26bf4925d74254e449e118c7d3dab136b7e72b25a79ddabbf91d474",
+  "limitations": [
+    "Digits is a public dataset that can be reconstructed; not a secret or anti-leakage guarantee.",
+    "The paired bootstrap interval is approximate and assumes IID examples.",
+    "This local measurement is separate from the browser synthetic receipt; it is not a signed bounty receipt or settlement."
+  ],
+  "negative_control": {
+    "evaluation": {
+      "baseline_accuracy": 0.8472222222222222,
+      "baseline_predictions_sha256": "fdc2b7e5572cafa21f7d40a9c0d2d43fb1484a8afbdfc62fa44408df5346ca16",
+      "bootstrap_lower_bound": -0.6694444444444444,
+      "bootstrap_resamples": 20000,
+      "bootstrap_seed": 7301,
+      "candidate_accuracy": 0.25277777777777777,
+      "candidate_predictions_sha256": "f68825301be0c8b8ba5f8da2dee85d60d6bfce9513580d76ec611693259e909b",
+      "delta": -0.5944444444444444,
+      "eligible": false,
+      "maximum_candidates": 8,
+      "minimum_delta": 0.01,
+      "n": 360,
+      "per_candidate_alpha": 0.00625,
+      "reason": "Required improvement or adjusted lower bound not met",
+      "statistical_limit": "Approximate one-sided paired bootstrap under IID assumptions; no anti-leakage or work proof."
+    },
+    "first_loss": 3.6486542224884033,
+    "last_loss": 2.2591845989227295,
+    "steps": 60
+  },
+  "remote_submission": false,
+  "source_sha": "558be7a52eaa5a33a3b65ecf6ed99de775f3e8c2",
+  "status": "passed",
+  "synthetic_ui_fixture": false,
+  "torch_version": "2.14.1+cpu",
+  "training_data_sha256": "905cb996b2eacbf3b0f06a4275fb5c33941ac86aa06a704cf8917355fb4f6493",
+  "wallet_or_auth_operation": false
+}

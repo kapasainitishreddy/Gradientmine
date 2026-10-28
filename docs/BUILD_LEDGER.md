@@ -284,3 +284,27 @@ Corrective source commit: `1e11c6f680dc35c346f8198bd187efd7dfa0276b`.
 - Restore validation now requires state/submission/receipt/recovery-probe consistency for both ordinary and interrupted checkpoints. Browser QA injects both malformed resume combinations and expects rejection.
 - This correction remains limited to the public synthetic fixture; it does not perform actual multi-candidate winner selection. The real Digits evaluator and its artifact-hash selection behavior remain separate in `gradientmine/scoring.py`.
 - The independent reviewer requested a second review after fixes. Final exact-head test and review results will be recorded in the subsequent evidence entry.
+
+### Final exact-head check after review corrections — 2026-10-28
+
+- Source/clean-test head: `558be7a52eaa5a33a3b65ecf6ed99de775f3e8c2` (includes documentation and evidence ledgers; application correction source is `1e11c6f680dc35c346f8198bd187efd7dfa0276b`). Browser report records this exact SHA and `worktree_clean_before_run: true`.
+- `npm test`: PASS, 66 / 66.
+- `npm run check`: PASS.
+- `/tmp/gm-verify-full/bin/python -m pytest -q tests/test_ml.py`: PASS, 13 / 13.
+- `/tmp/gm-verify-full/bin/python -m ruff check gradientmine tests scripts`: PASS.
+- `/tmp/gm-verify-full/bin/python -m compileall -q gradientmine scripts tests`: PASS.
+- `/tmp/gm-verify-full/bin/python -m py_compile scripts/local_journey_browser_qa.py`: PASS.
+- `/tmp/gm-verify-full/bin/python scripts/local_journey_browser_qa.py`: PASS, 36 browser checks. Actual desktop and mobile 200% captures were inspected; the UI visibly states that the frozen value is a planning cap, the fixture admits one candidate, and the configured tie-break is not exercised. The receipt says there was no ranking.
+- `evidence/proposal-2026-10-28/local-journey/digits-local-model-check.json` records a separate actual local Digits rank-8 adaptation at this SHA using PyTorch `2.14.1+cpu`: 60 steps, training loss 0.70844 → 0.12060, 360 held-out examples, baseline 84.72%, candidate 95.28%, observed +10.56 pp, approximate adjusted lower bound +6.11 pp; the shuffled-label negative control is ineligible. The artifact marks the data as public, the interval as approximate, and the run as separate from the browser fixture, unsigned, unsubmitted, and unsettled.
+- The independent second review of the two corrected findings is pending; no full-suite or release/compliance claim is inferred from the focused runs.
+
+### Second independent review and legacy checkpoint compatibility — 2026-10-28
+
+A second read-only review of head `558be7a52eaa5a33a3b65ecf6ed99de775f3e8c2` confirmed that the one-candidate fixture/tie-break disclosure and interrupted-state invariants were fixed. It identified a backwards-compatibility gap: old version-1 local checkpoints did not have the newly added capacity field and would be stranded on resume. It also asked for a checked-in exact-run generator for the Digits measurement.
+
+Corrective source commit: `235f1f1b5501125b771b9bed612f6659db00446a`.
+
+- The restore path now accepts the earlier version-1 policy/receipt shape without rewriting or re-signing the frozen policy or receipt. It preserves old candidate admissions, verifies the old receipt against its original frozen policy, and labels the legacy cap and first-candidate receipt accurately. New runs continue to require the explicit one-candidate fixture capacity and non-ranking disclosure.
+- Unit coverage creates and verifies a legacy receipt with the original field shape. Browser QA constructs an evaluated legacy checkpoint, resumes it, and checks that its receipt hash remains intact.
+- `scripts/generate_local_digits_check.py` is now the reproducible generator for the actual public Digits measurements. The command tested before this source commit was `/tmp/gm-verify-full/bin/python scripts/generate_local_digits_check.py --out /tmp/gm-digits-report.json`; final artifact regeneration at the committed source SHA is scheduled after a clean-head test run.
+- These fixes preserve local-only, nonfinancial behavior. No API auth identity, wallet, RPC, settlement or transaction was used by the focused Digits or browser flow.

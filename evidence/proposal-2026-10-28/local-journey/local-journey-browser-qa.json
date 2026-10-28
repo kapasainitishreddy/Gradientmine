@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "source_sha": "1e11c6f680dc35c346f8198bd187efd7dfa0276b",
+  "source_sha": "558be7a52eaa5a33a3b65ecf6ed99de775f3e8c2",
   "worktree_clean_before_run": false,
   "checks": [
     "Example does not self-attest model/data rights",
@@ -30,6 +30,8 @@
     "200% text scale does not force horizontal page overflow",
     "Offline flow made no external network requests",
     "Browser completed flow without JavaScript exceptions",
+    "Legacy v1 evaluated checkpoint resumes with its receipt intact",
+    "Legacy checkpoint is labeled with its original frozen budget",
     "Interrupted evaluated checkpoint without receipt is rejected",
     "Interrupted frozen checkpoint with receipt is rejected",
     "Corrupted policy checkpoint is rejected on restore",
