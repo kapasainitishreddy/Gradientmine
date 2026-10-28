@@ -242,3 +242,18 @@ GitHub Actions [run 37407582740](https://github.com/kapasainitishreddy/Gradientm
 - CI separately runs Chromium with reduced motion and confirmed Motion is disabled without disabling the product.
 
 This redesign changes presentation only. It does **not** create a Devnet deployment, Phantom-extension test, finalized payout or new customer/traction evidence.
+
+## Isolated proposal: local unfunded Bounty Studio — 2026-10-28
+
+- Proposal branch: `proposal/gradientmine-local-bounty-journey-20261028`, based on `feat/colosseum-judge-media-room-20261012` at `ec06f5033aad91963e892d8c7bd43bea6acbced5` (current `main` `442cb500d2cc24c394c7baf5a536dc2c0cd454d0` plus `web/review.html`).
+- Implementation code head verified: `a2357e18adfb6349317db0f70caaa6a67b1d1e1c`.
+- `node --test tests/web/*.test.mjs`: PASS, 66 passed, 0 failed, 0 skipped.
+- `npm run check`: PASS.
+- `python -m py_compile scripts/local_journey_browser_qa.py`: PASS.
+- `git diff --check`: PASS.
+- `python scripts/local_journey_browser_qa.py`: PASS, 32 named browser checks; report and desktop/mobile 200% screenshots are in `evidence/proposal-2026-10-28/local-journey/`. Browser ran locally with system Chromium. Playwright's Chromium download was unavailable (HTTP 403), so the system browser was used.
+- `python -m pytest -q`: SKIP, pytest is not installed (`No module named pytest`).
+- `python -m ruff check ...`: SKIP, ruff is not installed (`No module named ruff`).
+- `cargo test --locked --manifest-path program/Cargo.toml`: SKIP, Cargo is not installed (`cargo: command not found`).
+- The browser flow is local synthetic-only. It performs no uploads, wallet calls, chain access, escrow, or payout. Its public demo signing key is bundled and disclosed; verification catches accidental changes only and is not an independent evaluator identity or truth guarantee.
+- No production deployment, Devnet/mainnet transaction, payout, publication, or customer/revenue test was performed. Legal/store/privacy applicability and full ASVS/WCAG/NIST mapping remain not reviewed.
