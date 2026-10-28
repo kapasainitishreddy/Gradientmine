@@ -44,8 +44,10 @@ async function validateCheckpoint(saved){
   if(!saved||saved.version!==1||!['FROZEN','CANDIDATE_ADMITTED','SYNTHETIC_EVALUATED','INTERRUPTED_CHECKPOINT'].includes(saved.state))fail('Unsupported checkpoint state or version.');
   if(!await frozenPolicyValid(saved.policy))fail('Saved policy checkpoint hash is invalid.');
   const p=saved.policy;
-  if(p.status!=='FROZEN_LOCAL_UNFUNDED_SIMULATION'||p.parent?.sha256!==baselineSha256()||p.objective?.metric!=='accuracy'||p.objective?.direction!=='higher'||!Number.isFinite(p.objective?.minimum_delta)||p.objective.minimum_delta<0||p.objective.minimum_delta>1||!Number.isInteger(p.candidate_budget)||p.candidate_budget<1||p.candidate_budget>8||p.local_fixture_candidate_capacity!==1||p.tie_break!=='artifact_sha256_ascending'||p.evaluator?.name!=='Local Synthetic Evaluator'||p.evaluator?.authority!=='single trusted browser module')fail('Frozen policy fields do not match the supported local simulation schema.');
-  if(!Array.isArray(saved.submissions)||saved.submissions.length>Math.min(p.candidate_budget,p.local_fixture_candidate_capacity))fail('Candidate checkpoint is malformed or exceeds this fixture’s one-candidate capacity.');
+  const legacyPolicy=!Object.hasOwn(p,'local_fixture_candidate_capacity');
+  if(p.status!=='FROZEN_LOCAL_UNFUNDED_SIMULATION'||p.parent?.sha256!==baselineSha256()||p.objective?.metric!=='accuracy'||p.objective?.direction!=='higher'||!Number.isFinite(p.objective?.minimum_delta)||p.objective.minimum_delta<0||p.objective.minimum_delta>1||!Number.isInteger(p.candidate_budget)||p.candidate_budget<1||p.candidate_budget>8||(!legacyPolicy&&p.local_fixture_candidate_capacity!==1)||p.tie_break!=='artifact_sha256_ascending'||p.evaluator?.name!=='Local Synthetic Evaluator'||p.evaluator?.authority!=='single trusted browser module')fail('Frozen policy fields do not match the supported local simulation schema.');
+  const admissionLimit=legacyPolicy?p.candidate_budget:Math.min(p.candidate_budget,p.local_fixture_candidate_capacity);
+  if(!Array.isArray(saved.submissions)||saved.submissions.length>admissionLimit)fail('Candidate checkpoint is malformed or exceeds its admitted-candidate capacity.');
   if(!Array.isArray(saved.submissions)||!saved.policy.source_draft||saved.policy.heldout?.examples!==16||saved.policy.heldout?.secret!==false||saved.policy.settlement?.mode!=='UNFUNDED_LOCAL_ONLY'||saved.policy.settlement?.funds_escrowed!==false||saved.policy.settlement?.transaction_signature!==null)fail('Policy checkpoint is missing required fixture or unfunded fields.');
   const seenIds=new Set(),seenHashes=new Set();
   for(const submission of saved.submissions){
@@ -60,10 +62,11 @@ async function validateCheckpoint(saved){
   const submissionCount=saved.submissions.length;
   const hasReceipt=Boolean(saved.receipt);
   const hasSettlementProbe=Boolean(saved.settlement_probe);
+  const candidateCountValid=legacyPolicy?submissionCount>0:submissionCount===1;
   const stateConsistent=(
     (effectiveState==='FROZEN'&&submissionCount===0&&!hasReceipt&&!hasSettlementProbe)
-    ||(effectiveState==='CANDIDATE_ADMITTED'&&submissionCount===1&&!hasReceipt&&!hasSettlementProbe)
-    ||(effectiveState==='SYNTHETIC_EVALUATED'&&submissionCount===1&&hasReceipt)
+    ||(effectiveState==='CANDIDATE_ADMITTED'&&candidateCountValid&&!hasReceipt&&!hasSettlementProbe)
+    ||(effectiveState==='SYNTHETIC_EVALUATED'&&candidateCountValid&&hasReceipt)
   );
   if(!stateConsistent)fail('Checkpoint state, admitted candidate, receipt, and settlement probe are inconsistent.');
   if(saved.receipt){
@@ -81,14 +84,18 @@ function showPolicy(){
   show('frozen-policy-hash',p.policy_sha256);
   show('frozen-parent-hash',p.parent.sha256);
   show('frozen-minimum',`${points(p.objective.minimum_delta)} ${p.objective.metric}`);
-  show('frozen-budget',`Planning cap ${p.candidate_budget}; local fixture admits one candidate. Configured tie-break: ${p.tie_break}; not exercised.`);
+  const isLegacy=!Object.hasOwn(p,'local_fixture_candidate_capacity');
+  const selectionDisclosure=isLegacy
+    ?`Legacy frozen cap ${p.candidate_budget}; ${checkpoint.submissions?.length||0} stored candidate(s); any old receipt covers the first only. No ranking or tie-break was performed.`
+    :`Planning cap ${p.candidate_budget}; local fixture admits one candidate. Configured tie-break: ${p.tie_break}; not exercised.`;
+  show('frozen-budget',selectionDisclosure);
   show('frozen-evaluator',`${p.evaluator.name} · ${p.evaluator.authority}`);
   show('local-run-state',checkpoint.state);
   buttons.freeze.disabled=true;
   buttons.resume.hidden=true;
   buttons.interrupt.hidden=false;
   buttons.cancel.hidden=false;
-  $('load-synthetic-candidate').disabled=Boolean(checkpoint.submissions?.length)||checkpoint.policy.local_fixture_candidate_capacity!==1;
+  $('load-synthetic-candidate').disabled=Boolean(checkpoint.submissions?.length)||(checkpoint.policy.local_fixture_candidate_capacity??1)!==1;
   $('admit-candidate').disabled=Boolean(checkpoint.receipt);
   $('evaluate-candidate').disabled=!checkpoint.submissions?.length||Boolean(checkpoint.receipt);
   $('receipt-card').hidden=!checkpoint.receipt;
@@ -187,7 +194,7 @@ $('admit-candidate').addEventListener('click',async()=>{
     const result=await inspectSubmission(submission,checkpoint.policy,existing);
     checksTable(result.checks);
     if(!result.admitted){setStatus('Candidate rejected. Failed checks stay visible; no evaluation was run.','error');return;}
-    if(existing.length>=Math.min(checkpoint.policy.candidate_budget,checkpoint.policy.local_fixture_candidate_capacity)){
+    if(existing.length>=Math.min(checkpoint.policy.candidate_budget,checkpoint.policy.local_fixture_candidate_capacity??1)){
       setStatus('Candidate rejected: this synthetic fixture supports one candidate per run. No candidate ranking occurs and the configured hash tie-break is not exercised.','error');return;
     }
     const previous=checkpoint;

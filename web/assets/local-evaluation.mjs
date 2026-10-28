@@ -130,6 +130,11 @@ export async function evaluateSubmission(submission,policy,existing=[]) {
   const baselineCorrect=HOLDOUT.reduce((n,row)=>n+(0===row.y?1:0),0);
   const candidateCorrect=HOLDOUT.reduce((n,row)=>n+(predict(submission.artifact,row.x)===row.y?1:0),0);
   const baseline=baselineCorrect/HOLDOUT.length,score=candidateCorrect/HOLDOUT.length,delta=score-baseline;
+  const selectionDisclosure=Object.hasOwn(policy,'local_fixture_candidate_capacity')?{
+    local_fixture_candidate_capacity:policy.local_fixture_candidate_capacity,
+    tie_break_applied:false,
+    selection_method:'single_candidate_fixture_no_ranking',
+  }:{};
   const receipt={
     format:'gradientmine.synthetic-evaluation-receipt.v1',
     status:'SIMULATED_SYNTHETIC_EVALUATION',
@@ -139,8 +144,8 @@ export async function evaluateSubmission(submission,policy,existing=[]) {
     candidate_model_sha256:await sha256(canonicalJSON({parent:policy.parent.sha256,adapter:submission.artifact})),
     metric:'accuracy',baseline_accuracy:baseline,candidate_accuracy:score,observed_delta:delta,
     minimum_delta:policy.objective.minimum_delta,eligible:delta>=policy.objective.minimum_delta,
-    candidate_budget:policy.candidate_budget,local_fixture_candidate_capacity:policy.local_fixture_candidate_capacity,
-    tie_break:policy.tie_break,tie_break_applied:false,selection_method:'single_candidate_fixture_no_ranking',
+    candidate_budget:policy.candidate_budget,tie_break:policy.tie_break,
+    ...selectionDisclosure,
     candidates_evaluated:1,evaluation_examples:HOLDOUT.length,
     statistical_limit:STAT_LIMIT,evaluator_trust_boundary:EVALUATOR_LIMIT,
     settlement_status:'UNFUNDED_SIMULATION_ONLY',funds_escrowed:false,transaction_signature:null,payout_count:0,
@@ -161,13 +166,20 @@ export async function verifyEvaluationReceipt(envelope,policy,submission) {
   if (policy.evaluator?.public_key!==SYNTHETIC_EVALUATOR_PUBLIC_RAW
     ||await sha256(fromB64(policy.evaluator.public_key))!==policy.evaluator.public_key_sha256)
     return {ok:false,reason:'Frozen evaluator key does not match the bundled synthetic test key.'};
-  if (policy.local_fixture_candidate_capacity!==1
-    ||r.local_fixture_candidate_capacity!==1
-    ||r.candidates_evaluated!==1
-    ||r.candidate_budget!==policy.candidate_budget
-    ||r.tie_break!==policy.tie_break
-    ||r.tie_break_applied!==false
-    ||r.selection_method!=='single_candidate_fixture_no_ranking')
+  const legacyPolicy=!Object.hasOwn(policy,'local_fixture_candidate_capacity');
+  const oldReceiptShape=!Object.hasOwn(r,'local_fixture_candidate_capacity')
+    &&!Object.hasOwn(r,'tie_break_applied')
+    &&!Object.hasOwn(r,'selection_method');
+  const selectionDisclosureValid=legacyPolicy
+    ?oldReceiptShape&&r.candidates_evaluated===1&&r.candidate_budget===policy.candidate_budget&&r.tie_break===policy.tie_break
+    :policy.local_fixture_candidate_capacity===1
+      &&r.local_fixture_candidate_capacity===1
+      &&r.candidates_evaluated===1
+      &&r.candidate_budget===policy.candidate_budget
+      &&r.tie_break===policy.tie_break
+      &&r.tie_break_applied===false
+      &&r.selection_method==='single_candidate_fixture_no_ranking';
+  if(!selectionDisclosureValid)
     return {ok:false,reason:'Receipt does not match the one-candidate local fixture capacity and non-ranking disclosure.'};
   if (r.funds_escrowed!==false||r.transaction_signature!==null||r.payout_count!==0||r.settlement_status!=='UNFUNDED_SIMULATION_ONLY')
     return {ok:false,reason:'Synthetic receipt contains an unsupported settlement claim.'};

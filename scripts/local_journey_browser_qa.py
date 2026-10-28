@@ -123,6 +123,23 @@ def main() -> None:
             require(not external, "Offline flow made no external network requests")
             require(not errors, "Browser completed flow without JavaScript exceptions")
             saved_state=page.evaluate("localStorage.getItem('gradientmine.local-synthetic-run.v1')")
+            legacy_checkpoint=page.evaluate("""async saved => {
+              const local=await import('./assets/local-evaluation.mjs');
+              const policy=structuredClone(saved.policy);
+              delete policy.local_fixture_candidate_capacity;
+              delete policy.policy_sha256;
+              policy.policy_sha256=await local.sha256(local.canonicalJSON(policy));
+              const submission=await local.createSyntheticSubmission(policy);
+              const receipt=await local.evaluateSubmission(submission,policy,[]);
+              return {version:1,state:'SYNTHETIC_EVALUATED',policy,submissions:[submission],receipt,settlement_probe:null,cancelled:false};
+            }""",json.loads(saved_state))
+            legacy_receipt_hash=legacy_checkpoint["receipt"]["receipt_sha256"]
+            page.evaluate("state => localStorage.setItem('gradientmine.local-synthetic-run.v1', JSON.stringify(state))",legacy_checkpoint)
+            page.reload(wait_until="networkidle")
+            page.get_by_role("button", name="Resume saved checkpoint").click()
+            require(page.locator("#receipt-card").is_visible() and legacy_receipt_hash in page.locator("#receipt-hash").inner_text(), "Legacy v1 evaluated checkpoint resumes with its receipt intact")
+            require("legacy frozen cap" in page.locator("#frozen-budget").inner_text().lower(), "Legacy checkpoint is labeled with its original frozen budget")
+            page.evaluate("state => localStorage.setItem('gradientmine.local-synthetic-run.v1', state)",saved_state)
             inconsistent_evaluated={**json.loads(saved_state),"state":"INTERRUPTED_CHECKPOINT","resume_state":"SYNTHETIC_EVALUATED","receipt":None}
             page.evaluate("state => localStorage.setItem('gradientmine.local-synthetic-run.v1', JSON.stringify(state))",inconsistent_evaluated)
             page.reload(wait_until="networkidle")

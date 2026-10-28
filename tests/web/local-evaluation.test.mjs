@@ -85,6 +85,19 @@ test('held-out synthetic scoring produces a signed, lineage-bound unfunded recei
   assert.equal((await verifyEvaluationReceipt(attackerEnvelope,attackerPolicy,submission)).ok,false);
 });
 
+test('legacy v1 checkpoint policy and receipt remain verifiable after the one-candidate disclosure addition',async()=>{
+  const policy=await freezePolicy(raw,'2026-10-28T12:00:00.000Z');
+  delete policy.local_fixture_candidate_capacity;
+  delete policy.policy_sha256;
+  policy.policy_sha256=await sha256(canonicalJSON(policy));
+  const submission=await createSyntheticSubmission(policy);
+  const envelope=await evaluateSubmission(submission,policy,[]);
+  assert.equal(Object.hasOwn(envelope.receipt,'local_fixture_candidate_capacity'),false);
+  assert.equal(Object.hasOwn(envelope.receipt,'tie_break_applied'),false);
+  assert.equal(Object.hasOwn(envelope.receipt,'selection_method'),false);
+  assert.equal((await verifyEvaluationReceipt(envelope,policy,submission)).ok,true);
+});
+
 test('cancellation/checkpoint recovery and ambiguous settlement reconciliation cannot pay twice',()=>{
   let state={policy:{policy_sha256:'a'.repeat(64)},submissions:[{id:'s1'}],receipt:{}};
   const interrupted=structuredClone(state);
