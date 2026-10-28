@@ -66,6 +66,13 @@ test('supports opposite metric directions without presenting an arithmetic pass 
   assert.equal(METRICS.cost.supported,'Proposed production task');
 });
 
+test('keeps broader design-only budget while local Digits simulation applies its separate eight-entry cap',async()=>{
+  const largestDesign=analyzeBlueprint({...DEMO_BLUEPRINT,rights:true,candidates:'32'});
+  assert.equal(largestDesign.ready,true);
+  const {freezePolicy}=await import('../../web/assets/local-evaluation.mjs');
+  await assert.rejects(freezePolicy({...DEMO_BLUEPRINT,rights:true,candidates:'32'}),/candidate budget must be 1–8/i);
+});
+
 test('exported user text stays strings; UI uses textContent not unsafe innerHTML',()=>{
   const malicious='<img src=x onerror=alert(1)>';
   const result=draftArtifact({...DEMO_BLUEPRINT,rights:true,name:'bounty '+malicious});

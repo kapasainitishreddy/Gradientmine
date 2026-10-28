@@ -11,6 +11,7 @@
 <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./assets/studio.css">
 <script type="module" src="./assets/bounty-ui.mjs"></script>
+<script type="module" src="./assets/local-evaluation-ui.mjs"></script>
 </head>
 <body class="studio-body">
 <a class="skip-link" href="#builder">Skip to bounty builder</a>
@@ -26,26 +27,26 @@
     <p class="lede">Take a failing model and write a measurable improvement contract. No sign-up, no wallet, no empty marketplace pretending to be live.</p>
     <div class="hero-points"><span>01 / Define a measurable failure</span><span>02 / Freeze success criteria</span><span>03 / Export a reviewable draft</span></div>
   </section>
-  <div class="studio-disclosure" role="note"><strong>Interactive planning prototype, not a funded bounty.</strong> This builder validates user-entered numbers and exports a local JSON blueprint. It never sends data to a server, trains a model, guarantees that a metric can be met, locks SOL, or charges a fee. Only the <a href="./index.html#the-proof">recorded Digits experiment</a> has verified training results.</div>
+  <div class="studio-disclosure" role="note"><strong>Interactive planning prototype, not a funded bounty.</strong> This builder validates a draft and exports local JSON. The additional evaluation exercise uses an openly disclosed synthetic toy fixture; it never uploads customer data, trains a real model, creates a server job, locks SOL, or charges a fee. Only the <a href="./index.html#the-proof">recorded Digits experiment</a> has actual training results. The multi-task <a href="./lab.html">Research Lab</a> is a separate zero-money prototype.</div>
   <section id="builder" class="studio-layout" aria-label="Draft bounty contract">
     <div class="studio-form-panel">
       <div class="section-heading"><span class="section-kicker">POLICY DRAFT / 01</span><button class="quiet-button" type="button" id="sample">Load illustrative example ↗</button></div>
       <h2>What is broken?</h2>
-      <p class="subhead">State the metric. Make improvement measurable. Hide the final evaluation set from competitors.</p>
+      <p class="subhead">State a measurable metric and proposed threshold. A later real evaluation needs its own licensed, protected holdout; this browser-only toy fixture is public and reconstructible.</p>
       <form id="bounty-form" novalidate>
         <div class="field"><label for="name">Bounty title</label><input id="name" name="name" maxlength="100" required placeholder="Example: Fix support-routing classification errors"><small>Specific failure, not a generic consulting task.</small></div>
         <div class="field"><label for="model">Frozen parent model</label><input id="model" name="model" maxlength="160" required placeholder="Example: support-router-v7 / model checkpoint SHA"><small>Describe a model version you are allowed to evaluate. No model is uploaded here.</small></div>
         <div class="field"><label for="metric">Primary objective</label><select id="metric" name="metric" required>
           <option value="accuracy">Classification accuracy (verified Digits proof)</option>
-          <option value="retrieval">Retrieval recall@k (Research Lab prototype)</option>
-          <option value="latency">P95 latency (planned task type)</option>
-          <option value="cost">Inference cost per 1,000 requests (planned)</option>
+          <option value="retrieval">Retrieval recall@k (Research Lab only; no Digits escrow)</option>
+          <option value="latency">P95 latency (Research Lab task family; no escrow path)</option>
+          <option value="cost">Inference cost per 1,000 requests (Research Lab task family; no escrow path)</option>
         </select><small id="metric-support">Verified Digits prototype. Metrics beyond classification are not live escrow products.</small></div>
         <div class="two-fields">
           <div class="field"><label for="baseline">Frozen baseline <span class="metric-unit">%</span></label><input id="baseline" name="baseline" inputmode="decimal" type="number" step="any" required placeholder="84"></div>
           <div class="field"><label for="target">Target to beat <span class="metric-unit">%</span></label><input id="target" name="target" inputmode="decimal" type="number" step="any" required placeholder="92"></div>
         </div>
-        <div class="micro-notice">Numerical threshold alone does not verify model quality. The real evaluator also requires an independent holdout, statistical eligibility and accepted bounded artifacts.</div>
+        <div class="micro-notice">Numerical threshold alone does not verify model quality. A funded Digits escrow run uses a named evaluator and bounded adapter; the separate Research Lab covers its own research-only task types. Neither is activated by this browser prototype.</div>
         <div class="section-heading section-divider"><span class="section-kicker">CONTEST RULES / 02</span></div>
         <h2>What's the contract?</h2>
         <div class="two-fields">
@@ -53,7 +54,7 @@
           <div class="field"><label for="durationDays">Contest window (days)</label><input id="durationDays" name="durationDays" type="number" min="1" max="90" step="1" required placeholder="14"></div>
         </div>
         <div class="two-fields">
-          <div class="field"><label for="candidates">Candidate budget</label><input id="candidates" name="candidates" type="number" min="1" max="32" step="1" required placeholder="8"></div>
+        <div class="field"><label for="candidates">Candidate budget (planning draft: up to 32)</label><input id="candidates" name="candidates" type="number" min="1" max="32" step="1" required placeholder="8"><small>The Digits-only escrow path and this local synthetic simulation cap submissions at 8.</small></div>
           <div class="field"><label for="evaluator">Proposed evaluator</label><input id="evaluator" name="evaluator" maxlength="100" required placeholder="Who will independently score the fixes?"></div>
         </div>
         <label class="check-field" for="rights"><input id="rights" name="rights" type="checkbox"><span>I confirm I have rights to use the proposed model and evaluation data. This is only a draft, not an IP review.</span></label>
@@ -93,6 +94,60 @@
       </div>
       <div class="preview-footer"><span>NO WALLETS · NO PAYMENTS · NO MODEL UPLOAD</span><a href="./judge.html">See the actual technical evidence ↗</a></div>
     </aside>
+  </section>
+  <section id="local-run" class="local-run-shell" aria-labelledby="local-run-title">
+    <div class="local-run-heading">
+      <span class="section-kicker">OFFLINE EVALUATION / SIMULATION</span>
+      <h2 id="local-run-title">Freeze the rules.<br><em>Inspect a bounded fix.</em></h2>
+      <p>Continue a validated draft into a browser-only synthetic task. This demonstrates policy freezing, bounded LoRA-shaped admission, signed receipt inspection, interruption recovery and settlement-state labeling. It uses no uploaded model, private dataset, wallet, network write, deposit or payout.</p>
+    </div>
+    <div class="local-run-boundary" role="note"><strong>Synthetic fixture disclosure</strong><span>The toy baseline, 16-example fixture, adapter, worker key and evaluator are created or read locally in this browser. A frozen checkpoint, including the draft text you entered, stays in this browser's storage until you cancel it. Do not enter confidential model or customer details. Cancel deletes that local checkpoint. The fixture is reproducible and inspectable; signatures bind this demo's bytes only. It does not prove training, private holdout security, scientific validity or independent evaluation. The separate recorded Digits run remains the only actual training evidence.</span></div>
+    <div class="local-run-controls">
+      <button id="freeze-policy" class="action-primary" type="button" disabled>Freeze this draft for local simulation</button>
+      <button id="resume-local-run" class="action-secondary" type="button" hidden>Resume saved checkpoint</button>
+      <button id="clear-local-checkpoint" class="action-secondary" type="button" hidden>Delete unreadable checkpoint</button>
+      <button id="simulate-interruption" class="action-secondary" type="button" hidden>Pause and save checkpoint</button>
+      <button id="cancel-local-run" class="action-secondary" type="button" hidden>Cancel this simulation</button>
+    </div>
+    <p id="local-run-status" class="local-run-status" role="status" aria-live="polite">Complete the accuracy-only Digits draft above to enable its local synthetic simulation.</p>
+    <div id="frozen-policy-card" class="local-run-card" hidden>
+      <div class="section-heading"><span class="section-kicker">FROZEN POLICY · IMMUTABLE CHECKPOINT</span><span id="local-run-state" class="validation-chip">FROZEN</span></div>
+      <dl class="local-run-grid">
+        <div><dt>Policy SHA-256</dt><dd id="frozen-policy-hash" class="break-hash">—</dd></div>
+        <div><dt>Frozen baseline SHA-256</dt><dd id="frozen-parent-hash" class="break-hash">—</dd></div>
+        <div><dt>Minimum delta / metric</dt><dd id="frozen-minimum">—</dd></div>
+        <div><dt>Candidate budget / tie-break</dt><dd id="frozen-budget">—</dd></div>
+        <div><dt>Evaluator authority</dt><dd id="frozen-evaluator">—</dd></div>
+      </dl>
+      <p class="local-run-footnote">Editing the form after freeze does not change this saved policy. Create a new run only after cancelling this simulation.</p>
+    </div>
+    <div id="candidate-admission-card" class="local-run-card" hidden>
+      <div class="section-heading"><span class="section-kicker">CANDIDATE ADMISSION</span><span class="local-demo-tag">NO EXECUTABLE CODE</span></div>
+      <p class="subhead">Load the bounded synthetic LoRA-shaped adapter or edit its JSON to exercise rejection. Admission checks the frozen policy and parent binding, exact rank/dimensions, finite numeric limits, SHA-256, a synthetic Ed25519 signature, duplicate identity and the predeclared budget.</p>
+      <label for="candidate-json" class="local-field-label">Candidate manifest JSON</label>
+      <textarea id="candidate-json" rows="10" spellcheck="false" autocomplete="off" aria-describedby="candidate-help"></textarea>
+      <small id="candidate-help">The starter adapter is signed by a new local synthetic key. Editing signed fields makes that signature fail.</small>
+      <div class="local-run-controls"><button id="load-synthetic-candidate" class="action-secondary" type="button" disabled>Load signed synthetic candidate</button><button id="admit-candidate" class="action-primary" type="button" disabled>Check and admit candidate</button></div>
+      <div id="admission-results" class="local-check-results" role="status" aria-live="polite">Candidate has not been checked.</div>
+      <p id="admitted-lineage" class="local-run-footnote" hidden></p>
+      <button id="evaluate-candidate" class="action-primary" type="button" disabled>Evaluate on synthetic held-out fixture</button>
+    </div>
+    <div id="receipt-card" class="local-run-card" hidden>
+      <div class="section-heading"><span class="section-kicker">RECEIPT INSPECTOR</span><span id="receipt-status" class="validation-chip">—</span></div>
+      <p id="receipt-summary" class="subhead"></p>
+      <dl class="local-run-grid">
+        <div><dt>Receipt SHA-256</dt><dd id="receipt-hash" class="break-hash">—</dd></div>
+        <div><dt>Baseline → candidate</dt><dd id="receipt-scores">—</dd></div>
+        <div><dt>Observed / minimum delta</dt><dd id="receipt-delta">—</dd></div>
+        <div><dt>Candidate budget / tie-break</dt><dd id="receipt-budget">—</dd></div>
+        <div><dt>Baseline → candidate lineage</dt><dd id="receipt-lineage" class="break-hash">—</dd></div>
+        <div><dt>Held-out / statistical limit</dt><dd id="receipt-stats">—</dd></div>
+        <div><dt>Named evaluator trust</dt><dd id="receipt-evaluator">—</dd></div>
+        <div><dt>Settlement</dt><dd id="receipt-settlement">—</dd></div>
+      </dl>
+      <div class="local-run-controls"><button id="download-local-receipt" class="action-secondary" type="button">Download synthetic receipt</button><button id="simulate-ambiguous-settlement" class="action-secondary" type="button">Simulate lost response (no transaction)</button><button id="recover-ambiguous-settlement" class="action-secondary" type="button" disabled>Reconcile simulation</button></div>
+      <p id="settlement-recovery-status" class="local-run-status" role="status" aria-live="polite">No transaction exists in this local simulation.</p>
+    </div>
   </section>
   <section class="cta-strip"><div><span class="section-kicker">VERIFIED WORK / NOT A MOCK TRANSACTION</span><h2>See what actually worked.</h2><p>The Digits experiment has real CPU training, signed receipts, a bounded artifact and a local Solana escrow-program test. No funded Devnet transaction is claimed.</p></div><a href="./judge.html" class="action-primary">Walk through the proof ↗</a></section>
 </main>

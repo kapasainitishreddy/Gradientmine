@@ -52,7 +52,7 @@ export function analyzeBlueprint(raw = {}) {
   if (!Number.isInteger(durationDays) || durationDays < 1 || durationDays > 90)
     issues.push('Choose a contest window of 1–90 whole days.');
   if (!Number.isInteger(candidates) || candidates < 1 || candidates > 32)
-    issues.push('Candidate budget must be a whole number from 1–32.');
+    issues.push('Candidate budget must be a whole number from 1–32 for this planning draft.');
   if (evaluator.length < 8) issues.push('Name a proposed evaluator or evaluation authority (8+ characters).');
   if (raw.rights !== true) issues.push('Confirm model/data rights before exporting an evaluation blueprint.');
 
