@@ -44,6 +44,7 @@ export async function freezePolicy(raw,createdAt=new Date().toISOString()) {
     objective:{metric:'accuracy',direction:'higher',minimum_delta:(Number(raw.target)-Number(raw.baseline))/100,unit:'fraction',target_origin:'User-authored planning draft; target checked separately from synthetic holdout.'},
     evaluator:{name:'Local Synthetic Evaluator',authority:'single trusted browser module',public_key:SYNTHETIC_EVALUATOR_PUBLIC_RAW,public_key_sha256:await sha256(fromB64(SYNTHETIC_EVALUATOR_PUBLIC_RAW)),trust_boundary:EVALUATOR_LIMIT},
     candidate_budget:Number(raw.candidates),
+    local_fixture_candidate_capacity:1,
     tie_break:'artifact_sha256_ascending',
     artifact_policy:{format:'gradientmine.synthetic-lora.v1',input_dim:4,output_dim:2,rank:1,executable_code:false,absolute_value_max:4},
     heldout:{name:'source-bundled synthetic fixture',examples:HOLDOUT.length,secret:false,sha256:await sha256(canonicalJSON(HOLDOUT)),disclosure:'Visible/reconstructible synthetic fixture; not a privacy or anti-leakage boundary.'},
@@ -138,7 +139,8 @@ export async function evaluateSubmission(submission,policy,existing=[]) {
     candidate_model_sha256:await sha256(canonicalJSON({parent:policy.parent.sha256,adapter:submission.artifact})),
     metric:'accuracy',baseline_accuracy:baseline,candidate_accuracy:score,observed_delta:delta,
     minimum_delta:policy.objective.minimum_delta,eligible:delta>=policy.objective.minimum_delta,
-    candidate_budget:policy.candidate_budget,tie_break:policy.tie_break,
+    candidate_budget:policy.candidate_budget,local_fixture_candidate_capacity:policy.local_fixture_candidate_capacity,
+    tie_break:policy.tie_break,tie_break_applied:false,selection_method:'single_candidate_fixture_no_ranking',
     candidates_evaluated:1,evaluation_examples:HOLDOUT.length,
     statistical_limit:STAT_LIMIT,evaluator_trust_boundary:EVALUATOR_LIMIT,
     settlement_status:'UNFUNDED_SIMULATION_ONLY',funds_escrowed:false,transaction_signature:null,payout_count:0,
@@ -159,6 +161,14 @@ export async function verifyEvaluationReceipt(envelope,policy,submission) {
   if (policy.evaluator?.public_key!==SYNTHETIC_EVALUATOR_PUBLIC_RAW
     ||await sha256(fromB64(policy.evaluator.public_key))!==policy.evaluator.public_key_sha256)
     return {ok:false,reason:'Frozen evaluator key does not match the bundled synthetic test key.'};
+  if (policy.local_fixture_candidate_capacity!==1
+    ||r.local_fixture_candidate_capacity!==1
+    ||r.candidates_evaluated!==1
+    ||r.candidate_budget!==policy.candidate_budget
+    ||r.tie_break!==policy.tie_break
+    ||r.tie_break_applied!==false
+    ||r.selection_method!=='single_candidate_fixture_no_ranking')
+    return {ok:false,reason:'Receipt does not match the one-candidate local fixture capacity and non-ranking disclosure.'};
   if (r.funds_escrowed!==false||r.transaction_signature!==null||r.payout_count!==0||r.settlement_status!=='UNFUNDED_SIMULATION_ONLY')
     return {ok:false,reason:'Synthetic receipt contains an unsupported settlement claim.'};
   try {

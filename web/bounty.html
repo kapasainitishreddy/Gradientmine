@@ -119,14 +119,14 @@
         <div><dt>Candidate budget / tie-break</dt><dd id="frozen-budget">—</dd></div>
         <div><dt>Evaluator authority</dt><dd id="frozen-evaluator">—</dd></div>
       </dl>
-      <p class="local-run-footnote">Editing the form after freeze does not change this saved policy. Create a new run only after cancelling this simulation.</p>
+      <p class="local-run-footnote">The frozen candidate budget is a planning maximum. This fixture admits one candidate and performs no ranking, so the configured hash tie-break is not exercised. Editing the form after freeze does not change this policy.</p>
     </div>
     <div id="candidate-admission-card" class="local-run-card" hidden>
       <div class="section-heading"><span class="section-kicker">CANDIDATE ADMISSION</span><span class="local-demo-tag">NO EXECUTABLE CODE</span></div>
-      <p class="subhead">Load the bounded synthetic LoRA-shaped adapter or edit its JSON to exercise rejection. Admission checks the frozen policy and parent binding, exact rank/dimensions, finite numeric limits, SHA-256, a synthetic Ed25519 signature, duplicate identity and the predeclared budget.</p>
+      <p class="subhead">Load the bounded synthetic LoRA-shaped adapter or edit its JSON to exercise rejection. Admission checks the frozen policy and parent binding, exact rank/dimensions, finite numeric limits, SHA-256, a synthetic Ed25519 signature and duplicate identity. This fixture admits one candidate per run; its larger frozen budget is only a planning maximum. It does not rank candidates or exercise the configured hash tie-break.</p>
       <label for="candidate-json" class="local-field-label">Candidate manifest JSON</label>
       <textarea id="candidate-json" rows="10" spellcheck="false" autocomplete="off" aria-describedby="candidate-help"></textarea>
-      <small id="candidate-help">The starter adapter is signed by a new local synthetic key. Editing signed fields makes that signature fail.</small>
+      <small id="candidate-help">The starter adapter is signed by a new local synthetic key. Editing signed fields makes that signature fail. The public test signer is not a wallet or real worker identity.</small>
       <div class="local-run-controls"><button id="load-synthetic-candidate" class="action-secondary" type="button" disabled>Load signed synthetic candidate</button><button id="admit-candidate" class="action-primary" type="button" disabled>Check and admit candidate</button></div>
       <div id="admission-results" class="local-check-results" role="status" aria-live="polite">Candidate has not been checked.</div>
       <p id="admitted-lineage" class="local-run-footnote" hidden></p>
@@ -139,7 +139,7 @@
         <div><dt>Receipt SHA-256</dt><dd id="receipt-hash" class="break-hash">—</dd></div>
         <div><dt>Baseline → candidate</dt><dd id="receipt-scores">—</dd></div>
         <div><dt>Observed / minimum delta</dt><dd id="receipt-delta">—</dd></div>
-        <div><dt>Candidate budget / tie-break</dt><dd id="receipt-budget">—</dd></div>
+        <div><dt>Evaluation count / budget / selection</dt><dd id="receipt-budget">—</dd></div>
         <div><dt>Baseline → candidate lineage</dt><dd id="receipt-lineage" class="break-hash">—</dd></div>
         <div><dt>Held-out / statistical limit</dt><dd id="receipt-stats">—</dd></div>
         <div><dt>Named evaluator trust</dt><dd id="receipt-evaluator">—</dd></div>

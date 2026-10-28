@@ -76,6 +76,9 @@ def main() -> None:
             page.get_by_role("button", name="Check and admit candidate").click()
             page.get_by_role("cell", name="PASS", exact=True).first.wait_for()
             require("artifact" in page.locator("#admitted-lineage").inner_text(), "Admission records artifact and baseline lineage")
+            require(page.locator("#load-synthetic-candidate").is_disabled(), "Fixture admits at most one candidate despite a larger planning cap")
+            frozen_budget=page.locator("#frozen-budget").inner_text().lower()
+            require("tie-break" in frozen_budget and "not exercised" in frozen_budget, "Frozen policy discloses that the configured tie-break is not exercised")
             page.get_by_role("button", name="Pause and save checkpoint").click()
             require(page.locator("#resume-local-run").is_visible(), "Interruption saves a resumable checkpoint")
             page.reload(wait_until="networkidle")
@@ -120,6 +123,16 @@ def main() -> None:
             require(not external, "Offline flow made no external network requests")
             require(not errors, "Browser completed flow without JavaScript exceptions")
             saved_state=page.evaluate("localStorage.getItem('gradientmine.local-synthetic-run.v1')")
+            inconsistent_evaluated={**json.loads(saved_state),"state":"INTERRUPTED_CHECKPOINT","resume_state":"SYNTHETIC_EVALUATED","receipt":None}
+            page.evaluate("state => localStorage.setItem('gradientmine.local-synthetic-run.v1', JSON.stringify(state))",inconsistent_evaluated)
+            page.reload(wait_until="networkidle")
+            page.get_by_role("button", name="Resume saved checkpoint").click()
+            require("state, admitted candidate, receipt, and settlement probe are inconsistent" in page.locator("#local-run-status").inner_text(), "Interrupted evaluated checkpoint without receipt is rejected")
+            inconsistent_frozen={**json.loads(saved_state),"state":"INTERRUPTED_CHECKPOINT","resume_state":"FROZEN"}
+            page.evaluate("state => localStorage.setItem('gradientmine.local-synthetic-run.v1', JSON.stringify(state))",inconsistent_frozen)
+            page.reload(wait_until="networkidle")
+            page.get_by_role("button", name="Resume saved checkpoint").click()
+            require("state, admitted candidate, receipt, and settlement probe are inconsistent" in page.locator("#local-run-status").inner_text(), "Interrupted frozen checkpoint with receipt is rejected")
             tampered_state=json.loads(saved_state)
             tampered_state["policy"]["policy_sha256"]="0"*64
             page.evaluate("state => localStorage.setItem('gradientmine.local-synthetic-run.v1', JSON.stringify(state))",tampered_state)

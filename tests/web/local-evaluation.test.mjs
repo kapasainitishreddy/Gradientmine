@@ -14,6 +14,7 @@ test('freezes a canonical immutable policy with lineage, budget, evaluator and v
   assert.equal(policy.parent.sha256,baselineSha256());
   assert.equal(policy.objective.minimum_delta,.1);
   assert.equal(policy.candidate_budget,2);
+  assert.equal(policy.local_fixture_candidate_capacity,1);
   assert.equal(policy.tie_break,'artifact_sha256_ascending');
   assert.equal(policy.heldout.examples,heldoutSize());
   assert.match(policy.evaluator.trust_boundary,/One local JavaScript evaluator is trusted/i);
@@ -61,6 +62,12 @@ test('held-out synthetic scoring produces a signed, lineage-bound unfunded recei
   assert.equal(envelope.receipt.eligible,true);
   assert.equal(envelope.receipt.parent_sha256,policy.parent.sha256);
   assert.equal(envelope.receipt.candidate_artifact_sha256,submission.artifact_sha256);
+  assert.equal(envelope.receipt.candidate_budget,2);
+  assert.equal(envelope.receipt.local_fixture_candidate_capacity,1);
+  assert.equal(envelope.receipt.candidates_evaluated,1);
+  assert.equal(envelope.receipt.tie_break,'artifact_sha256_ascending');
+  assert.equal(envelope.receipt.tie_break_applied,false);
+  assert.equal(envelope.receipt.selection_method,'single_candidate_fixture_no_ranking');
   assert.equal(envelope.receipt.funds_escrowed,false);
   assert.equal(envelope.receipt.transaction_signature,null);
   assert.equal(envelope.receipt.payout_count,0);
@@ -69,6 +76,8 @@ test('held-out synthetic scoring produces a signed, lineage-bound unfunded recei
   assert.equal((await verifyEvaluationReceipt(tampered,policy,submission)).ok,false);
   const lied=structuredClone(envelope);lied.receipt.settlement_status='SETTLED';
   assert.equal((await verifyEvaluationReceipt(lied,policy,submission)).ok,false);
+  const misleadingSelection=structuredClone(envelope);misleadingSelection.receipt.tie_break_applied=true;
+  assert.equal((await verifyEvaluationReceipt(misleadingSelection,policy,submission)).ok,false);
   const attackerPolicy=structuredClone(policy);attackerPolicy.evaluator.public_key='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
   delete attackerPolicy.policy_sha256;attackerPolicy.policy_sha256=await sha256(canonicalJSON(attackerPolicy));
   const attackerEnvelope=structuredClone(envelope);attackerEnvelope.receipt.policy_sha256=attackerPolicy.policy_sha256;
