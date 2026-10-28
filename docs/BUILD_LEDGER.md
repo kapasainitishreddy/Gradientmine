@@ -257,3 +257,30 @@ This redesign changes presentation only. It does **not** create a Devnet deploym
 - `cargo test --locked --manifest-path program/Cargo.toml`: SKIP, Cargo is not installed (`cargo: command not found`).
 - The browser flow is local synthetic-only. It performs no uploads, wallet calls, chain access, escrow, or payout. Its public demo signing key is bundled and disclosed; verification catches accidental changes only and is not an independent evaluator identity or truth guarantee.
 - No production deployment, Devnet/mainnet transaction, payout, publication, or customer/revenue test was performed. Legal/store/privacy applicability and full ASVS/WCAG/NIST mapping remain not reviewed.
+
+### Local Digits journey verification follow-up — 2026-10-28
+
+The offline toolchain was installed only under `/tmp/gm-verify-full` using the repository-pinned pytest/Ruff versions and official CPU PyTorch wheel; no repository runtime/dependency manifest was changed. The real Digits model path and the browser synthetic path were kept separate.
+
+At exact source head `b7208434fff268edb5ad49bc3e7e56f5ca4716bb`:
+
+- `npm test`: PASS, 66 passed / 0 failed.
+- `npm run check`: PASS.
+- `/tmp/gm-verify-full/bin/python -m pytest -q tests/test_ml.py`: PASS, 13 passed. This exercises the reproducible public Digits split, rank-8 local adapter training, held-out paired evaluation, shuffled-label negative control, invalid artifact shapes/values, and hash-based tie-break. It made no API, wallet, authentication, RPC or transaction call.
+- A separate deterministic local run is recorded in `evidence/proposal-2026-10-28/local-journey/digits-local-model-check.json`: baseline 84.72%, candidate 95.28%, +10.56 percentage points on 360 public held-out examples; adjusted approximate lower bound +6.11 points; shuffled-label negative control ineligible. It records baseline/train/evaluation/candidate commitments and limitations. This is a local model measurement, not the UI demo receipt, a signed bounty receipt, or settlement evidence.
+- `/tmp/gm-verify-full/bin/python -m ruff check gradientmine tests scripts`: PASS.
+- `/tmp/gm-verify-full/bin/python -m compileall -q gradientmine scripts tests`: PASS.
+- `python scripts/local_journey_browser_qa.py`: PASS, 32 checks, exact source SHA above, clean worktree before run. Report and screenshots are under `evidence/proposal-2026-10-28/local-journey/`.
+
+The full Python/API suite was not run in this tranche because its API identity fixtures perform wallet-style authentication signing; the delegated scope explicitly excluded wallet/auth signing operations. Chain, worker/API recovery, native SBF and funded-settlement paths were also not run. The optional Hugging Face/PEFT local-tuning CLI remains untested because no trusted cached local model was present; no model was downloaded. These are remaining proof gaps, not passing checks.
+
+### Independent review findings and bounded corrections — 2026-10-28
+
+A read-only independent review of proposal head `b7208434fff268edb5ad49bc3e7e56f5ca4716bb` found two issues. The evaluator key/payout boundary and previous deletion fixes were accepted. The review found (a) the synthetic policy retained a planning budget up to eight while the UI allowed/evaluated only one candidate and appeared to imply the tie-break ran, and (b) interrupted checkpoints could pair `SYNTHETIC_EVALUATED` with no receipt or `FROZEN` with a receipt.
+
+Corrective source commit: `1e11c6f680dc35c346f8198bd187efd7dfa0276b`.
+
+- The frozen policy and receipt now separately state the planning cap and one-candidate local-fixture capacity. The UI says no ranking occurs and the configured hash tie-break is not exercised. The loader stops after one admission; receipt verification enforces that disclosure.
+- Restore validation now requires state/submission/receipt/recovery-probe consistency for both ordinary and interrupted checkpoints. Browser QA injects both malformed resume combinations and expects rejection.
+- This correction remains limited to the public synthetic fixture; it does not perform actual multi-candidate winner selection. The real Digits evaluator and its artifact-hash selection behavior remain separate in `gradientmine/scoring.py`.
+- The independent reviewer requested a second review after fixes. Final exact-head test and review results will be recorded in the subsequent evidence entry.

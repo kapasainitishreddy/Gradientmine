@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "source_sha": "a2357e18adfb6349317db0f70caaa6a67b1d1e1c",
-  "worktree_clean_before_run": true,
+  "source_sha": "1e11c6f680dc35c346f8198bd187efd7dfa0276b",
+  "worktree_clean_before_run": false,
   "checks": [
     "Example does not self-attest model/data rights",
     "Valid Digits-only draft enables local freeze",
@@ -9,6 +9,8 @@
     "Invalid shape and substituted bytes are visibly rejected",
     "Rejected candidate cannot enter evaluation",
     "Admission records artifact and baseline lineage",
+    "Fixture admits at most one candidate despite a larger planning cap",
+    "Frozen policy discloses that the configured tie-break is not exercised",
     "Interruption saves a resumable checkpoint",
     "Resume revalidates frozen policy and candidate signature",
     "Duplicate/replayed candidate is rejected after resume",
@@ -28,6 +30,8 @@
     "200% text scale does not force horizontal page overflow",
     "Offline flow made no external network requests",
     "Browser completed flow without JavaScript exceptions",
+    "Interrupted evaluated checkpoint without receipt is rejected",
+    "Interrupted frozen checkpoint with receipt is rejected",
     "Corrupted policy checkpoint is rejected on restore",
     "Invalid saved checkpoint still offers a delete control",
     "Failed browser storage deletion does not claim success",
