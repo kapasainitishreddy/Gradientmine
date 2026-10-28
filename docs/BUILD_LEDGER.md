@@ -296,7 +296,7 @@ Corrective source commit: `1e11c6f680dc35c346f8198bd187efd7dfa0276b`.
 - `/tmp/gm-verify-full/bin/python -m py_compile scripts/local_journey_browser_qa.py`: PASS.
 - `/tmp/gm-verify-full/bin/python scripts/local_journey_browser_qa.py`: PASS, 36 browser checks. Actual desktop and mobile 200% captures were inspected; the UI visibly states that the frozen value is a planning cap, the fixture admits one candidate, and the configured tie-break is not exercised. The receipt says there was no ranking.
 - `evidence/proposal-2026-10-28/local-journey/digits-local-model-check.json` records a separate actual local Digits rank-8 adaptation at this SHA using PyTorch `2.14.1+cpu`: 60 steps, training loss 0.70844 → 0.12060, 360 held-out examples, baseline 84.72%, candidate 95.28%, observed +10.56 pp, approximate adjusted lower bound +6.11 pp; the shuffled-label negative control is ineligible. The artifact marks the data as public, the interval as approximate, and the run as separate from the browser fixture, unsigned, unsubmitted, and unsettled.
-- The independent second review of the two corrected findings is pending; no full-suite or release/compliance claim is inferred from the focused runs.
+- A later independent review found a legacy version-1 checkpoint compatibility issue; it is resolved and covered at the newer source head below. No full-suite or release/compliance claim is inferred from the focused runs.
 
 ### Second independent review and legacy checkpoint compatibility — 2026-10-28
 
@@ -306,5 +306,24 @@ Corrective source commit: `235f1f1b5501125b771b9bed612f6659db00446a`.
 
 - The restore path now accepts the earlier version-1 policy/receipt shape without rewriting or re-signing the frozen policy or receipt. It preserves old candidate admissions, verifies the old receipt against its original frozen policy, and labels the legacy cap and first-candidate receipt accurately. New runs continue to require the explicit one-candidate fixture capacity and non-ranking disclosure.
 - Unit coverage creates and verifies a legacy receipt with the original field shape. Browser QA constructs an evaluated legacy checkpoint, resumes it, and checks that its receipt hash remains intact.
-- `scripts/generate_local_digits_check.py` is now the reproducible generator for the actual public Digits measurements. The command tested before this source commit was `/tmp/gm-verify-full/bin/python scripts/generate_local_digits_check.py --out /tmp/gm-digits-report.json`; final artifact regeneration at the committed source SHA is scheduled after a clean-head test run.
+- `scripts/generate_local_digits_check.py` is the reproducible generator for the actual public Digits measurements. The final command `/tmp/gm-verify-full/bin/python scripts/generate_local_digits_check.py` passed at source SHA `5716e53d2697eb769687f275a93a91c7527e093c` and wrote the evidence JSON in this directory.
 - These fixes preserve local-only, nonfinancial behavior. No API auth identity, wallet, RPC, settlement or transaction was used by the focused Digits or browser flow.
+
+### Exact working-branch verification after compatibility and provenance fixes — 2026-10-28
+
+- Tested source/clean-run SHA: `5716e53d2697eb769687f275a93a91c7527e093c`. Browser report records this exact SHA with `worktree_clean_before_run: true`.
+- `npm test`: PASS, 67 / 67; includes unit tests of wallet/signature handling, but only test fixtures and local crypto verification were used. No wallet was connected and no external signing or auth request was made.
+- `npm run check`: PASS.
+- `/tmp/gm-verify-full/bin/python -m pytest -q tests/test_ml.py`: PASS, 13 / 13; no API identity, wallet, auth, RPC or transaction operations.
+- `/tmp/gm-verify-full/bin/ruff check gradientmine tests scripts`: PASS.
+- `/tmp/gm-verify-full/bin/python -m compileall -q gradientmine scripts tests`: PASS.
+- `/tmp/gm-verify-full/bin/python -m py_compile scripts/generate_local_digits_check.py scripts/local_journey_browser_qa.py`: PASS.
+- `/tmp/gm-verify-full/bin/python scripts/local_journey_browser_qa.py`: PASS, 38 checks. Includes one-candidate/no-ranking disclosure, legacy v1 evaluated checkpoint restore with the original receipt hash preserved, two inconsistent interrupted-checkpoint rejection cases, tamper/shape/replay, offline/no external requests, 360px and 200% text layout, corrupt state, denied storage deletion and cancellation. Desktop/mobile screenshots are saved beside the report and were inspected.
+- `/tmp/gm-verify-full/bin/python scripts/generate_local_digits_check.py`: PASS; writes `evidence/proposal-2026-10-28/local-journey/digits-local-model-check.json`. It captures source SHA, PyTorch version, baseline/train/evaluation/candidate hashes, actual scores and shuffled-label negative control. The generated run reports PyTorch `2.14.1+cpu`, 60 rank-8 update steps, loss 0.70844 → 0.12060, 360 held-out examples, 84.72% → 95.28%, +10.56 pp, approximate adjusted lower bound +6.11 pp, negative-control ineligible. No wallet/auth/RPC/transaction operation is part of the generator.
+- The full Python/API suite remains intentionally unrun because its API identity fixtures perform wallet-style auth signing. No real wallet or external transaction was used in the JS unit/browser harness; its signatures are generated fixture material only.
+
+The second independent reviewer’s legacy-compatibility and evidence-provenance findings have been addressed in source commit `235f1f1b5501125b771b9bed612f6659db00446a`: old v1 frozen receipts remain intact and the Digits evidence now has a checked-in generator.
+
+### Independent final disposition — 2026-10-28
+
+A read-only independent review at exact tested SHA `5716e53d2697eb769687f275a93a91c7527e093c` accepted the legacy checkpoint migration and receipt preservation, the explicit one-candidate/non-ranking contract, the interrupted checkpoint consistency checks, and the checked-in local Digits evidence generator. The reviewer confirmed that the browser report SHA/clean-before-run values match the source and runner capture, and that the Digits artifact includes baseline/train/evaluation/candidate commitments, tool version and negative control. No new material functional/security issue was identified. The reviewer noted only that this feature/build ledger needed its pending/precommit test entries updated to the exact-head 67 Node / 13 focused pytest / Ruff / 38 browser results; those entries are now reconciled.

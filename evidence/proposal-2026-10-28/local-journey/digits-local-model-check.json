@@ -55,7 +55,7 @@
     "steps": 60
   },
   "remote_submission": false,
-  "source_sha": "558be7a52eaa5a33a3b65ecf6ed99de775f3e8c2",
+  "source_sha": "5716e53d2697eb769687f275a93a91c7527e093c",
   "status": "passed",
   "synthetic_ui_fixture": false,
   "torch_version": "2.14.1+cpu",
